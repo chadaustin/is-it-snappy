@@ -60,7 +60,11 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let model = self.groups[indexPath.section].videos[indexPath.row]
-        present(ScrubberViewController(model: model), animated: true, completion: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ScrubberViewController") as! ScrubberViewController
+        vc.setModel(model)
+        present(vc, animated: true, completion: nil)
+        //present(ScrubberViewController(model: model), animated: true, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

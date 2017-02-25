@@ -2,13 +2,21 @@ import UIKit
 import Photos
 
 class ScrubberViewController: UIViewController {
-    let model: VideoModel
-    let playerView = PlayerView()
-    let gestureRecognizer = UIPanGestureRecognizer()
+    var model: VideoModel!
     
-    init(model: VideoModel) {
+    var playerView: PlayerView {
+        return view as! PlayerView
+    }
+    
+    @IBOutlet weak var markInputButton: UIButton!
+    @IBOutlet weak var markOutputButton: UIButton!
+    @IBOutlet weak var locationLabel: UILabel!
+    
+    let gestureRecognizer = UIPanGestureRecognizer()
+   
+    func setModel(_ model: VideoModel) {
+        precondition(self.model == nil, "model can only be set once")
         self.model = model
-        super.init(nibName: nil, bundle: nil)
         
         let options: PHVideoRequestOptions? = nil
         PHImageManager.default().requestAVAsset(
@@ -66,18 +74,11 @@ class ScrubberViewController: UIViewController {
         }
     }
 
-    required init(coder: NSCoder) {
-        fatalError("ScrubberViewController")
-    }
-    
-    override func loadView() {
-        view = playerView
+    override func viewDidLoad() {
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
         view.addGestureRecognizer(gestureRecognizer)
         
         gestureRecognizer.addTarget(self, action: #selector(handleGesture))
-        
     }
     
     var gestureStartTime: CMTime = kCMTimeZero
@@ -103,13 +104,14 @@ class ScrubberViewController: UIViewController {
             to: target,
             toleranceBefore: kCMTimeZero,
             toleranceAfter: kCMTimeZero
-        ) { finished in
+        ) { [weak self] finished in
             if finished {
                 Swift.print("seek finished \(player.currentTime())")
                 let frameDuration = player.currentItem!.asset.tracks[0].minFrameDuration
                 let frameNumber = (target.value * Int64(frameDuration.timescale)) /
                     (Int64(target.timescale) * frameDuration.value);
-
+                
+                self?.locationLabel.text = "frame \(frameNumber)\ntime \(target)"
                 Swift.print("frame number \(frameNumber)")
             } else {
                 Swift.print("seek failed")

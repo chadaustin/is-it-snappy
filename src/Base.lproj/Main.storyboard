@@ -68,7 +68,7 @@
         <!--Scrubber View Controller-->
         <scene sceneID="Zty-J0-6hz">
             <objects>
-                <viewController id="MMt-xQ-87z" customClass="ScrubberViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ScrubberViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MMt-xQ-87z" customClass="ScrubberViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4EW-fs-z55"/>
                         <viewControllerLayoutGuide type="bottom" id="MyX-rU-pNt"/>
@@ -76,8 +76,48 @@
                     <view key="view" contentMode="scaleToFill" id="LHg-oD-jLr" customClass="PlayerView" customModule="IsItSnappy" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQT-b6-BeM">
+                                <rect key="frame" x="123" y="539" width="74" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MBK-fD-YKs">
+                                <rect key="frame" x="26" y="530" width="87" height="30"/>
+                                <state key="normal" title="Mark Input">
+                                    <color key="titleShadowColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y8u-ro-h45">
+                                <rect key="frame" x="207" y="530" width="87" height="30"/>
+                                <state key="normal" title="Mark Output">
+                                    <color key="titleShadowColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Y8u-ro-h45" firstAttribute="leading" secondItem="ZQT-b6-BeM" secondAttribute="trailing" constant="10" id="3Lw-3v-pOP"/>
+                            <constraint firstItem="ZQT-b6-BeM" firstAttribute="leading" secondItem="MBK-fD-YKs" secondAttribute="trailing" constant="10" id="3dk-1D-dwe"/>
+                            <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="ZQT-b6-BeM" secondAttribute="bottom" constant="8" symbolic="YES" id="8Fe-l6-Bv8"/>
+                            <constraint firstItem="MBK-fD-YKs" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leadingMargin" constant="10" id="Vgt-BJ-Mcf"/>
+                            <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="Y8u-ro-h45" secondAttribute="bottom" constant="8" symbolic="YES" id="dhp-ba-mVw"/>
+                            <constraint firstItem="ZQT-b6-BeM" firstAttribute="leading" secondItem="MBK-fD-YKs" secondAttribute="trailing" constant="10" id="e6Q-MA-ict"/>
+                            <constraint firstItem="MBK-fD-YKs" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leadingMargin" constant="10" id="gEf-j9-Cia"/>
+                            <constraint firstItem="ZQT-b6-BeM" firstAttribute="centerX" secondItem="LHg-oD-jLr" secondAttribute="centerX" id="gnc-9X-nFQ"/>
+                            <constraint firstItem="Y8u-ro-h45" firstAttribute="leading" secondItem="ZQT-b6-BeM" secondAttribute="trailing" constant="10" id="hqa-Qv-d3H"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Y8u-ro-h45" secondAttribute="trailing" constant="10" id="mvl-PL-GVj"/>
+                            <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="MBK-fD-YKs" secondAttribute="bottom" constant="8" symbolic="YES" id="xed-HQ-Fxo"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Y8u-ro-h45" secondAttribute="trailing" constant="10" id="yKJ-Iq-32r"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="locationLabel" destination="ZQT-b6-BeM" id="Npi-P2-ohw"/>
+                        <outlet property="markInputButton" destination="MBK-fD-YKs" id="xJZ-EI-spl"/>
+                        <outlet property="markOutputButton" destination="Y8u-ro-h45" id="ygL-Z4-CIi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUU-Tt-FxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
