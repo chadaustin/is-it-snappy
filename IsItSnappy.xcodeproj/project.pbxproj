@@ -7,17 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		63178FC91E61DD7B007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC21E61DD7B007278A0 /* AppDelegate.swift */; };
-		63178FCA1E61DD7B007278A0 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC31E61DD7B007278A0 /* CameraViewController.swift */; };
-		63178FCB1E61DD7B007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */; };
-		63178FCC1E61DD7B007278A0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC51E61DD7B007278A0 /* PlayerView.swift */; };
-		63178FCD1E61DD7B007278A0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC61E61DD7B007278A0 /* RootViewController.swift */; };
-		63178FCE1E61DD7B007278A0 /* ScrubberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */; };
-		63178FCF1E61DD7B007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC81E61DD7B007278A0 /* VideoManager.swift */; };
-		63178FD41E61DE14007278A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */; };
-		63178FD51E61DE14007278A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63178FD21E61DE14007278A0 /* Main.storyboard */; };
-		639459141E61DBC600C00F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 639459131E61DBC600C00F0E /* Assets.xcassets */; };
+		63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD61E61E03D007278A0 /* AppDelegate.swift */; };
+		63178FDF1E61E03D007278A0 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CameraViewController.swift */; };
+		63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */; };
+		63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDA1E61E03D007278A0 /* PlayerView.swift */; };
+		63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDB1E61E03D007278A0 /* RootViewController.swift */; };
+		63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */; };
+		63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDD1E61E03D007278A0 /* VideoManager.swift */; };
 		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
+		63D4DE1F1E61E08600716F26 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE1E1E61E08600716F26 /* Info.plist */; };
+		63D4DE211E61E09000716F26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE201E61E09000716F26 /* Assets.xcassets */; };
+		63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */; };
+		63D4DE271E61E10200716F26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE241E61E10200716F26 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,22 +32,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		63178FC11E61DD7A007278A0 /* IsItSnappy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IsItSnappy-Bridging-Header.h"; sourceTree = "<group>"; };
-		63178FC21E61DD7B007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = IsItSnappy/AppDelegate.swift; sourceTree = "<group>"; };
-		63178FC31E61DD7B007278A0 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = IsItSnappy/CameraViewController.swift; sourceTree = "<group>"; };
-		63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = IsItSnappy/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
-		63178FC51E61DD7B007278A0 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = IsItSnappy/PlayerView.swift; sourceTree = "<group>"; };
-		63178FC61E61DD7B007278A0 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = IsItSnappy/RootViewController.swift; sourceTree = "<group>"; };
-		63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScrubberViewController.swift; path = IsItSnappy/ScrubberViewController.swift; sourceTree = "<group>"; };
-		63178FC81E61DD7B007278A0 /* VideoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoManager.swift; path = IsItSnappy/VideoManager.swift; sourceTree = "<group>"; };
-		63178FD11E61DE14007278A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		63178FD31E61DE14007278A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		63178FD61E61E03D007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = src/AppDelegate.swift; sourceTree = "<group>"; };
+		63178FD71E61E03D007278A0 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = src/CameraViewController.swift; sourceTree = "<group>"; };
+		63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = src/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
+		63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "IsItSnappy-Bridging-Header.h"; path = "src/IsItSnappy-Bridging-Header.h"; sourceTree = "<group>"; };
+		63178FDA1E61E03D007278A0 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = src/PlayerView.swift; sourceTree = "<group>"; };
+		63178FDB1E61E03D007278A0 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = src/RootViewController.swift; sourceTree = "<group>"; };
+		63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScrubberViewController.swift; path = src/ScrubberViewController.swift; sourceTree = "<group>"; };
+		63178FDD1E61E03D007278A0 /* VideoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoManager.swift; path = src/VideoManager.swift; sourceTree = "<group>"; };
 		639459091E61DBC600C00F0E /* IsItSnappy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IsItSnappy.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		639459131E61DBC600C00F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		639459181E61DBC600C00F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IsItSnappyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		639459211E61DBC600C00F0E /* IsItSnappyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsItSnappyTests.swift; sourceTree = "<group>"; };
 		639459231E61DBC600C00F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63D4DE1E1E61E08600716F26 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = src/Info.plist; sourceTree = SOURCE_ROOT; };
+		63D4DE201E61E09000716F26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = src/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		63D4DE231E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		63D4DE251E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,14 +71,14 @@
 		63178FC01E61DD65007278A0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				63178FC21E61DD7B007278A0 /* AppDelegate.swift */,
-				63178FC31E61DD7B007278A0 /* CameraViewController.swift */,
-				63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */,
-				63178FC51E61DD7B007278A0 /* PlayerView.swift */,
-				63178FC61E61DD7B007278A0 /* RootViewController.swift */,
-				63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */,
-				63178FC81E61DD7B007278A0 /* VideoManager.swift */,
-				63178FC11E61DD7A007278A0 /* IsItSnappy-Bridging-Header.h */,
+				63178FD61E61E03D007278A0 /* AppDelegate.swift */,
+				63178FD71E61E03D007278A0 /* CameraViewController.swift */,
+				63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */,
+				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
+				63178FDA1E61E03D007278A0 /* PlayerView.swift */,
+				63178FDB1E61E03D007278A0 /* RootViewController.swift */,
+				63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */,
+				63178FDD1E61E03D007278A0 /* VideoManager.swift */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -104,10 +105,10 @@
 		6394590B1E61DBC600C00F0E /* extra */ = {
 			isa = PBXGroup;
 			children = (
-				63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */,
-				63178FD21E61DE14007278A0 /* Main.storyboard */,
-				639459131E61DBC600C00F0E /* Assets.xcassets */,
-				639459181E61DBC600C00F0E /* Info.plist */,
+				63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */,
+				63D4DE241E61E10200716F26 /* Main.storyboard */,
+				63D4DE201E61E09000716F26 /* Assets.xcassets */,
+				63D4DE1E1E61E08600716F26 /* Info.plist */,
 			);
 			name = extra;
 			path = IsItSnappy;
@@ -207,9 +208,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63178FD51E61DE14007278A0 /* Main.storyboard in Resources */,
-				639459141E61DBC600C00F0E /* Assets.xcassets in Resources */,
-				63178FD41E61DE14007278A0 /* LaunchScreen.storyboard in Resources */,
+				63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */,
+				63D4DE211E61E09000716F26 /* Assets.xcassets in Resources */,
+				63D4DE1F1E61E08600716F26 /* Info.plist in Resources */,
+				63D4DE271E61E10200716F26 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,13 +229,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63178FCD1E61DD7B007278A0 /* RootViewController.swift in Sources */,
-				63178FC91E61DD7B007278A0 /* AppDelegate.swift in Sources */,
-				63178FCA1E61DD7B007278A0 /* CameraViewController.swift in Sources */,
-				63178FCF1E61DD7B007278A0 /* VideoManager.swift in Sources */,
-				63178FCB1E61DD7B007278A0 /* CaptureVideoPreviewView.swift in Sources */,
-				63178FCE1E61DD7B007278A0 /* ScrubberViewController.swift in Sources */,
-				63178FCC1E61DD7B007278A0 /* PlayerView.swift in Sources */,
+				63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */,
+				63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */,
+				63178FDF1E61E03D007278A0 /* CameraViewController.swift in Sources */,
+				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
+				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
+				63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */,
+				63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,18 +258,18 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */ = {
+		63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				63178FD11E61DE14007278A0 /* Base */,
+				63D4DE231E61E10200716F26 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		63178FD21E61DE14007278A0 /* Main.storyboard */ = {
+		63D4DE241E61E10200716F26 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				63178FD31E61DE14007278A0 /* Base */,
+				63D4DE251E61E10200716F26 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -373,11 +375,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				INFOPLIST_FILE = IsItSnappy/Info.plist;
+				INFOPLIST_FILE = src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "IsItSnappy-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -388,11 +390,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				INFOPLIST_FILE = IsItSnappy/Info.plist;
+				INFOPLIST_FILE = src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "IsItSnappy-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
