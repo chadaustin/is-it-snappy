@@ -69,7 +69,7 @@ class ScrubberViewController: UIViewController {
     required init(coder: NSCoder) {
         fatalError("ScrubberViewController")
     }
-
+    
     override func loadView() {
         view = playerView
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -77,6 +77,7 @@ class ScrubberViewController: UIViewController {
         view.addGestureRecognizer(gestureRecognizer)
         
         gestureRecognizer.addTarget(self, action: #selector(handleGesture))
+        
     }
     
     var gestureStartTime: CMTime = kCMTimeZero

@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,7 +29,7 @@
         <!--Captures-->
         <scene sceneID="GvW-vZ-Y6U">
             <objects>
-                <viewController title="Captures" id="ZOr-Y5-u4n" customClass="RootViewController" customModule="AVCamManual" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Captures" id="ZOr-Y5-u4n" customClass="RootViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vvi-4i-s6r"/>
                         <viewControllerLayoutGuide type="bottom" id="8fy-v2-gUb"/>
@@ -64,15 +65,33 @@
             </objects>
             <point key="canvasLocation" x="-2391" y="258"/>
         </scene>
+        <!--Scrubber View Controller-->
+        <scene sceneID="Zty-J0-6hz">
+            <objects>
+                <viewController id="MMt-xQ-87z" customClass="ScrubberViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4EW-fs-z55"/>
+                        <viewControllerLayoutGuide type="bottom" id="MyX-rU-pNt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="LHg-oD-jLr" customClass="PlayerView" customModule="IsItSnappy" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kUU-Tt-FxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1007" y="606"/>
+        </scene>
         <!--Record Video-->
         <scene sceneID="o5M-B8-Hza">
             <objects>
-                <viewController id="zFy-Vn-e8f" userLabel="Record Video" customClass="AAPLCameraViewController" customModule="AVCamManual" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="zFy-Vn-e8f" userLabel="Record Video" customClass="AAPLCameraViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Oj9-a9-JTG"/>
                         <viewControllerLayoutGuide type="bottom" id="i3h-nQ-SAp"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="9Za-05-zwY" customClass="CaptureVideoPreviewView" customModule="AVCamManual" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="9Za-05-zwY" customClass="CaptureVideoPreviewView" customModule="IsItSnappy" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>

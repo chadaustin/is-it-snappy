@@ -65,7 +65,7 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // TODO: reuse cells?
-        tableView.dequeueReusableCell(withIdentifier: "identifier")
+        //tableView.dequeueReusableCell(withIdentifier: "identifier")
 
         let model = groups[indexPath.section].videos[indexPath.row]
         
