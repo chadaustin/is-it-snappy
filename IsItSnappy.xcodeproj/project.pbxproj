@@ -1,0 +1,461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		63178FC91E61DD7B007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC21E61DD7B007278A0 /* AppDelegate.swift */; };
+		63178FCA1E61DD7B007278A0 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC31E61DD7B007278A0 /* CameraViewController.swift */; };
+		63178FCB1E61DD7B007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */; };
+		63178FCC1E61DD7B007278A0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC51E61DD7B007278A0 /* PlayerView.swift */; };
+		63178FCD1E61DD7B007278A0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC61E61DD7B007278A0 /* RootViewController.swift */; };
+		63178FCE1E61DD7B007278A0 /* ScrubberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */; };
+		63178FCF1E61DD7B007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FC81E61DD7B007278A0 /* VideoManager.swift */; };
+		63178FD41E61DE14007278A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */; };
+		63178FD51E61DE14007278A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63178FD21E61DE14007278A0 /* Main.storyboard */; };
+		639459141E61DBC600C00F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 639459131E61DBC600C00F0E /* Assets.xcassets */; };
+		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6394591E1E61DBC600C00F0E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 639459011E61DBC500C00F0E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 639459081E61DBC500C00F0E;
+			remoteInfo = IsItSnappy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		63178FC11E61DD7A007278A0 /* IsItSnappy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IsItSnappy-Bridging-Header.h"; sourceTree = "<group>"; };
+		63178FC21E61DD7B007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = IsItSnappy/AppDelegate.swift; sourceTree = "<group>"; };
+		63178FC31E61DD7B007278A0 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = IsItSnappy/CameraViewController.swift; sourceTree = "<group>"; };
+		63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = IsItSnappy/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
+		63178FC51E61DD7B007278A0 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = IsItSnappy/PlayerView.swift; sourceTree = "<group>"; };
+		63178FC61E61DD7B007278A0 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = IsItSnappy/RootViewController.swift; sourceTree = "<group>"; };
+		63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScrubberViewController.swift; path = IsItSnappy/ScrubberViewController.swift; sourceTree = "<group>"; };
+		63178FC81E61DD7B007278A0 /* VideoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoManager.swift; path = IsItSnappy/VideoManager.swift; sourceTree = "<group>"; };
+		63178FD11E61DE14007278A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		63178FD31E61DE14007278A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		639459091E61DBC600C00F0E /* IsItSnappy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IsItSnappy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		639459131E61DBC600C00F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		639459181E61DBC600C00F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IsItSnappyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		639459211E61DBC600C00F0E /* IsItSnappyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsItSnappyTests.swift; sourceTree = "<group>"; };
+		639459231E61DBC600C00F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		639459061E61DBC500C00F0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6394591A1E61DBC600C00F0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		63178FC01E61DD65007278A0 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				63178FC21E61DD7B007278A0 /* AppDelegate.swift */,
+				63178FC31E61DD7B007278A0 /* CameraViewController.swift */,
+				63178FC41E61DD7B007278A0 /* CaptureVideoPreviewView.swift */,
+				63178FC51E61DD7B007278A0 /* PlayerView.swift */,
+				63178FC61E61DD7B007278A0 /* RootViewController.swift */,
+				63178FC71E61DD7B007278A0 /* ScrubberViewController.swift */,
+				63178FC81E61DD7B007278A0 /* VideoManager.swift */,
+				63178FC11E61DD7A007278A0 /* IsItSnappy-Bridging-Header.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		639459001E61DBC500C00F0E = {
+			isa = PBXGroup;
+			children = (
+				63178FC01E61DD65007278A0 /* src */,
+				6394590B1E61DBC600C00F0E /* extra */,
+				639459201E61DBC600C00F0E /* tests */,
+				6394590A1E61DBC600C00F0E /* products */,
+			);
+			sourceTree = "<group>";
+		};
+		6394590A1E61DBC600C00F0E /* products */ = {
+			isa = PBXGroup;
+			children = (
+				639459091E61DBC600C00F0E /* IsItSnappy.app */,
+				6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */,
+			);
+			name = products;
+			sourceTree = "<group>";
+		};
+		6394590B1E61DBC600C00F0E /* extra */ = {
+			isa = PBXGroup;
+			children = (
+				63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */,
+				63178FD21E61DE14007278A0 /* Main.storyboard */,
+				639459131E61DBC600C00F0E /* Assets.xcassets */,
+				639459181E61DBC600C00F0E /* Info.plist */,
+			);
+			name = extra;
+			path = IsItSnappy;
+			sourceTree = "<group>";
+		};
+		639459201E61DBC600C00F0E /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				639459211E61DBC600C00F0E /* IsItSnappyTests.swift */,
+				639459231E61DBC600C00F0E /* Info.plist */,
+			);
+			name = tests;
+			path = IsItSnappyTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		639459081E61DBC500C00F0E /* IsItSnappy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 639459261E61DBC600C00F0E /* Build configuration list for PBXNativeTarget "IsItSnappy" */;
+			buildPhases = (
+				639459051E61DBC500C00F0E /* Sources */,
+				639459061E61DBC500C00F0E /* Frameworks */,
+				639459071E61DBC500C00F0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IsItSnappy;
+			productName = IsItSnappy;
+			productReference = 639459091E61DBC600C00F0E /* IsItSnappy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6394591C1E61DBC600C00F0E /* IsItSnappyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 639459291E61DBC600C00F0E /* Build configuration list for PBXNativeTarget "IsItSnappyTests" */;
+			buildPhases = (
+				639459191E61DBC600C00F0E /* Sources */,
+				6394591A1E61DBC600C00F0E /* Frameworks */,
+				6394591B1E61DBC600C00F0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6394591F1E61DBC600C00F0E /* PBXTargetDependency */,
+			);
+			name = IsItSnappyTests;
+			productName = IsItSnappyTests;
+			productReference = 6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		639459011E61DBC500C00F0E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Chad Austin";
+				TargetAttributes = {
+					639459081E61DBC500C00F0E = {
+						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
+					};
+					6394591C1E61DBC600C00F0E = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 639459081E61DBC500C00F0E;
+					};
+				};
+			};
+			buildConfigurationList = 639459041E61DBC500C00F0E /* Build configuration list for PBXProject "IsItSnappy" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 639459001E61DBC500C00F0E;
+			productRefGroup = 6394590A1E61DBC600C00F0E /* products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				639459081E61DBC500C00F0E /* IsItSnappy */,
+				6394591C1E61DBC600C00F0E /* IsItSnappyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		639459071E61DBC500C00F0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63178FD51E61DE14007278A0 /* Main.storyboard in Resources */,
+				639459141E61DBC600C00F0E /* Assets.xcassets in Resources */,
+				63178FD41E61DE14007278A0 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6394591B1E61DBC600C00F0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		639459051E61DBC500C00F0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63178FCD1E61DD7B007278A0 /* RootViewController.swift in Sources */,
+				63178FC91E61DD7B007278A0 /* AppDelegate.swift in Sources */,
+				63178FCA1E61DD7B007278A0 /* CameraViewController.swift in Sources */,
+				63178FCF1E61DD7B007278A0 /* VideoManager.swift in Sources */,
+				63178FCB1E61DD7B007278A0 /* CaptureVideoPreviewView.swift in Sources */,
+				63178FCE1E61DD7B007278A0 /* ScrubberViewController.swift in Sources */,
+				63178FCC1E61DD7B007278A0 /* PlayerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		639459191E61DBC600C00F0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6394591F1E61DBC600C00F0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 639459081E61DBC500C00F0E /* IsItSnappy */;
+			targetProxy = 6394591E1E61DBC600C00F0E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		63178FD01E61DE14007278A0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				63178FD11E61DE14007278A0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		63178FD21E61DE14007278A0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				63178FD31E61DE14007278A0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		639459241E61DBC600C00F0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		639459251E61DBC600C00F0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		639459271E61DBC600C00F0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = IsItSnappy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IsItSnappy-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		639459281E61DBC600C00F0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = IsItSnappy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IsItSnappy-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		6394592A1E61DBC600C00F0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = IsItSnappyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IsItSnappy.app/IsItSnappy";
+			};
+			name = Debug;
+		};
+		6394592B1E61DBC600C00F0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = IsItSnappyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IsItSnappy.app/IsItSnappy";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		639459041E61DBC500C00F0E /* Build configuration list for PBXProject "IsItSnappy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				639459241E61DBC600C00F0E /* Debug */,
+				639459251E61DBC600C00F0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		639459261E61DBC600C00F0E /* Build configuration list for PBXNativeTarget "IsItSnappy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				639459271E61DBC600C00F0E /* Debug */,
+				639459281E61DBC600C00F0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		639459291E61DBC600C00F0E /* Build configuration list for PBXNativeTarget "IsItSnappyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6394592A1E61DBC600C00F0E /* Debug */,
+				6394592B1E61DBC600C00F0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 639459011E61DBC500C00F0E /* Project object */;
+}
