@@ -75,6 +75,6 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Header"
+        return "Captures for a day 2"
     }
 }

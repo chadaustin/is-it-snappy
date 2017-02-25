@@ -31,5 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Let the device power down the accelerometer if not used elsewhere while backgrounded.
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        
+        Swift.print("going into background")
     }
 }
