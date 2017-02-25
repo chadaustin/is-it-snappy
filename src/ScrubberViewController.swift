@@ -89,7 +89,7 @@ class ScrubberViewController: UIViewController {
             gestureStartTime = player.currentTime()
         }
         
-        var x = gestureRecognizer.translation(in: view).x
+        var x = -gestureRecognizer.translation(in: view).x
         x /= 200
         
         let minimum = kCMTimeZero

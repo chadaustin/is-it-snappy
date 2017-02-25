@@ -35,8 +35,8 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     let videoManager = VideoManager.shared
     
-    var videos: [VideoModel] {
-        return videoManager.videos
+    var groups: [VideoManager.VideoGroup] {
+        return videoManager.groupedVideos
     }
 
     override func viewDidLoad() {
@@ -50,31 +50,47 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.tableView.reloadData()
         }
     }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let action = UITableViewRowAction(style: .destructive, title: "Edit") { action, indexPath in
+            // push the edit dialog
+        }
+        return [action]
+    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let model = self.videos[indexPath.row]
+        let model = self.groups[indexPath.section].videos[indexPath.row]
         present(ScrubberViewController(model: model), animated: true, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // TODO: reuse cells?
         tableView.dequeueReusableCell(withIdentifier: "identifier")
 
-        let model = self.videos[indexPath.row]
+        let model = groups[indexPath.section].videos[indexPath.row]
+        
+        let df = DateFormatter()
+        df.dateStyle = .none
+        df.timeStyle = .short
 
-        let newCell = UITableViewCell()
-        newCell.textLabel?.text = "\(model.asset.creationDate!)"
+        let newCell = UITableViewCell(style: .value1, reuseIdentifier: nil)
+        newCell.textLabel?.text = "--"
+        newCell.detailTextLabel?.text = "\(df.string(from: model.asset.creationDate!))"
         return newCell
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return groups.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return videos.count
+        return groups[section].videos.count
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Captures for a day 2"
+        let df = DateFormatter()
+        df.dateStyle = .short
+        df.timeStyle = .none
+        return "\(df.string(from: groups[section].date))"
     }
 }

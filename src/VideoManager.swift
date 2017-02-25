@@ -1,21 +1,89 @@
 import Photos
 
 // TODO: switch to a uuid / local identifier
-let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"]! as! String
+//let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"]! as! String
+
+// testing for now
+let appName = "Is It Snappy"
 
 typealias Token = Int
 
-class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
+final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     static var shared = VideoManager()
     
-    var observers: [Token: () -> Void] = [:]
-    var currentToken = 0
-    var videos: [VideoModel] = [] {
+    private var observers: [Token: () -> Void] = [:]
+    private var currentToken = 0
+    
+    private(set) var allVideos: [VideoModel] = [] {
         didSet {
+            recalculateGroups()
             for observer in observers.values {
                 observer()
             }
         }
+    }
+    
+    struct VideoGroup {
+        var date: Date
+        var videos: [VideoModel]
+    }
+    
+    private(set) var groupedVideos: [VideoGroup] = []
+    
+    private func recalculateGroups() {
+        let allVideos = self.allVideos.sorted { lhs, rhs in
+            switch (lhs.asset.creationDate, rhs.asset.creationDate) {
+            case (.none, .none): return false
+            case (.none, .some): return true
+            case (.some, .none): return false
+            case (.some(let dateL), .some(let dateR)):
+                switch dateL.compare(dateR) {
+                case .orderedAscending: return false
+                case .orderedSame: return false
+                case .orderedDescending: return true
+                }
+            }
+        }
+        
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        groupedVideos = []
+
+        var currentGroup: VideoGroup?
+        
+        func onSameDay(_ lhs: Date, _ rhs: Date) -> Bool {
+            // TODO: calculate day with local timezone
+            let componentsL = calendar.dateComponents([.year, .day], from: lhs)
+            let componentsR = calendar.dateComponents([.year, .day], from: rhs)
+            let yearL = componentsL.year!
+            let dayL = componentsL.day!
+            let yearR = componentsR.year!
+            let dayR = componentsR.day!
+            Swift.print("\(yearL),\(dayL) == \(yearR),\(dayR)")
+            return yearL == yearR && dayL == dayR
+        }
+        
+        func flush() {
+            if let cg = currentGroup {
+                groupedVideos.append(cg)
+            }
+            currentGroup = nil
+        }
+        
+        for video in allVideos {
+            guard let creationDate = video.asset.creationDate else {
+                continue
+            }
+            if let cg = currentGroup,
+                onSameDay(cg.date, creationDate) {
+                currentGroup?.videos.append(video)
+            } else {
+                flush()
+                currentGroup = VideoGroup(date: creationDate, videos: [video])
+            }
+        }
+        
+        flush()
     }
     
     override init() {
@@ -23,7 +91,7 @@ class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
         PHPhotoLibrary.shared().register(self)
         
         VideoManager.getExistingVideos { videos in
-            self.videos = videos
+            self.allVideos = videos
         }
     }
     
@@ -47,7 +115,7 @@ class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
         // TODO: implement state machine -- if in the middle of a request, kick off a new one when this one finishes
         // or: ignore result from old one
         VideoManager.getExistingVideos { videos in
-            self.videos = videos
+            self.allVideos = videos
         }
     }
 
