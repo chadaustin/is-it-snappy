@@ -45,9 +45,7 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Captured videos are stored in the photo library.</string>
-        <key>NSCameraUsageDescription</key>
-        <string>For capturing high-frame videos.</string>
-        <key>NSMicrophoneUsageDescription</key>
-        <string>TODO: remove this</string>
+	<key>NSCameraUsageDescription</key>
+	<string>For capturing high-frame videos.</string>
 </dict>
 </plist>

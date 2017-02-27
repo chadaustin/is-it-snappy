@@ -141,7 +141,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
     var videoDeviceInput: AVCaptureDeviceInput!
     var videoDevice: AVCaptureDevice!
     var movieFileOutput: AVCaptureMovieFileOutput?
-    var stillImageOutput: AVCaptureStillImageOutput!
 
     // Utilities.
     var setupResult: AVCamManualSetupResult!
@@ -248,21 +247,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
                 self.setupResult = .sessionConfigurationFailed
             }
 
-            let audioDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)
-            var audioDeviceInput: AVCaptureDeviceInput?
-            do {
-                audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
-            }
-            catch let error {
-                NSLog("Could not create audio device input: \(error)")
-            }
-
-            if self.session.canAddInput(audioDeviceInput) {
-                self.session.addInput(audioDeviceInput)
-            } else {
-                NSLog("Could not add audio device input to the session")
-            }
-
             let movieFileOutput = AVCaptureMovieFileOutput()
             if self.session.canAddOutput(movieFileOutput) {
                 self.session.addOutput(movieFileOutput)
@@ -274,17 +258,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
             }
             else {
                 NSLog("Could not add movie file output to the session")
-                self.setupResult = .sessionConfigurationFailed
-            }
-
-            let stillImageOutput = AVCaptureStillImageOutput()
-            if self.session.canAddOutput(stillImageOutput) {
-                self.session.addOutput(stillImageOutput)
-                self.stillImageOutput = stillImageOutput
-                self.stillImageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecJPEG ]
-                self.stillImageOutput.isHighResolutionStillImageOutputEnabled = true
-            } else {
-                NSLog("Could not add still image output to the session")
                 self.setupResult = .sessionConfigurationFailed
             }
 
