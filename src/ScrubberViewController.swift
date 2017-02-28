@@ -89,6 +89,12 @@ class ScrubberViewController: UIViewController {
         view.addGestureRecognizer(gestureRecognizer)
         
         gestureRecognizer.addTarget(self, action: #selector(handleGesture))
+
+        setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     var gestureStartTime: CMTime = kCMTimeZero
@@ -107,8 +113,12 @@ class ScrubberViewController: UIViewController {
             gestureStartTime = player.currentTime()
         }
 
-        func applyCurve(_ x: Double) -> Double {
-            return x / 200
+        func applyCurve(_ offset: Double) -> Double {
+            // at offset P, scrub velocity V in seconds/point
+            let P = 10.0
+            let V = 0.002
+            let k = V / (2 * P)
+            return (offset < 0 ? -1 : 1) * k * offset * offset
         }
 
         var x = Double(-gestureRecognizer.translation(in: view).x)
