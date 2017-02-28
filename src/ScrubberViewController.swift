@@ -2,6 +2,16 @@ import UIKit
 import Photos
 
 class ScrubberViewController: UIViewController {
+    enum State {
+        case loading
+        case failed
+        case idle
+        case seeking(to: CMTime)
+        case seekingWithPendingSeek(to: CMTime)
+    }
+
+    var state = State.loading
+
     var model: VideoModel!
     
     var playerView: PlayerView {
@@ -28,7 +38,6 @@ class ScrubberViewController: UIViewController {
                 Swift.print("URL asset \(urlAsset.url)")
                 player = .init(playerItem: AVPlayerItem(asset: sourceAsset!))
             } else if let composition = sourceAsset as? AVComposition {
-                
                 let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
                 let videoAsset = track.asset!
                
@@ -65,12 +74,13 @@ class ScrubberViewController: UIViewController {
                 let plainAsset = AVURLAsset(url: track.segments[0].sourceURL!)
                 player = .init(playerItem: AVPlayerItem(asset: plainAsset))
                 Swift.print(track.timeRange)
-                
+
             } else {
                 player = .init(playerItem: AVPlayerItem(asset: sourceAsset!))
             }
             self?.playerView.player = player
-            //player.play()
+            self?.state = .idle
+            self?.updateLabel()
         }
     }
 
@@ -82,43 +92,92 @@ class ScrubberViewController: UIViewController {
     }
     
     var gestureStartTime: CMTime = kCMTimeZero
+    var markedStartTime: CMTime = kCMTimeZero
+
+    static func formatTime(_ time: CMTime) -> String {
+        return String(format: "%.1f", time.seconds * 1000.0)
+    }
 
     func handleGesture() {
         guard let player = playerView.player else {
             return
         }
+
         if gestureRecognizer.state == .began {
             gestureStartTime = player.currentTime()
         }
-        
-        var x = -gestureRecognizer.translation(in: view).x
-        x /= 200
-        
+
+        func applyCurve(_ x: Double) -> Double {
+            return x / 200
+        }
+
+        var x = Double(-gestureRecognizer.translation(in: view).x)
+        x = applyCurve(x)
+
         let minimum = kCMTimeZero
         let maximum = player.currentItem!.duration
-        
-        let target = gestureStartTime + CMTimeMakeWithSeconds(Float64(x), maximum.timescale)
 
-        Swift.print("+ seeking to \(target)")
+        let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, maximum.timescale)))
+
+        switch state {
+        case .loading, .failed:
+            break
+        case .idle:
+            seek(to: target)
+        case .seeking(to: let time):
+            state = .seekingWithPendingSeek(to: time)
+        case .seekingWithPendingSeek(to: _):
+            state = .seekingWithPendingSeek(to: target)
+        }
+    }
+
+    func seek(to target: CMTime) {
+        guard let player = playerView.player else {
+            return
+        }
+
+        state = .seeking(to: target)
         player.seek(
             to: target,
             toleranceBefore: kCMTimeZero,
             toleranceAfter: kCMTimeZero
         ) { [weak self] finished in
-            if finished {
-                Swift.print("seek finished \(player.currentTime())")
-                let frameDuration = player.currentItem!.asset.tracks[0].minFrameDuration
-                let frameNumber = (target.value * Int64(frameDuration.timescale)) /
-                    (Int64(target.timescale) * frameDuration.value);
-                
-                self?.locationLabel.text = "frame \(frameNumber)\ntime \(target)"
-                Swift.print("frame number \(frameNumber)")
-            } else {
-                Swift.print("seek failed")
+            guard let ss = self else {
+                return
             }
+
+            precondition(finished, "seeks always succeed right?")
+
+            switch ss.state {
+            case .seeking:
+                ss.state = .idle
+            case .seekingWithPendingSeek(to: let newTarget):
+                ss.seek(to: newTarget)
+            default:
+                fatalError("Unexpected transition")
+            }
+
+            ss.updateLabel()
         }
-        print("x = \(x) out of \(view.bounds.width)")
-        print("  \(gestureRecognizer.state.rawValue)")
+    }
+
+    @IBAction
+    func handleMarkStartTime(_ sender: AnyObject?) {
+        markedStartTime = playerView.player!.currentTime()
+        updateLabel()
+    }
+
+    func updateLabel() {
+        let player = playerView.player!
+        let target = player.currentTime()
+        let offset = target - markedStartTime
+
+        // TODO: better frameDuration calculation
+        let frameDuration = player.currentItem!.asset.tracks[0].minFrameDuration
+        let frameNumber = (offset.value * Int64(frameDuration.timescale)) /
+            (Int64(offset.timescale) * frameDuration.value);
+
+        locationLabel.text = "frame \(frameNumber)\ntime \(ScrubberViewController.formatTime(offset))"
     }
     
     // TODO: AVPlayerItem.duration
