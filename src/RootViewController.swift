@@ -63,7 +63,9 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ScrubberViewController") as! ScrubberViewController
         vc.setModel(model)
-        present(vc, animated: true, completion: nil)
+        present(vc, animated: true) {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
         //present(ScrubberViewController(model: model), animated: true, completion: nil)
     }
 

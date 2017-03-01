@@ -1,7 +1,7 @@
 import UIKit
 import Photos
 
-class ScrubberViewController: UIViewController {
+class ScrubberViewController: UIViewController, UITextFieldDelegate {
     enum State {
         case loading
         case failed
@@ -17,10 +17,11 @@ class ScrubberViewController: UIViewController {
     var playerView: PlayerView {
         return view as! PlayerView
     }
-    
-    @IBOutlet weak var markInputButton: UIButton!
-    @IBOutlet weak var markOutputButton: UIButton!
-    @IBOutlet weak var locationLabel: UILabel!
+
+    @IBOutlet var captureNameField: UITextField!
+    @IBOutlet var markInputButton: UIButton!
+    @IBOutlet var markOutputButton: UIButton!
+    @IBOutlet var locationLabel: UILabel!
     
     let gestureRecognizer = UIPanGestureRecognizer()
    
@@ -87,10 +88,21 @@ class ScrubberViewController: UIViewController {
     override func viewDidLoad() {
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addGestureRecognizer(gestureRecognizer)
+
+        captureNameField.delegate = self
         
         gestureRecognizer.addTarget(self, action: #selector(handleGesture))
 
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
+    }
+
+    @IBAction func pressDone(_ sender: UIButton?) {
+        dismiss(animated: true)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
