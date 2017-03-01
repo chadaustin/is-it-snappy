@@ -113,12 +113,19 @@ class ScrubberViewController: UIViewController {
             gestureStartTime = player.currentTime()
         }
 
-        func applyCurve(_ offset: Double) -> Double {
-            // at offset P, scrub velocity V in seconds/point
-            let P = 10.0
-            let V = 0.002
-            let k = V / (2 * P)
-            return (offset < 0 ? -1 : 1) * k * offset * offset
+        func applyCurve(_ x: Double) -> Double {
+            // at offset x, scrub velocity f(x) in seconds/point
+            // iPhone = 320 points wide
+            // f(x) = k * x^2
+            // f'(x) = 2 * k * x
+            //
+            // f’(10) = 1/240
+            // 1/240 = 2 * k * 10
+            // k = (1/240)/20
+            // k = 1/4800
+
+            let k = 1 / 4800.0
+            return (x < 0 ? -1 : 1) * k * x * x
         }
 
         var x = Double(-gestureRecognizer.translation(in: view).x)
