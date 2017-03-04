@@ -288,7 +288,8 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
                     alertController.addAction(cancelAction)
                     // Provide quick access to Settings.
                     let settingsAction = UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .default) { action in
-                        UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+                        let url = URL(string: UIApplicationOpenSettingsURLString)!
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     }
                     alertController.addAction(settingsAction)
                     self.present(alertController, animated: true, completion: nil)

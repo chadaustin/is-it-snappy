@@ -13,7 +13,10 @@ class ScrubberViewController: UIViewController, UITextFieldDelegate {
     var state = State.loading
 
     var model: VideoModel!
-    
+    var videoAsset: AVAsset!
+    var playerItem: AVPlayerItem!
+    var player: AVPlayer!
+
     var playerView: PlayerView {
         return view as! PlayerView
     }
@@ -34,54 +37,70 @@ class ScrubberViewController: UIViewController, UITextFieldDelegate {
             forVideo: model.asset,
             options: options
         ) { [weak self] sourceAsset, audioMix, info in
-            let player: AVPlayer
-            if let urlAsset = sourceAsset as? AVURLAsset {
-                Swift.print("URL asset \(urlAsset.url)")
-                player = .init(playerItem: AVPlayerItem(asset: sourceAsset!))
-            } else if let composition = sourceAsset as? AVComposition {
-                let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
-                let videoAsset = track.asset!
-               
-                if let urlAsset = videoAsset as? AVURLAsset {
-                    Swift.print("URL asset: \(urlAsset.url)")
+            DispatchQueue.main.async {
+                guard let ss = self else {
+                    return
                 }
-                
-                let newComposition = AVMutableComposition()
-                let mutableTrack = newComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: track.trackID)
-                let timeRange = track.timeRange
-                //let timeRange = CMTimeRange(start: kCMTimeZero, duration: composition.duration)
-                mutableTrack.segments = [
-                    AVCompositionTrackSegment(
-                        url: track.segments[0].sourceURL!,
-                        trackID: track.trackID,
-                        sourceTimeRange: timeRange,
-                        targetTimeRange: CMTimeRange(start: timeRange.start, duration: CMTimeMultiply(timeRange.duration, 4))),
-                ]
-                mutableTrack.preferredVolume = track.preferredVolume
-                mutableTrack.preferredTransform = track.preferredTransform
-                /*
-                if !mutableTrack.validateSegments(mutableTrack.segments) {
-                    Swift.print("validateSegments failed")
-                }
- */
-                /*
-                for segment in track.segments {
-                    //segment.timeMapping = CMTimeMapping(source: segment.timeMapping.source, target: segment.timeMapping.source)
-                    mutableTrack.segments.append(segment)
-                }
-                mutableTrack.segments = track.segments
- */
-                _ = newComposition
-                let plainAsset = AVURLAsset(url: track.segments[0].sourceURL!)
-                player = .init(playerItem: AVPlayerItem(asset: plainAsset))
-                Swift.print(track.timeRange)
 
-            } else {
-                player = .init(playerItem: AVPlayerItem(asset: sourceAsset!))
+                if let urlAsset = sourceAsset as? AVURLAsset {
+                    //Swift.print("URL asset \(urlAsset.url)")
+                    ss.videoAsset = urlAsset
+                } else if let composition = sourceAsset as? AVComposition {
+                    let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
+
+                    /*
+                    let videoAsset = track.asset!
+                    if let urlAsset = videoAsset as? AVURLAsset {
+                        Swift.print("URL asset: \(urlAsset.url)")
+                    }
+                    */
+                    
+                    let newComposition = AVMutableComposition()
+                    let mutableTrack = newComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: track.trackID)
+                    let timeRange = track.timeRange
+                    //let timeRange = CMTimeRange(start: kCMTimeZero, duration: composition.duration)
+                    mutableTrack.segments = [
+                        AVCompositionTrackSegment(
+                            url: track.segments[0].sourceURL!,
+                            trackID: track.trackID,
+                            sourceTimeRange: timeRange,
+                            targetTimeRange: CMTimeRange(start: timeRange.start, duration: CMTimeMultiply(timeRange.duration, 4))),
+                    ]
+                    mutableTrack.preferredVolume = track.preferredVolume
+                    mutableTrack.preferredTransform = track.preferredTransform
+                    /*
+                    if !mutableTrack.validateSegments(mutableTrack.segments) {
+                        Swift.print("validateSegments failed")
+                    }
+     */
+                    /*
+                    for segment in track.segments {
+                        //segment.timeMapping = CMTimeMapping(source: segment.timeMapping.source, target: segment.timeMapping.source)
+                        mutableTrack.segments.append(segment)
+                    }
+                    mutableTrack.segments = track.segments
+     */
+                    _ = newComposition
+                    ss.videoAsset = AVURLAsset(
+                        url: track.segments[0].sourceURL!,
+                        options: [AVURLAssetPreferPreciseDurationAndTimingKey: "true"])
+                } else {
+                    ss.videoAsset = sourceAsset
+                }
+
+                // assert only one track?
+                let track = ss.videoAsset.tracks[0]
+                
+                Swift.print("nominalFrameRate: \(track.nominalFrameRate)")
+                Swift.print("minFrameDuration: \(track.minFrameDuration.seconds)")
+                Swift.print("minFrameRate: \(1.0 / track.minFrameDuration.seconds)")
+
+                ss.playerItem = AVPlayerItem(asset: ss.videoAsset)
+                ss.player = AVPlayer(playerItem: ss.playerItem)
+                ss.playerView.player = ss.player
+                ss.state = .idle
+                ss.updateLabel()
             }
-            self?.playerView.player = player
-            self?.state = .idle
-            self?.updateLabel()
         }
     }
 
@@ -136,17 +155,18 @@ class ScrubberViewController: UIViewController, UITextFieldDelegate {
             // k = (1/240)/20
             // k = 1/4800
 
-            let k = 1 / 4800.0
-            return (x < 0 ? -1 : 1) * k * x * x
+            let k = 1 / 48000.0
+            return (x < 0 ? -1 : 1) * k * pow(abs(x), 2.1)
         }
 
         var x = Double(-gestureRecognizer.translation(in: view).x)
+        Swift.print("before: \(x) after: \(applyCurve(x))")
         x = applyCurve(x)
 
         let minimum = kCMTimeZero
         let maximum = player.currentItem!.duration
 
-        let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, maximum.timescale)))
+        let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, 240*100)))
 
         switch state {
         case .loading, .failed:
@@ -201,19 +221,26 @@ class ScrubberViewController: UIViewController, UITextFieldDelegate {
         let target = player.currentTime()
         let offset = target - markedStartTime
 
-        // TODO: better frameDuration calculation
-        let frameDuration = player.currentItem!.asset.tracks[0].minFrameDuration
-        let frameNumber = (offset.value * Int64(frameDuration.timescale)) /
-            (Int64(offset.timescale) * frameDuration.value);
+        let track = videoAsset.tracks[0]
 
-        locationLabel.text = "frame \(frameNumber)\ntime \(ScrubberViewController.formatTime(offset))"
+        // TODO: better frameDuration calculation
+        // For a reason I don't understand, minFrameDuration is wildly inaccurate.
+        // Perhaps there's a final frame that is shorter than the nominal frame
+        // duration.
+        let frameDuration = 1.0 / Double(track.nominalFrameRate)
+        let frameNumber = Int(offset.seconds / frameDuration)
+
+        let time = Double(frameNumber) * frameDuration
+        let timeStr = String(format: "%.1f", time * 1000.0) // ScrubberViewController.formatTime(offset)
+        
+        Swift.print("offset: \(target.seconds - time)")
+
+        locationLabel.text = "frame \(frameNumber)\ntime \(timeStr)"
     }
     
     // TODO: AVPlayerItem.duration
     // TODO: step(byCount:) ??
     // TODO: seek(to: CMTime)
-    // try seek(to: CMTime, toleranceBefore: .zero, toleranceAfter: .zero, completionHandler)
-    // currentTime()
    
     // AVAsset
     //    providesPreciseDurationAndTiming

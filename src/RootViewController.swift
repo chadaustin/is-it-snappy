@@ -59,6 +59,7 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        precondition(Thread.isMainThread)
         let model = self.groups[indexPath.section].videos[indexPath.row]
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ScrubberViewController") as! ScrubberViewController
