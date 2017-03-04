@@ -15,7 +15,6 @@
 		63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */; };
 		63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDD1E61E03D007278A0 /* VideoManager.swift */; };
 		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
-		63D4DE1F1E61E08600716F26 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE1E1E61E08600716F26 /* Info.plist */; };
 		63D4DE211E61E09000716F26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE201E61E09000716F26 /* Assets.xcassets */; };
 		63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */; };
 		63D4DE271E61E10200716F26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE241E61E10200716F26 /* Main.storyboard */; };
@@ -211,7 +210,6 @@
 			files = (
 				63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */,
 				63D4DE211E61E09000716F26 /* Assets.xcassets in Resources */,
-				63D4DE1F1E61E08600716F26 /* Info.plist in Resources */,
 				63D4DE271E61E10200716F26 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
