@@ -472,13 +472,21 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
             }
 
             DispatchQueue.main.async {
-                self.cameraButton.isEnabled = isRunning && AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo).count > 1
+                let devices = AAPLCameraViewController.discoverySession.devices ?? []
+                self.cameraButton.isEnabled = isRunning && devices.count > 1
                 self.recordButton.isEnabled = isRunning
             }
         }
         else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
+    }
+
+    static var discoverySession: AVCaptureDeviceDiscoverySession {
+        return AVCaptureDeviceDiscoverySession(
+            deviceTypes: [.builtInWideAngleCamera],
+            mediaType: AVMediaTypeVideo,
+            position: .back)
     }
 
     func subjectAreaDidChange(_ notification: NSNotification) {
@@ -607,9 +615,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
                 let movieConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
                 let previewLayer = self.previewView.layer 
                 movieConnection?.videoOrientation = previewLayer.connection.videoOrientation;
-
-                // Turn OFF flash for video recording.
-                AAPLCameraViewController.setFlashMode(.off, forDevice: self.videoDevice)
 
                 // Start recording to a temporary file.
                 let outputFileName = ProcessInfo.processInfo.globallyUniqueString as NSString
@@ -958,7 +963,8 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            self.cameraButton.isEnabled = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo).count > 1
+            let devices = AAPLCameraViewController.discoverySession.devices ?? []
+            self.cameraButton.isEnabled = devices.count > 1
             self.recordButton.isEnabled = true
             self.recordButton.setTitle(NSLocalizedString("Record", comment: "Recording button record title"), for: .normal)
         }
@@ -994,23 +1000,10 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         }
     }
 
-    class func setFlashMode(_ flashMode: AVCaptureFlashMode, forDevice device: AVCaptureDevice) {
-        if device.hasFlash && device.isFlashModeSupported(flashMode) {
-            do {
-                try device.lockForConfiguration()
-                device.flashMode = flashMode
-                device.unlockForConfiguration()
-            }
-            catch let error {
-                NSLog("Could not lock device for configuration: \(error)")
-            }
-        }
-    }
-
     // MARK: Utilities
 
     static func device(withMediaType mediaType: String, preferringPosition position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let devices = AVCaptureDevice.devices(withMediaType: mediaType) as? [AVCaptureDevice] ?? []
+        let devices = AAPLCameraViewController.discoverySession.devices ?? []
         return devices.first(where: { $0.position == position }) ?? devices.first
     }
 
