@@ -97,7 +97,7 @@ extension AVCaptureDevice {
     }
 }
 
-class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
+class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
 
     @IBOutlet weak var previewView: CaptureVideoPreviewView!
     @IBOutlet weak var cameraUnavailableLabel: UILabel!
@@ -182,7 +182,7 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
 
             self.backgroundRecordingID = UIBackgroundTaskInvalid
 
-            let videoDevice = AAPLCameraViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back)!
+            let videoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back)!
 
             var videoDeviceInput: AVCaptureDeviceInput?
             do {
@@ -375,7 +375,7 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
             }
 
             DispatchQueue.main.async {
-                let devices = AAPLCameraViewController.discoverySession.devices ?? []
+                let devices = CaptureViewController.discoverySession.devices ?? []
                 self.cameraButton.isEnabled = isRunning && devices.count > 1
                 self.recordButton.isEnabled = isRunning
             }
@@ -553,7 +553,7 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
                 break;
             }
 
-            let newVideoDevice = AAPLCameraViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: preferredPosition)
+            let newVideoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: preferredPosition)
             let newVideoDeviceInput = try? AVCaptureDeviceInput(device: newVideoDevice)
 
             self.session.beginConfiguration()
@@ -762,7 +762,7 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            let devices = AAPLCameraViewController.discoverySession.devices ?? []
+            let devices = CaptureViewController.discoverySession.devices ?? []
             self.cameraButton.isEnabled = devices.count > 1
             self.recordButton.isEnabled = true
             self.recordButton.setTitle(NSLocalizedString("Record", comment: "Recording button record title"), for: .normal)
@@ -802,7 +802,7 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
     // MARK: Utilities
 
     static func device(withMediaType mediaType: String, preferringPosition position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let devices = AAPLCameraViewController.discoverySession.devices ?? []
+        let devices = CaptureViewController.discoverySession.devices ?? []
         return devices.first(where: { $0.position == position }) ?? devices.first
     }
 

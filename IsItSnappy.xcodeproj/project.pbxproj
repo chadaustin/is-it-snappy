@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD61E61E03D007278A0 /* AppDelegate.swift */; };
-		63178FDF1E61E03D007278A0 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CameraViewController.swift */; };
+		63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CaptureViewController.swift */; };
 		63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */; };
 		63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDA1E61E03D007278A0 /* PlayerView.swift */; };
 		63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDB1E61E03D007278A0 /* RootViewController.swift */; };
@@ -32,7 +32,7 @@
 
 /* Begin PBXFileReference section */
 		63178FD61E61E03D007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = src/AppDelegate.swift; sourceTree = "<group>"; };
-		63178FD71E61E03D007278A0 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = src/CameraViewController.swift; sourceTree = "<group>"; };
+		63178FD71E61E03D007278A0 /* CaptureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureViewController.swift; path = src/CaptureViewController.swift; sourceTree = "<group>"; };
 		63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = src/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
 		63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "IsItSnappy-Bridging-Header.h"; path = "src/IsItSnappy-Bridging-Header.h"; sourceTree = "<group>"; };
 		63178FDA1E61E03D007278A0 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = src/PlayerView.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				63178FD61E61E03D007278A0 /* AppDelegate.swift */,
-				63178FD71E61E03D007278A0 /* CameraViewController.swift */,
+				63178FD71E61E03D007278A0 /* CaptureViewController.swift */,
 				63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */,
 				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 				63178FDA1E61E03D007278A0 /* PlayerView.swift */,
@@ -230,7 +230,7 @@
 			files = (
 				63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */,
 				63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */,
-				63178FDF1E61E03D007278A0 /* CameraViewController.swift in Sources */,
+				63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */,
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
 				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
 				63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */,
