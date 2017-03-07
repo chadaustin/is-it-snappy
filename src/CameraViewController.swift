@@ -6,11 +6,7 @@ fileprivate struct Context {
     static var SessionRunning = 1
 
     static var FocusMode = 2
-    static var ExposureMode = 3
     static var LensPosition = 5
-    static var ExposureDuration = 6
-    static var ISO = 7
-    static var ExposureTargetOffset = 8
 }
 
 enum AVCamManualSetupResult {
@@ -18,9 +14,6 @@ enum AVCamManualSetupResult {
     case cameraNotAuthorized
     case sessionConfigurationFailed
 }
-
-fileprivate let kExposureDurationPower: Float64 = 5; // Higher numbers will give the slider more sensitivity at shorter durations
-fileprivate let kExposureMinimumDuration: Float64 = 1.0/1000; // Limit exposure duration to a useful range
 
 extension AVCaptureVideoOrientation {
     var uiInterfaceOrientation: UIInterfaceOrientation {
@@ -119,22 +112,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
     @IBOutlet weak var lensPositionNameLabel: UILabel!
     @IBOutlet weak var lensPositionValueLabel: UILabel!
 
-    var exposureModes: [AVCaptureExposureMode]!
-    @IBOutlet weak var manualHUDExposureView: UIView!
-    @IBOutlet weak var exposureModeControl: UISegmentedControl!
-    @IBOutlet weak var exposureDurationSlider: UISlider!
-    @IBOutlet weak var exposureDurationNameLabel: UILabel!
-    @IBOutlet weak var exposureDurationValueLabel: UILabel!
-    @IBOutlet weak var ISOSlider: UISlider!
-    @IBOutlet weak var ISONameLabel: UILabel!
-    @IBOutlet weak var ISOValueLabel: UILabel!
-    @IBOutlet weak var exposureTargetBiasSlider: UISlider!
-    @IBOutlet weak var exposureTargetBiasNameLabel: UILabel!
-    @IBOutlet weak var exposureTargetBiasValueLabel: UILabel!
-    @IBOutlet weak var exposureTargetOffsetSlider: UISlider!
-    @IBOutlet weak var exposureTargetOffsetNameLabel: UILabel!
-    @IBOutlet weak var exposureTargetOffsetValueLabel: UILabel!
-
     // Session management.
     var sessionQueue: DispatchQueue!
     var session: AVCaptureSession!
@@ -155,7 +132,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         self.recordButton.isEnabled = false
 
         self.manualHUDFocusView.isHidden = true
-        self.manualHUDExposureView.isHidden = true
 
         // Create the AVCaptureSession.
         self.session = AVCaptureSession()
@@ -352,10 +328,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
 
         self.addObserver(self, forKeyPath: "videoDevice.focusMode", options: [.old, .new], context: &Context.FocusMode)
         self.addObserver(self, forKeyPath: "videoDevice.lensPosition", options: .new, context: &Context.LensPosition)
-        self.addObserver(self, forKeyPath: "videoDevice.exposureMode", options: [.old, .new], context: &Context.ExposureMode)
-        self.addObserver(self, forKeyPath: "videoDevice.exposureDuration", options: .new, context: &Context.ExposureDuration)
-        self.addObserver(self, forKeyPath: "videoDevice.ISO", options: .new, context: &Context.ISO)
-        self.addObserver(self, forKeyPath: "videoDevice.exposureTargetOffset", options: .new, context: &Context.ExposureTargetOffset)
 
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object:self.videoDevice)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: NSNotification.Name.AVCaptureSessionRuntimeError, object:self.session)
@@ -374,14 +346,9 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
 
         removeObserver(self, forKeyPath: "videoDevice.focusMode", context: &Context.FocusMode)
         removeObserver(self, forKeyPath: "videoDevice.lensPosition", context: &Context.LensPosition)
-        removeObserver(self, forKeyPath: "videoDevice.exposureMode", context: &Context.ExposureMode)
-        removeObserver(self, forKeyPath: "videoDevice.exposureDuration", context: &Context.ExposureDuration)
-        removeObserver(self, forKeyPath: "videoDevice.ISO", context: &Context.ISO)
-        removeObserver(self, forKeyPath: "videoDevice.exposureTargetOffset", context: &Context.ExposureTargetOffset)
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        let oldValue = change?[.oldKey]
         let newValue = change?[.newKey]
 
         if ( context == &Context.FocusMode ) {
@@ -399,70 +366,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
                     self.lensPositionSlider.value = newLensPosition;
                 }
                 self.lensPositionValueLabel.text = String(format: "%.1f", newLensPosition)
-            }
-        }
-        else if ( context == &Context.ExposureMode ) {
-            if !(newValue is NSNull) {
-                let newMode = enumFromAny(AVCaptureExposureMode.init, newValue)!
-
-                self.exposureModeControl.selectedSegmentIndex = self.exposureModes.index(of: newMode)!
-                self.exposureDurationSlider.isEnabled = ( newMode == .custom )
-                self.ISOSlider.isEnabled = ( newMode == .custom )
-
-                if let oldMode = enumFromAny(AVCaptureExposureMode.init, oldValue) {
-                    /*
-                     It’s important to understand the relationship between exposureDuration and the minimum frame rate as represented by activeVideoMaxFrameDuration.
-                     In manual mode, if exposureDuration is set to a value that's greater than activeVideoMaxFrameDuration, then activeVideoMaxFrameDuration will
-                     increase to match it, thus lowering the minimum frame rate. If exposureMode is then changed to automatic mode, the minimum frame rate will
-                     remain lower than its default. If this is not the desired behavior, the min and max frameRates can be reset to their default values for the
-                     current activeFormat by setting activeVideoMaxFrameDuration and activeVideoMinFrameDuration to kCMTimeInvalid.
-                     */
-                    if ( oldMode != newMode && oldMode == .custom ) {
-                        if let _ = try? self.videoDevice.lockForConfiguration() {
-                            self.videoDevice.activeVideoMaxFrameDuration = kCMTimeInvalid
-                            self.videoDevice.activeVideoMinFrameDuration = kCMTimeInvalid
-                            self.videoDevice.unlockForConfiguration()
-                        }
-                    }
-                }
-            }
-        }
-        else if ( context == &Context.ExposureDuration ) {
-            if !(newValue is NSNull) {
-                let newDurationSeconds = CMTimeGetSeconds(newValue as! CMTime)
-                if self.videoDevice.exposureMode != .custom {
-                    let minDurationSeconds = max( CMTimeGetSeconds( self.videoDevice.activeFormat.minExposureDuration ), kExposureMinimumDuration )
-                    let maxDurationSeconds = CMTimeGetSeconds( self.videoDevice.activeFormat.maxExposureDuration )
-                    // Map from duration to non-linear UI range 0-1
-                    let p = ( newDurationSeconds - minDurationSeconds ) / ( maxDurationSeconds - minDurationSeconds ) // Scale to 0-1
-                    self.exposureDurationSlider.value = Float(pow( p, 1 / kExposureDurationPower )) // Apply inverse power
-
-                    if newDurationSeconds < 1 {
-                        let digits = max( 0, 2 + floor( log10( newDurationSeconds ) ) );
-                        self.exposureDurationValueLabel.text = String(format: "1/%.*f", digits, 1/newDurationSeconds)
-                    }
-                    else {
-                        self.exposureDurationValueLabel.text = String(format: "%.2f", newDurationSeconds)
-                    }
-                }
-            }
-        }
-        else if ( context == &Context.ISO ) {
-            if !(newValue is NSNull) {
-                let newISO = (newValue as! NSNumber).floatValue
-
-                if self.videoDevice.exposureMode != .custom {
-                    self.ISOSlider.value = newISO
-                }
-                self.ISOValueLabel.text = String(format: "%i", Int(newISO))
-            }
-        }
-        else if ( context == &Context.ExposureTargetOffset ) {
-            if !(newValue is NSNull) {
-                let newExposureTargetOffset = (newValue as! NSNumber).floatValue
-
-                self.exposureTargetOffsetSlider.value = newExposureTargetOffset
-                self.exposureTargetOffsetValueLabel.text = String(format: "%.1f", newExposureTargetOffset)
             }
         }
         else if ( context == &Context.SessionRunning ) {
@@ -699,7 +602,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         let control = sender as! UISegmentedControl
 
         self.manualHUDFocusView.isHidden = ( control.selectedSegmentIndex != 1 )
-        self.manualHUDExposureView.isHidden = ( control.selectedSegmentIndex != 2 )
     }
 
     @IBAction
@@ -723,59 +625,11 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
     }
 
     @IBAction
-    func changeExposureMode(_ sender: AnyObject?) {
-        let control = sender as! UISegmentedControl
-        let mode = self.exposureModes[control.selectedSegmentIndex]
-
-        do {
-            try self.videoDevice.lockForConfiguration()
-            if self.videoDevice.isExposureModeSupported(mode) {
-                self.videoDevice.exposureMode = mode;
-            } else {
-                NSLog("Exposure mode \(stringFromExposureMode(mode)) is not supported. Exposure mode is \(stringFromExposureMode(videoDevice.exposureMode)).")
-            }
-            videoDevice.unlockForConfiguration()
-        }
-        catch let error {
-            NSLog("Could not lock device for configuration: \(error)")
-        }
-    }
-
-    @IBAction
     func changeLensPosition(_ sender: AnyObject?) {
         let control = sender as! UISlider
         do {
             try videoDevice.lockForConfiguration()
             videoDevice.setFocusModeLockedWithLensPosition(control.value, completionHandler: nil)
-            videoDevice.unlockForConfiguration()
-        }
-        catch let error {
-            NSLog("Could not lock device for configuration: \(error)")
-        }
-    }
-
-    @IBAction
-    func changeExposureDuration(_ sender: AnyObject?) {
-        let control = sender as! UISlider
-
-        let p = pow( Double(control.value), kExposureDurationPower ); // Apply power function to expand slider's low-end range
-        let minDurationSeconds = max( CMTimeGetSeconds( self.videoDevice.activeFormat.minExposureDuration ), kExposureMinimumDuration );
-        let maxDurationSeconds = CMTimeGetSeconds( self.videoDevice.activeFormat.maxExposureDuration );
-        let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
-
-        if ( self.videoDevice.exposureMode == .custom ) {
-            if ( newDurationSeconds < 1 ) {
-                let digits = max( 0, 2 + floor( log10( newDurationSeconds ) ) );
-                self.exposureDurationValueLabel.text = String(format: "1/%.*f", digits, 1/newDurationSeconds)
-            }
-            else {
-                self.exposureDurationValueLabel.text = String(format: "%.2f", newDurationSeconds)
-            }
-        }
-
-        do {
-            try videoDevice.lockForConfiguration()
-            videoDevice.setExposureModeCustomWithDuration(CMTimeMakeWithSeconds(newDurationSeconds, 1000*1000*1000), iso: AVCaptureISOCurrent, completionHandler: nil)
             videoDevice.unlockForConfiguration()
         }
         catch let error {
@@ -791,21 +645,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
             try self.videoDevice.lockForConfiguration()
             videoDevice.setExposureModeCustomWithDuration(AVCaptureExposureDurationCurrent, iso: control.value, completionHandler: nil)
             videoDevice.unlockForConfiguration()
-        }
-        catch let error {
-            NSLog("Could not lock device for configuration: \(error)")
-        }
-    }
-
-    @IBAction
-    func changeExposureTargetBias(_ sender: AnyObject?) {
-        let control = sender as! UISlider
-
-        do {
-            try videoDevice.lockForConfiguration()
-            videoDevice.setExposureTargetBias(control.value, completionHandler: nil)
-            videoDevice.unlockForConfiguration()
-            self.exposureTargetBiasValueLabel.text = String(format: "%.1f", control.value)
         }
         catch let error {
             NSLog("Could not lock device for configuration: \(error)")
@@ -841,34 +680,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         self.lensPositionSlider.minimumValue = 0.0
         self.lensPositionSlider.maximumValue = 1.0
         self.lensPositionSlider.isEnabled = self.videoDevice?.focusMode == .some(.locked)
-
-        // Manual exposure controls
-        self.exposureModes = [.continuousAutoExposure, .locked, .custom]
-
-        self.exposureModeControl.isEnabled = self.videoDevice != nil
-        if let videoDevice = self.videoDevice {
-            self.exposureModeControl.selectedSegmentIndex = self.exposureModes.index(of: videoDevice.exposureMode)!
-            for mode in self.exposureModes {
-                self.exposureModeControl.setEnabled(videoDevice.isExposureModeSupported(mode), forSegmentAt: self.exposureModes.index(of: mode)!)
-            }
-        }
-
-        // Use 0-1 as the slider range and do a non-linear mapping from the slider value to the actual device exposure duration
-        self.exposureDurationSlider.minimumValue = 0
-        self.exposureDurationSlider.maximumValue = 1
-        self.exposureDurationSlider.isEnabled = self.videoDevice?.exposureMode == .some(.custom)
-
-        self.ISOSlider.minimumValue = self.videoDevice?.activeFormat.minISO ?? 0
-        self.ISOSlider.maximumValue = self.videoDevice?.activeFormat.maxISO ?? 1
-        self.ISOSlider.isEnabled = self.videoDevice?.exposureMode == .some(.custom)
-
-        self.exposureTargetBiasSlider.minimumValue = self.videoDevice?.minExposureTargetBias ?? 0
-        self.exposureTargetBiasSlider.maximumValue = self.videoDevice?.maxExposureTargetBias ?? 1
-        self.exposureTargetBiasSlider.isEnabled = self.videoDevice != nil
-
-        self.exposureTargetOffsetSlider.minimumValue = self.videoDevice?.minExposureTargetBias ?? 0
-        self.exposureTargetOffsetSlider.maximumValue = self.videoDevice?.maxExposureTargetBias ?? 1
-        self.exposureTargetOffsetSlider.isEnabled = false
     }
 
     func setSlider(_ slider: UISlider, highlightColor color: UIColor) {
@@ -877,18 +688,6 @@ class AAPLCameraViewController: UIViewController, AVCaptureFileOutputRecordingDe
         if ( slider == self.lensPositionSlider ) {
             self.lensPositionNameLabel.textColor = slider.tintColor
             self.lensPositionValueLabel.textColor = slider.tintColor
-        }
-        else if ( slider == self.exposureDurationSlider ) {
-            self.exposureDurationNameLabel.textColor = slider.tintColor
-            self.exposureDurationValueLabel.textColor = slider.tintColor
-        }
-        else if ( slider == self.ISOSlider ) {
-            self.ISONameLabel.textColor = slider.tintColor
-            self.ISOValueLabel.textColor = slider.tintColor
-        }
-        else if ( slider == self.exposureTargetBiasSlider ) {
-            self.exposureTargetBiasNameLabel.textColor = slider.tintColor
-            self.exposureTargetBiasValueLabel.textColor = slider.tintColor
         }
     }
 
