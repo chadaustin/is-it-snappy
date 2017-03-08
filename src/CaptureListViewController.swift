@@ -20,14 +20,6 @@ class MyTableViewCell: UITableViewCell {
     }
 }
 
-class VideoModel {
-    let asset: PHAsset
-
-    init(asset: PHAsset) {
-        self.asset = asset
-    }
-}
-
 class CaptureListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var stackView: UIStackView!
@@ -49,6 +41,11 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         _ = videoManager.register {
             self.tableView.reloadData()
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -81,7 +78,13 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         df.timeStyle = .short
 
         let newCell = UITableViewCell(style: .value1, reuseIdentifier: nil)
-        newCell.textLabel?.text = "--"
+        
+        let mark = MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier)
+        let markName = mark?.name
+        //let markInput = mark?.input
+        //let markOutput = mark?.output
+        
+        newCell.textLabel?.text = markName ?? "--"
         newCell.detailTextLabel?.text = "\(df.string(from: model.asset.creationDate!))"
         return newCell
     }

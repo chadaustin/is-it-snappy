@@ -8,6 +8,14 @@ let appName = "Is It Snappy"
 
 typealias Token = Int
 
+class VideoModel {
+    let asset: PHAsset
+    
+    init(asset: PHAsset) {
+        self.asset = asset
+    }
+}
+
 final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     static var shared = VideoManager()
     

@@ -1,9 +1,9 @@
 import Foundation
 
 struct Mark {
-    var name: String
-    var input: Double
-    var output: Double
+    var name: String?
+    var input: Double?
+    var output: Double?
 
     func encode() -> Any {
         var object: [String: Any] = [:]
@@ -14,19 +14,14 @@ struct Mark {
     }
 
     static func decode(_ record: Any) -> Mark? {
-        if let object = record as? [String: Any] {
-            if
-                let name = object["name"] as? String,
-                let input = object["input"] as? Double,
-                let output = object["output"] as? Double
-            {
-                return Mark(name: name, input: input, output: output)
-            } else {
-                return nil
-            }
-        } else {
+        guard let object = record as? [String: Any] else {
             return nil
         }
+
+        let name = object["name"] as? String
+        let input = object["input"] as? Double
+        let output = object["output"] as? Double
+        return Mark(name: name, input: input, output: output)
     }
 }
 
@@ -37,12 +32,26 @@ class MarkDatabase {
         marks = MarkDatabase.load()
     }
 
-    func set(url: String, mark: Mark) {
-        marks[url] = mark
+    func set(localIdentifier: String, mark: Mark) {
+        marks[localIdentifier] = mark
+        save()
+    }
+    
+    func setName(localIdentifier: String, name: String) {
+        if var mark = marks[localIdentifier] {
+            mark.name = name
+            marks[localIdentifier] = mark
+        } else {
+            marks[localIdentifier] = Mark(
+                name: name,
+                input: nil,
+                output: nil)
+        }
+        save()
     }
 
-    func get(url: String) -> Mark? {
-        return marks[url]
+    func get(localIdentifier: String) -> Mark? {
+        return marks[localIdentifier]
     }
 
     func save() {
@@ -63,30 +72,29 @@ class MarkDatabase {
     }
 
     static func load() -> [String: Mark] {
-
-        if let data = FileManager.default.contents(atPath: MarkDatabase.location) {
-            do {
-                guard let root = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                    NSLog("Database JSON root is not an object")
-                    return [:]
-                }
-                guard let marks = root["marks"] as? [String: Any] else {
-                    NSLog("No marks key in root or marks not an array")
-                    return [:]
-                }
-                var result: [String: Mark] = [:]
-                for (key, value) in marks {
-                    if let mark = Mark.decode(value) {
-                        result[key] = mark
-                    }
-                }
-                return result
-            }
-            catch let error {
-                NSLog("Error parsing database JSON: %s", "\(error)")
+        guard let data = FileManager.default.contents(atPath: MarkDatabase.location) else {
+            return [:]
+        }
+        
+        do {
+            guard let root = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                NSLog("Database JSON root is not an object")
                 return [:]
             }
-        } else {
+            guard let marks = root["marks"] as? [String: Any] else {
+                NSLog("No marks key in root or marks not an array")
+                return [:]
+            }
+            var result: [String: Mark] = [:]
+            for (key, value) in marks {
+                if let mark = Mark.decode(value) {
+                    result[key] = mark
+                }
+            }
+            return result
+        }
+        catch let error {
+            NSLog("Error parsing database JSON: %s", "\(error)")
             return [:]
         }
     }

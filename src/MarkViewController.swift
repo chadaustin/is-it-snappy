@@ -101,14 +101,43 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
         gestureRecognizer.addTarget(self, action: #selector(handleGesture))
 
         setNeedsStatusBarAppearanceUpdate()
+        
+        captureNameField.text = computedNameLabel()
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        textField.text = getMark()?.name
+        return true
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        if textField.isFirstResponder {
+            textField.resignFirstResponder()
+
+            MarkDatabase.shared.setName(localIdentifier: model.asset.localIdentifier, name: textField.text ?? "")
+            textField.text = computedNameLabel()
+        }
         return false
     }
+   
+    func computedNameLabel() -> String {
+        let mark = getMark()
+        let extra: String
+        if let input = mark?.input, let output = mark?.output {
+            extra = String(format: "%.1f", output - input)
+        } else {
+            extra = ""
+        }
+        return "\(mark?.name ?? "[name]") -- \(extra)"
+    }
+    
+    func getMark() -> Mark? {
+        return MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier)
+    }
 
-    @IBAction func pressDone(_ sender: UIButton?) {
+    @IBAction
+    func pressDone(_ sender: UIButton?) {
+        dismissKeyboard()
         dismiss(animated: true)
     }
 
@@ -122,11 +151,17 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     static func formatTime(_ time: CMTime) -> String {
         return String(format: "%.1f", time.seconds * 1000.0)
     }
+    
+    func dismissKeyboard() {
+        _ = textFieldShouldReturn(captureNameField)
+    }
 
     func handleGesture() {
         guard let player = playerView.player else {
             return
         }
+
+        dismissKeyboard()
 
         if gestureRecognizer.state == .began {
             gestureStartTime = player.currentTime()
