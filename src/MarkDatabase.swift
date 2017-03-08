@@ -49,7 +49,33 @@ class MarkDatabase {
         }
         save()
     }
-
+    
+    func setInputTime(localIdentifier: String, input: Double) {
+        if var mark = marks[localIdentifier] {
+            mark.input = input
+            marks[localIdentifier] = mark
+        } else {
+            marks[localIdentifier] = Mark(
+                name: nil,
+                input: input,
+                output: nil)
+        }
+        save()
+    }
+    
+    func setOutputTime(localIdentifier: String, output: Double) {
+        if var mark = marks[localIdentifier] {
+            mark.output = output
+            marks[localIdentifier] = mark
+        } else {
+            marks[localIdentifier] = Mark(
+                name: nil,
+                input: nil,
+                output: output)
+        }
+        save()
+    }
+    
     func get(localIdentifier: String) -> Mark? {
         return marks[localIdentifier]
     }

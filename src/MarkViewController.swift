@@ -102,7 +102,7 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
 
         setNeedsStatusBarAppearanceUpdate()
         
-        captureNameField.text = computedNameLabel()
+        updateCaptureName()
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
@@ -113,24 +113,23 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.isFirstResponder {
             textField.resignFirstResponder()
-
             MarkDatabase.shared.setName(localIdentifier: model.asset.localIdentifier, name: textField.text ?? "")
-            textField.text = computedNameLabel()
         }
+        updateCaptureName()
         return false
     }
-   
-    func computedNameLabel() -> String {
+    
+    func updateCaptureName() {
         let mark = getMark()
         let extra: String
         if let input = mark?.input, let output = mark?.output {
-            extra = String(format: "%.1f", output - input)
+            extra = String(format: "%.1f", (output - input) * 1000.0)
         } else {
             extra = ""
         }
-        return "\(mark?.name ?? "[name]") -- \(extra)"
+        captureNameField.text = "\(mark?.name ?? "[name]") -- \(extra)"
     }
-    
+   
     func getMark() -> Mark? {
         return MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier)
     }
@@ -146,7 +145,6 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     }
     
     var gestureStartTime: CMTime = kCMTimeZero
-    var markedStartTime: CMTime = kCMTimeZero
 
     static func formatTime(_ time: CMTime) -> String {
         return String(format: "%.1f", time.seconds * 1000.0)
@@ -235,26 +233,38 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
 
     @IBAction
     func handleMarkStartTime(_ sender: AnyObject?) {
-        markedStartTime = playerView.player!.currentTime()
+        MarkDatabase.shared.setInputTime(
+            localIdentifier: model.asset.localIdentifier,
+            input: playerInfo.player.currentTime().seconds)
+        updateCaptureName()
+        updateLabel()
+    }
+    
+    @IBAction
+    func handleMarkEndTime(_ sender: AnyObject?) {
+        MarkDatabase.shared.setOutputTime(
+            localIdentifier: model.asset.localIdentifier,
+            output: playerInfo.player.currentTime().seconds)
+        updateCaptureName()
         updateLabel()
     }
 
     func updateLabel() {
         let player = playerView.player!
-        let target = player.currentTime()
-        let offset = target - markedStartTime
+        let target = player.currentTime().seconds
+        let offset = target - (getMark()?.input ?? 0)
 
         // TODO: better frameDuration calculation
         // For a reason I don't understand, minFrameDuration is wildly inaccurate.
         // Perhaps there's a final frame that is shorter than the nominal frame
         // duration.
         let frameDuration = 1.0 / Double(playerInfo.nominalFrameRate)
-        let frameNumber = Int(offset.seconds / frameDuration)
+        let frameNumber = Int(offset / frameDuration)
 
         let time = Double(frameNumber) * frameDuration
         let timeStr = String(format: "%.1f", time * 1000.0) // ScrubberViewController.formatTime(offset)
         
-        Swift.print("offset: \(target.seconds - time)")
+        Swift.print("offset: \(target - time)")
 
         locationLabel.text = "frame \(frameNumber)\ntime \(timeStr)"
     }
