@@ -11,8 +11,8 @@
 		63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CaptureViewController.swift */; };
 		63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */; };
 		63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDA1E61E03D007278A0 /* PlayerView.swift */; };
-		63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDB1E61E03D007278A0 /* RootViewController.swift */; };
-		63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */; };
+		63178FE21E61E03D007278A0 /* CaptureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDB1E61E03D007278A0 /* CaptureListViewController.swift */; };
+		63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDC1E61E03D007278A0 /* MarkViewController.swift */; };
 		63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDD1E61E03D007278A0 /* VideoManager.swift */; };
 		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
 		63D4DE211E61E09000716F26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE201E61E09000716F26 /* Assets.xcassets */; };
@@ -36,8 +36,8 @@
 		63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = src/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
 		63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "IsItSnappy-Bridging-Header.h"; path = "src/IsItSnappy-Bridging-Header.h"; sourceTree = "<group>"; };
 		63178FDA1E61E03D007278A0 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = src/PlayerView.swift; sourceTree = "<group>"; };
-		63178FDB1E61E03D007278A0 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = src/RootViewController.swift; sourceTree = "<group>"; };
-		63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScrubberViewController.swift; path = src/ScrubberViewController.swift; sourceTree = "<group>"; };
+		63178FDB1E61E03D007278A0 /* CaptureListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureListViewController.swift; path = src/CaptureListViewController.swift; sourceTree = "<group>"; };
+		63178FDC1E61E03D007278A0 /* MarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MarkViewController.swift; path = src/MarkViewController.swift; sourceTree = "<group>"; };
 		63178FDD1E61E03D007278A0 /* VideoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoManager.swift; path = src/VideoManager.swift; sourceTree = "<group>"; };
 		639459091E61DBC600C00F0E /* IsItSnappy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IsItSnappy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IsItSnappyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,13 +71,13 @@
 			isa = PBXGroup;
 			children = (
 				63178FD61E61E03D007278A0 /* AppDelegate.swift */,
+				63178FDB1E61E03D007278A0 /* CaptureListViewController.swift */,
 				63178FD71E61E03D007278A0 /* CaptureViewController.swift */,
+				63178FDC1E61E03D007278A0 /* MarkViewController.swift */,
 				63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */,
-				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 				63178FDA1E61E03D007278A0 /* PlayerView.swift */,
-				63178FDB1E61E03D007278A0 /* RootViewController.swift */,
-				63178FDC1E61E03D007278A0 /* ScrubberViewController.swift */,
 				63178FDD1E61E03D007278A0 /* VideoManager.swift */,
+				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -228,12 +228,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63178FE21E61E03D007278A0 /* RootViewController.swift in Sources */,
+				63178FE21E61E03D007278A0 /* CaptureListViewController.swift in Sources */,
 				63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */,
 				63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */,
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
 				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
-				63178FE31E61E03D007278A0 /* ScrubberViewController.swift in Sources */,
+				63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */,
 				63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

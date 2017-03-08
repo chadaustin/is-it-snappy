@@ -26,10 +26,10 @@
             </objects>
             <point key="canvasLocation" x="-3393" y="-36"/>
         </scene>
-        <!--Captures-->
+        <!--Capture List-->
         <scene sceneID="GvW-vZ-Y6U">
             <objects>
-                <viewController title="Captures" id="ZOr-Y5-u4n" customClass="RootViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Captures" id="ZOr-Y5-u4n" userLabel="Capture List" customClass="CaptureListViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vvi-4i-s6r"/>
                         <viewControllerLayoutGuide type="bottom" id="8fy-v2-gUb"/>
@@ -65,10 +65,10 @@
             </objects>
             <point key="canvasLocation" x="-2391" y="258"/>
         </scene>
-        <!--Scrubber View Controller-->
+        <!--Mark View Controller-->
         <scene sceneID="Zty-J0-6hz">
             <objects>
-                <viewController storyboardIdentifier="ScrubberViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MMt-xQ-87z" customClass="ScrubberViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MarkViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MMt-xQ-87z" customClass="MarkViewController" customModule="IsItSnappy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4EW-fs-z55"/>
                         <viewControllerLayoutGuide type="bottom" id="MyX-rU-pNt"/>

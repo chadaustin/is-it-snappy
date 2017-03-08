@@ -28,7 +28,7 @@ class VideoModel {
     }
 }
 
-class RootViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class CaptureListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var tableView: UITableView!
@@ -62,7 +62,7 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
         precondition(Thread.isMainThread)
         let model = self.groups[indexPath.section].videos[indexPath.row]
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "ScrubberViewController") as! ScrubberViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: "MarkViewController") as! MarkViewController
         vc.setModel(model)
         present(vc, animated: true) {
             tableView.deselectRow(at: indexPath, animated: true)

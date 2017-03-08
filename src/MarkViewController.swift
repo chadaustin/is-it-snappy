@@ -1,7 +1,7 @@
 import UIKit
 import Photos
 
-class ScrubberViewController: UIViewController, UITextFieldDelegate {
+class MarkViewController: UIViewController, UITextFieldDelegate {
     enum State {
         case loading
         case failed
@@ -84,6 +84,7 @@ class ScrubberViewController: UIViewController, UITextFieldDelegate {
                     ss.videoAsset = AVURLAsset(
                         url: track.segments[0].sourceURL!,
                         options: [AVURLAssetPreferPreciseDurationAndTimingKey: "true"])
+                    
                 } else {
                     ss.videoAsset = sourceAsset
                 }
