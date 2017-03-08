@@ -1,6 +1,45 @@
 import UIKit
 import Photos
 
+class PlayerInfo {
+    init(sourceAsset: AVAsset) {
+        videoAsset = PlayerInfo.getInnerAsset(sourceAsset)
+
+        // TODO: check that the videoAsset has a video track
+        let track = videoAsset.tracks[0]
+
+        Swift.print("nominalFrameRate: \(track.nominalFrameRate)")
+        Swift.print("minFrameDuration: \(track.minFrameDuration.seconds)")
+        Swift.print("minFrameRate: \(1.0 / track.minFrameDuration.seconds)")
+
+        playerItem = AVPlayerItem(asset: videoAsset)
+        player = AVPlayer(playerItem: playerItem)
+
+        nominalFrameRate = track.nominalFrameRate
+    }
+
+    let videoAsset: AVAsset
+    let playerItem: AVPlayerItem
+    let player: AVPlayer
+    let nominalFrameRate: Float
+
+    static func getInnerAsset(_ sourceAsset: AVAsset) -> AVAsset {
+        if let urlAsset = sourceAsset as? AVURLAsset {
+            return urlAsset
+        } else if let composition = sourceAsset as? AVComposition {
+            // Bypass the composition's frame rate ramp.
+            // TODO: check for video track and segment and source URL
+            let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
+            return AVURLAsset(
+                url: track.segments[0].sourceURL!,
+                options: [AVURLAssetPreferPreciseDurationAndTimingKey: "true"])
+
+        } else {
+            return sourceAsset
+        }
+    }
+}
+
 class MarkViewController: UIViewController, UITextFieldDelegate {
     enum State {
         case loading
@@ -13,9 +52,7 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     var state = State.loading
 
     var model: VideoModel!
-    var videoAsset: AVAsset!
-    var playerItem: AVPlayerItem!
-    var player: AVPlayer!
+    var playerInfo: PlayerInfo!
 
     var playerView: PlayerView {
         return view as! PlayerView
@@ -42,63 +79,13 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
                     return
                 }
 
-                if let urlAsset = sourceAsset as? AVURLAsset {
-                    //Swift.print("URL asset \(urlAsset.url)")
-                    ss.videoAsset = urlAsset
-                } else if let composition = sourceAsset as? AVComposition {
-                    let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
-
-                    /*
-                    let videoAsset = track.asset!
-                    if let urlAsset = videoAsset as? AVURLAsset {
-                        Swift.print("URL asset: \(urlAsset.url)")
-                    }
-                    */
-                    
-                    let newComposition = AVMutableComposition()
-                    let mutableTrack = newComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: track.trackID)
-                    let timeRange = track.timeRange
-                    //let timeRange = CMTimeRange(start: kCMTimeZero, duration: composition.duration)
-                    mutableTrack.segments = [
-                        AVCompositionTrackSegment(
-                            url: track.segments[0].sourceURL!,
-                            trackID: track.trackID,
-                            sourceTimeRange: timeRange,
-                            targetTimeRange: CMTimeRange(start: timeRange.start, duration: CMTimeMultiply(timeRange.duration, 4))),
-                    ]
-                    mutableTrack.preferredVolume = track.preferredVolume
-                    mutableTrack.preferredTransform = track.preferredTransform
-                    /*
-                    if !mutableTrack.validateSegments(mutableTrack.segments) {
-                        Swift.print("validateSegments failed")
-                    }
-     */
-                    /*
-                    for segment in track.segments {
-                        //segment.timeMapping = CMTimeMapping(source: segment.timeMapping.source, target: segment.timeMapping.source)
-                        mutableTrack.segments.append(segment)
-                    }
-                    mutableTrack.segments = track.segments
-     */
-                    _ = newComposition
-                    ss.videoAsset = AVURLAsset(
-                        url: track.segments[0].sourceURL!,
-                        options: [AVURLAssetPreferPreciseDurationAndTimingKey: "true"])
-                    
-                } else {
-                    ss.videoAsset = sourceAsset
+                guard let sourceAsset = sourceAsset else {
+                    fatalError("failed to load? show an error?")
                 }
 
-                // assert only one track?
-                let track = ss.videoAsset.tracks[0]
-                
-                Swift.print("nominalFrameRate: \(track.nominalFrameRate)")
-                Swift.print("minFrameDuration: \(track.minFrameDuration.seconds)")
-                Swift.print("minFrameRate: \(1.0 / track.minFrameDuration.seconds)")
+                ss.playerInfo = PlayerInfo(sourceAsset: sourceAsset)
 
-                ss.playerItem = AVPlayerItem(asset: ss.videoAsset)
-                ss.player = AVPlayer(playerItem: ss.playerItem)
-                ss.playerView.player = ss.player
+                ss.playerView.player = ss.playerInfo.player
                 ss.state = .idle
                 ss.updateLabel()
             }
@@ -222,13 +209,11 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
         let target = player.currentTime()
         let offset = target - markedStartTime
 
-        let track = videoAsset.tracks[0]
-
         // TODO: better frameDuration calculation
         // For a reason I don't understand, minFrameDuration is wildly inaccurate.
         // Perhaps there's a final frame that is shorter than the nominal frame
         // duration.
-        let frameDuration = 1.0 / Double(track.nominalFrameRate)
+        let frameDuration = 1.0 / Double(playerInfo.nominalFrameRate)
         let frameNumber = Int(offset.seconds / frameDuration)
 
         let time = Double(frameNumber) * frameDuration
