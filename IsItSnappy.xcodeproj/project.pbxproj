@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029844811E6F9B590054D943 /* MarkDatabase.swift */; };
 		63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD61E61E03D007278A0 /* AppDelegate.swift */; };
 		63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CaptureViewController.swift */; };
 		63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		029844811E6F9B590054D943 /* MarkDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MarkDatabase.swift; path = src/MarkDatabase.swift; sourceTree = "<group>"; };
 		63178FD61E61E03D007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = src/AppDelegate.swift; sourceTree = "<group>"; };
 		63178FD71E61E03D007278A0 /* CaptureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureViewController.swift; path = src/CaptureViewController.swift; sourceTree = "<group>"; };
 		63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = src/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */,
 				63178FDA1E61E03D007278A0 /* PlayerView.swift */,
 				63178FDD1E61E03D007278A0 /* VideoManager.swift */,
+				029844811E6F9B590054D943 /* MarkDatabase.swift */,
 				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 			);
 			name = src;
@@ -233,6 +236,7 @@
 				63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */,
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
 				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
+				029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */,
 				63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */,
 				63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */,
 			);
