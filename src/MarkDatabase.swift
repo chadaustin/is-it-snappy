@@ -4,6 +4,22 @@ struct Mark {
     var name: String?
     var input: Double?
     var output: Double?
+    
+    func displayLabel(_ defaultName: String? = nil) -> String {
+        let elapsed: String?
+        if let input = input, let output = output {
+            elapsed = String(format: "%.1f", (output - input) * 1000)
+        } else {
+            elapsed = nil
+        }
+        
+        switch (name ?? defaultName, elapsed) {
+        case let (.some(name), .some(elapsed)): return "\(name) -- \(elapsed)"
+        case let (.some(name), .none): return "\(name) --"
+        case let (.none, .some(elapsed)): return "-- \(elapsed)"
+        case (.none, .none): return "--"
+        }
+    }
 
     func encode() -> Any {
         var object: [String: Any] = [:]

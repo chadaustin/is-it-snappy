@@ -79,12 +79,9 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
 
         let newCell = UITableViewCell(style: .value1, reuseIdentifier: nil)
         
-        let mark = MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier)
-        let markName = mark?.name
-        //let markInput = mark?.input
-        //let markOutput = mark?.output
+        let mark = MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier) ?? Mark()
         
-        newCell.textLabel?.text = markName ?? "--"
+        newCell.textLabel?.text = mark.displayLabel()
         newCell.detailTextLabel?.text = "\(df.string(from: model.asset.creationDate!))"
         return newCell
     }
