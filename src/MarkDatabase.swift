@@ -14,9 +14,9 @@ struct Mark {
         }
         
         switch (name ?? defaultName, elapsed) {
-        case let (.some(name), .some(elapsed)): return "\(name) -- \(elapsed)"
+        case let (.some(name), .some(elapsed)): return "\(name) -- \(elapsed) ms"
         case let (.some(name), .none): return "\(name) --"
-        case let (.none, .some(elapsed)): return "-- \(elapsed)"
+        case let (.none, .some(elapsed)): return "-- \(elapsed) ms"
         case (.none, .none): return "--"
         }
     }
