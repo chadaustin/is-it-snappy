@@ -7,7 +7,7 @@ class PlayerInfo {
 
         // TODO: check that the videoAsset has a video track
         let track = videoAsset.tracks[0]
-
+        
         Swift.print("nominalFrameRate: \(track.nominalFrameRate)")
         Swift.print("minFrameDuration: \(track.minFrameDuration.seconds)")
         Swift.print("maxFrameRate: \(1.0 / track.minFrameDuration.seconds)")
@@ -16,12 +16,82 @@ class PlayerInfo {
         player = AVPlayer(playerItem: playerItem)
 
         nominalFrameRate = track.nominalFrameRate
+
+        // nil gets original sample data without overhead for decompression
+        let output = AVAssetReaderTrackOutput(track: track, outputSettings: nil)
+        // TODO: if this fails use the frame number estimation based on nominalFrameRate
+        let reader = try! AVAssetReader(asset: videoAsset)
+        output.alwaysCopiesSampleData = false // possibly prevents unnecessary copying?
+        reader.add(output)
+        reader.startReading()
+
+        var times: [CMTime] = []
+        while reader.status == .reading {
+            if let sampleBuffer = output.copyNextSampleBuffer() {
+                if CMSampleBufferIsValid(sampleBuffer) && 0 != CMSampleBufferGetTotalSampleSize(sampleBuffer) {
+                    let frameTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)
+                    if frameTime.isValid {
+                        times.append(frameTime)
+                    }
+                }
+            }
+        }
+
+                /*
+                if frameTime.isValid {
+                    //let timeStr = String(format: "%.5f", frameTime.seconds)
+                    //print("frame \(frameNumber) @ \(timeStr)")
+                    /*
+                    print(")
+                    print("frame: \(frameNumber), time: \(String(format:"%.3f", frameTime.seconds)), size: \(CMSampleBufferGetTotalSampleSize(sampleBuffer)), duration: \(                CMSampleBufferGetOutputDuration(sampleBuffer).value)")
+                     */
+                    frameNumber += 1
+                }
+                 */
+
+        frameTimes = times
     }
 
     let videoAsset: AVAsset
     let playerItem: AVPlayerItem
     let player: AVPlayer
     let nominalFrameRate: Float
+    // there's probably a more compact encoding, but an hour of 240 fps video is only in the megabytes of metadata
+    let frameTimes: [CMTime]
+
+    func frameNumber(for time: CMTime) -> (Int, CMTime) {
+        var previousFrameNumber = 0
+        var previousFrameTime = kCMTimeZero
+        for (frameNumber, frameTime) in frameTimes.enumerated() {
+            if time < frameTime {
+                break
+            }
+            previousFrameNumber = frameNumber
+            previousFrameTime = frameTime
+        }
+        return (previousFrameNumber, previousFrameTime)
+        // TODO: binary search
+        /*
+        var lower = 0
+        var upper = frameTimes.count
+
+        while lower < upper {
+            let midpoint = lower + (upper - lower) / 2
+            if time < frameTimes[midpoint] {
+                upper = midpoint
+            } else {
+                lower = midpoint
+            }
+        }
+        return lower
+         */
+    }
+
+    func frameNumber(for time: Double) -> (Int, CMTime) {
+        let offset = 0.001 // 1 ms to give us some room, double->cmtime is imprecise
+        let cmtime = CMTime(seconds: time + offset, preferredTimescale: 24000)
+        return frameNumber(for: cmtime)
+    }
 
     static func getInnerAsset(_ sourceAsset: AVAsset) -> AVAsset {
         if let urlAsset = sourceAsset as? AVURLAsset {
@@ -88,6 +158,8 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
                 ss.playerView.player = ss.playerInfo.player
                 ss.state = .idle
                 ss.updateLabel()
+                ss.updateInputButtonLabel()
+                ss.updateOutputButtonLabel()
             }
         }
     }
@@ -231,6 +303,7 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
             input: currentFrameTime)
         updateCaptureName()
         updateLabel()
+        updateInputButtonLabel()
     }
     
     @IBAction
@@ -240,37 +313,72 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
             output: currentFrameTime)
         updateCaptureName()
         updateLabel()
+        updateOutputButtonLabel()
     }
     
     var currentFrameTime: Double {
-        let currentTime = playerInfo.player.currentTime().seconds
+        let currentTime = playerInfo.player.currentTime()
+        let (_, frameTime) = playerInfo.frameNumber(for: currentTime)
 
-        // TODO: better frameDuration calculation
-        // For a reason I don't understand, minFrameDuration is wildly inaccurate.
-        // Perhaps there's a final frame that is shorter than the nominal frame
-        // duration.
-        let frameDuration = 1.0 / Double(playerInfo.nominalFrameRate)
-        let frameNumber = Int(currentTime / frameDuration)
-        return Double(frameNumber) * frameDuration
+        return frameTime.seconds
     }
 
     func updateLabel() {
-        let target = playerInfo.player.currentTime().seconds
-        let offset = target - (getMark().input ?? 0)
+        let target = playerInfo.player.currentTime()
+        let offset = target.seconds - (getMark().input ?? 0)
         
         // TODO: better frameDuration calculation
         // For a reason I don't understand, minFrameDuration is wildly inaccurate.
         // Perhaps there's a final frame that is shorter than the nominal frame
         // duration.
-        let frameDuration = 1.0 / Double(playerInfo.nominalFrameRate)
-        let frameNumber = Int(offset / frameDuration)
+        //let frameDuration = 1.0 / Double(playerInfo.nominalFrameRate)
+        //let frameNumber = Int(offset / frameDuration)
+        let (frameNumber, time) = playerInfo.frameNumber(for: target)
+        
+        
 
-        let time = Double(frameNumber) / Double(playerInfo.nominalFrameRate)
-        let timeStr = String(format: "%.1f", time * 1000.0) // ScrubberViewController.formatTime(offset)
+        //let time = Double(frameNumber) / Double(playerInfo.nominalFrameRate)
+        let timeStr = String(format: "%.1f", time.seconds * 1000.0) // ScrubberViewController.formatTime(offset)
 
-        Swift.print("target: \(target), offset: \(offset), time: \(time)")
+        //Swift.print("target: \(target), offset: \(offset), time: \(time)")
+        
+        let frameOffset: String
+        if let input = getMark().input {
+            let inputFrame = playerInfo.frameNumber(for: input).0
+            if frameNumber > inputFrame {
+                frameOffset = "(+\(frameNumber - inputFrame))"
+            } else {
+                frameOffset = "(\(frameNumber - inputFrame))"
+            }
+        } else {
+            frameOffset = ""
+        }
 
-        locationLabel.text = "frame \(frameNumber)\ntime \(timeStr)"
+        locationLabel.text = "frame \(frameNumber)\(frameOffset)\n\(timeStr) ms"
+    }
+    
+    func updateInputButtonLabel() {
+        let frame: String
+        if let input = getMark().input {
+            frame = "frame \(playerInfo.frameNumber(for: input).0)"
+        } else {
+            frame = "--"
+        }
+        markInputButton.isEnabled = false
+        markInputButton.setTitle("Mark Input\n\(frame)", for: .normal)
+        markInputButton.isEnabled = true
+    }
+    
+    func updateOutputButtonLabel() {
+        let frame: String
+        if let output = getMark().output {
+            frame = "frame \(playerInfo.frameNumber(for: output).0)"
+        } else {
+            frame = "--"
+        }
+        markOutputButton.isEnabled = false
+        markOutputButton.setTitle("Mark Output\n\(frame)", for: .normal)
+        markOutputButton.isEnabled = true
     }
     
     // TODO: AVPlayerItem.duration
