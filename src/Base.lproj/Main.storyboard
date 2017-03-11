@@ -47,7 +47,9 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="o0W-sm-M4A"/>
                                 </constraints>
-                                <state key="normal" title="Record New Capture"/>
+                                <state key="normal" title="Record New Capture">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <segue destination="zFy-Vn-e8f" kind="presentation" id="gFA-Et-CC8"/>
                                 </connections>
