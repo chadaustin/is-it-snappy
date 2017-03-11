@@ -201,8 +201,11 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
 
     @IBAction
     func pressDone(_ sender: UIButton?) {
-        dismissKeyboard()
-        dismiss(animated: true)
+        if captureNameField.isFirstResponder {
+            dismissKeyboard()
+        } else {
+            dismiss(animated: true)
+        }
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
