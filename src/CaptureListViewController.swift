@@ -47,10 +47,13 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-    
+
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let action = UITableViewRowAction(style: .destructive, title: "Edit") { action, indexPath in
-            // push the edit dialog
+        let action = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
+            let model = self.groups[indexPath.section].videos[indexPath.row]
+            try? PHPhotoLibrary.shared().performChangesAndWait {
+                PHAssetChangeRequest.deleteAssets([model.asset] as NSArray)
+            }
         }
         return [action]
     }

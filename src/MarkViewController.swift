@@ -328,7 +328,7 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
 
     func updateLabel() {
         let target = playerInfo.player.currentTime()
-        let offset = target.seconds - (getMark().input ?? 0)
+        //let offset = target.seconds - (getMark().input ?? 0)
         
         // TODO: better frameDuration calculation
         // For a reason I don't understand, minFrameDuration is wildly inaccurate.

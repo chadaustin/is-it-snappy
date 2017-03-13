@@ -39,6 +39,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     private(set) var groupedVideos: [VideoGroup] = []
     
     private func recalculateGroups() {
+        precondition(Thread.isMainThread)
         let allVideos = self.allVideos.sorted { lhs, rhs in
             switch (lhs.asset.creationDate, rhs.asset.creationDate) {
             case (.none, .none): return false
@@ -120,10 +121,12 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        // TODO: implement state machine -- if in the middle of a request, kick off a new one when this one finishes
-        // or: ignore result from old one
-        VideoManager.getExistingVideos { videos in
-            self.allVideos = videos
+        DispatchQueue.main.async {
+            // TODO: implement state machine -- if in the middle of a request, kick off a new one when this one finishes
+            // or: ignore result from old one
+            VideoManager.getExistingVideos { videos in
+                self.allVideos = videos
+            }
         }
     }
 
