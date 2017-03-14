@@ -51,7 +51,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleInfoButtonTap() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "AboutViewController")
-        present(vc, animated: true) {}
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {

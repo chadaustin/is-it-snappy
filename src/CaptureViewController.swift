@@ -375,7 +375,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
 
             DispatchQueue.main.async {
-                let devices = CaptureViewController.discoverySession.devices ?? []
+                let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)?.devices ?? []
                 self.cameraButton.isEnabled = isRunning && devices.count > 1
                 self.recordButton.isEnabled = isRunning
             }
@@ -802,7 +802,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     // MARK: Utilities
 
     static func device(withMediaType mediaType: String, preferringPosition position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let devices = CaptureViewController.discoverySession.devices ?? []
+        let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)?.devices ?? []
         return devices.first(where: { $0.position == position }) ?? devices.first
     }
 

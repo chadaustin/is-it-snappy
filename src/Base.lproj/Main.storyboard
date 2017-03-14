@@ -17,6 +17,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="BvZ-bb-gkZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </navigationBar>
                     <connections>
                         <segue destination="ZOr-Y5-u4n" kind="relationship" relationship="rootViewController" id="kwE-Fa-Nz9"/>
@@ -25,33 +26,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="53q-lA-JuJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3393" y="-36"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="qeY-wn-gvw">
-            <objects>
-                <viewController id="pFv-De-28e" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="nN9-Mi-dh1"/>
-                        <viewControllerLayoutGuide type="bottom" id="j29-yJ-dFL"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="JpK-Yy-6iH">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SFk-2o-siE">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <items>
-                                    <navigationItem title="Title" id="F4c-tF-obD"/>
-                                </items>
-                            </navigationBar>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1gW-SB-1CW" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3938" y="800"/>
         </scene>
         <!--About-->
         <scene sceneID="Ump-n6-WsD">
@@ -65,29 +39,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ah-bq-gy1">
-                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
-                                <items>
-                                    <navigationItem title="About" id="YGs-tr-qOt">
-                                        <barButtonItem key="backBarButtonItem" title="Back" id="0BH-tm-lhJ"/>
-                                        <barButtonItem key="leftBarButtonItem" title="Back" id="5ra-Pe-2r3">
-                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <connections>
-                                                <action selector="handleBack" destination="0FD-h4-AHR" id="3hs-1b-BeB"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ehm-hU-abp">
-                                <rect key="frame" x="16" y="72" width="288" height="41"/>
-                                <string key="text">Is It Snappy?
-Chad Austin © 2017
-</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dD8-go-hEE" userLabel="Twitter">
                                 <rect key="frame" x="234" y="478" width="70" height="70"/>
                                 <constraints>
@@ -110,25 +61,38 @@ Chad Austin © 2017
                                     <action selector="handleTapGitHub" destination="0FD-h4-AHR" eventType="touchUpInside" id="vSc-uw-vEN"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chad Austin © 2017" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D78-dR-qHL">
+                                <rect key="frame" x="84" y="89" width="153" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ehm-hU-abp">
+                                <rect key="frame" x="16" y="52" width="288" height="29"/>
+                                <string key="text">Is It Snappy?
+</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="32U-Cl-85d" firstAttribute="top" secondItem="dD8-go-hEE" secondAttribute="bottom" constant="20" id="0bk-fB-qZe"/>
-                            <constraint firstItem="0Ah-bq-gy1" firstAttribute="leading" secondItem="vyQ-6w-dGb" secondAttribute="leading" id="5H4-5b-2JT"/>
+                            <constraint firstItem="ehm-hU-abp" firstAttribute="top" secondItem="hQn-7m-W7x" secondAttribute="bottom" constant="32" id="2uq-fD-GSQ"/>
                             <constraint firstItem="dD8-go-hEE" firstAttribute="trailing" secondItem="vyQ-6w-dGb" secondAttribute="trailingMargin" id="92R-je-yEQ"/>
-                            <constraint firstAttribute="trailing" secondItem="0Ah-bq-gy1" secondAttribute="trailing" id="F0p-xw-Tpv"/>
-                            <constraint firstItem="0Ah-bq-gy1" firstAttribute="top" secondItem="hQn-7m-W7x" secondAttribute="bottom" id="Jkb-Rh-wRr"/>
                             <constraint firstItem="ehm-hU-abp" firstAttribute="leading" secondItem="vyQ-6w-dGb" secondAttribute="leadingMargin" id="WxN-wq-FQG"/>
                             <constraint firstItem="ehm-hU-abp" firstAttribute="trailing" secondItem="vyQ-6w-dGb" secondAttribute="trailingMargin" id="Yr2-Zr-aIA"/>
+                            <constraint firstItem="D78-dR-qHL" firstAttribute="centerX" secondItem="vyQ-6w-dGb" secondAttribute="centerX" id="fDh-zA-yj3"/>
                             <constraint firstItem="BWF-hU-DIc" firstAttribute="leading" secondItem="vyQ-6w-dGb" secondAttribute="leadingMargin" id="lKp-PY-MiX"/>
+                            <constraint firstItem="D78-dR-qHL" firstAttribute="top" secondItem="ehm-hU-abp" secondAttribute="bottom" constant="8" id="tqg-cq-Vic"/>
                             <constraint firstItem="32U-Cl-85d" firstAttribute="top" secondItem="BWF-hU-DIc" secondAttribute="bottom" constant="20" id="ujg-Li-9LP"/>
-                            <constraint firstItem="ehm-hU-abp" firstAttribute="top" secondItem="0Ah-bq-gy1" secondAttribute="bottom" constant="8" id="x8M-kI-PHv"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wTW-Qg-NEo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3157.5" y="841.90140845070425"/>
+            <point key="canvasLocation" x="-2306" y="513"/>
         </scene>
         <!--Capture List-->
         <scene sceneID="GvW-vZ-Y6U">
@@ -164,7 +128,7 @@ Chad Austin © 2017
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="28Q-eF-enB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2391" y="258"/>
+            <point key="canvasLocation" x="-2306" y="-273"/>
         </scene>
         <!--Mark View Controller-->
         <scene sceneID="Zty-J0-6hz">
@@ -445,17 +409,14 @@ frame 135</string>
                                     <constraint firstItem="MDr-ZD-uoq" firstAttribute="leading" secondItem="amH-FF-rBy" secondAttribute="leading" id="yFd-vQ-icL"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uZ6-D1-thS">
-                                <rect key="frame" x="220" y="524" width="80" height="36"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uZ6-D1-thS">
+                                <rect key="frame" x="264" y="524" width="36" height="36"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="Be7-Q8-aRh"/>
                                     <constraint firstAttribute="height" constant="36" id="O4U-2s-uyX"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Camera">
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
+                                <state key="normal" image="FlipCamera"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                         <integer key="value" value="4"/>
@@ -519,10 +480,11 @@ frame 135</string>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-774" y="-407"/>
+            <point key="canvasLocation" x="-774.375" y="-407.74647887323943"/>
         </scene>
     </scenes>
     <resources>
+        <image name="FlipCamera" width="28" height="21"/>
         <image name="GitHub" width="32" height="32"/>
         <image name="Twitter" width="200" height="200"/>
     </resources>
