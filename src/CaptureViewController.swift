@@ -110,7 +110,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBOutlet weak var focusModeControl: UISegmentedControl!
     @IBOutlet weak var lensPositionSlider: UISlider!
     @IBOutlet weak var lensPositionNameLabel: UILabel!
-    @IBOutlet weak var lensPositionValueLabel: UILabel!
 
     // Session management.
     var sessionQueue: DispatchQueue!
@@ -365,7 +364,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 if ( self.videoDevice.focusMode != .locked ) {
                     self.lensPositionSlider.value = newLensPosition;
                 }
-                self.lensPositionValueLabel.text = String(format: "%.1f", newLensPosition)
             }
         }
         else if ( context == &Context.SessionRunning ) {
@@ -687,7 +685,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         if ( slider == self.lensPositionSlider ) {
             self.lensPositionNameLabel.textColor = slider.tintColor
-            self.lensPositionValueLabel.textColor = slider.tintColor
         }
     }
 

@@ -364,17 +364,8 @@ frame 135</string>
                                                 <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ibD-PK-g3Q">
-                                                <rect key="frame" x="240" y="52" width="40" height="17"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="40" id="aws-j7-hCP"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="TV0-Z0-OUU">
-                                                <rect key="frame" x="68" y="46" width="166" height="31"/>
+                                                <rect key="frame" x="68" y="46" width="214" height="31"/>
                                                 <connections>
                                                     <action selector="changeLensPosition:" destination="zFy-Vn-e8f" eventType="valueChanged" id="0nI-xS-4od"/>
                                                     <action selector="sliderTouchBegan:" destination="zFy-Vn-e8f" eventType="touchDown" id="NXo-D5-2WL"/>
@@ -386,16 +377,14 @@ frame 135</string>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
-                                            <constraint firstItem="ibD-PK-g3Q" firstAttribute="leading" secondItem="TV0-Z0-OUU" secondAttribute="trailing" constant="8" id="0JF-dq-ZFu"/>
                                             <constraint firstItem="EPj-9g-wOc" firstAttribute="centerY" secondItem="ktg-mg-Ejd" secondAttribute="centerY" id="16H-LU-luG"/>
                                             <constraint firstAttribute="trailing" secondItem="ktg-mg-Ejd" secondAttribute="trailing" constant="8" id="71p-Sq-Xo2"/>
-                                            <constraint firstItem="ibD-PK-g3Q" firstAttribute="trailing" secondItem="ktg-mg-Ejd" secondAttribute="trailing" id="7Gl-9Z-leb"/>
                                             <constraint firstItem="ktg-mg-Ejd" firstAttribute="leading" secondItem="EPj-9g-wOc" secondAttribute="trailing" constant="25" id="An7-xe-zik"/>
                                             <constraint firstItem="EPj-9g-wOc" firstAttribute="leading" secondItem="MDr-ZD-uoq" secondAttribute="leading" constant="8" id="Erb-Aj-qGU"/>
                                             <constraint firstItem="ZAO-ER-qJK" firstAttribute="centerY" secondItem="TV0-Z0-OUU" secondAttribute="centerY" id="HUP-za-UTn"/>
                                             <constraint firstItem="ZAO-ER-qJK" firstAttribute="leading" secondItem="EPj-9g-wOc" secondAttribute="leading" id="JWP-a2-0lI"/>
                                             <constraint firstAttribute="bottom" secondItem="TV0-Z0-OUU" secondAttribute="bottom" constant="8" id="OE6-Cx-VIQ"/>
-                                            <constraint firstItem="ibD-PK-g3Q" firstAttribute="centerY" secondItem="TV0-Z0-OUU" secondAttribute="centerY" id="hIX-QQ-yw2"/>
+                                            <constraint firstAttribute="trailing" secondItem="TV0-Z0-OUU" secondAttribute="trailing" constant="8" id="fuL-S3-dCa"/>
                                             <constraint firstItem="TV0-Z0-OUU" firstAttribute="top" secondItem="ktg-mg-Ejd" secondAttribute="bottom" constant="10" id="qmb-an-QZg"/>
                                             <constraint firstItem="TV0-Z0-OUU" firstAttribute="leading" secondItem="ktg-mg-Ejd" secondAttribute="leading" id="wmm-mv-rux"/>
                                             <constraint firstItem="ktg-mg-Ejd" firstAttribute="top" secondItem="MDr-ZD-uoq" secondAttribute="top" constant="8" id="xFX-uh-D8c"/>
@@ -466,7 +455,6 @@ frame 135</string>
                         <outlet property="focusModeControl" destination="ktg-mg-Ejd" id="AWo-pJ-qt9"/>
                         <outlet property="lensPositionNameLabel" destination="ZAO-ER-qJK" id="u0g-Hy-NmH"/>
                         <outlet property="lensPositionSlider" destination="TV0-Z0-OUU" id="LvC-Bw-06A"/>
-                        <outlet property="lensPositionValueLabel" destination="ibD-PK-g3Q" id="w0v-Zh-7Rz"/>
                         <outlet property="manualHUDFocusView" destination="MDr-ZD-uoq" id="zuW-eL-JvW"/>
                         <outlet property="previewView" destination="9Za-05-zwY" id="llM-aG-xvt"/>
                         <outlet property="recordButton" destination="mcl-en-N2e" id="i4O-yh-h1k"/>
