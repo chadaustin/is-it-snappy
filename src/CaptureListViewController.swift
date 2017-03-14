@@ -37,10 +37,21 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.tintColor = .black
+        infoButton.addTarget(self, action: #selector(handleInfoButtonTap), for: .primaryActionTriggered)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: infoButton)
         
         _ = videoManager.register {
             self.tableView.reloadData()
         }
+    }
+
+    @objc func handleInfoButtonTap() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "AboutViewController")
+        present(vc, animated: true) {}
     }
     
     override func viewWillAppear(_ animated: Bool) {
