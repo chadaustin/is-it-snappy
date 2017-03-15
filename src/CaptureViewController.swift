@@ -99,17 +99,14 @@ extension AVCaptureDevice {
 
 class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
 
-    @IBOutlet weak var previewView: CaptureVideoPreviewView!
-    @IBOutlet weak var cameraUnavailableLabel: UILabel!
-    @IBOutlet weak var resumeButton: UIButton!
-    @IBOutlet weak var recordButton: UIButton!
-    @IBOutlet weak var cameraButton: UIButton!
+    @IBOutlet var previewView: CaptureVideoPreviewView!
+    @IBOutlet var cameraUnavailableLabel: UILabel!
+    @IBOutlet var resumeButton: UIButton!
+    @IBOutlet var recordButton: UIButton!
+    @IBOutlet var cameraButton: UIButton!
+    @IBOutlet var focusToggleButton: UIButton!
 
-    var focusModes: [AVCaptureFocusMode]!
-    @IBOutlet weak var manualHUDFocusView: UIView!
-    @IBOutlet weak var focusModeControl: UISegmentedControl!
-    @IBOutlet weak var lensPositionSlider: UISlider!
-    @IBOutlet weak var lensPositionNameLabel: UILabel!
+    @IBOutlet var lensPositionSlider: UISlider!
 
     // Session management.
     var sessionQueue: DispatchQueue!
@@ -130,7 +127,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         self.cameraButton.isEnabled = false
         self.recordButton.isEnabled = false
 
-        self.manualHUDFocusView.isHidden = true
+        self.focusToggleButton.isSelected = true
+        self.lensPositionSlider.isHidden = true
 
         // Create the AVCaptureSession.
         self.session = AVCaptureSession()
@@ -352,9 +350,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         if ( context == &Context.FocusMode ) {
             if !(newValue is NSNull) {
-                let newMode = enumFromAny(AVCaptureFocusMode.init, newValue)!
-                self.focusModeControl.selectedSegmentIndex = self.focusModes.index(of: newMode)!
-                self.lensPositionSlider.isEnabled = newMode == .locked
+                //let newMode = enumFromAny(AVCaptureFocusMode.init, newValue)!
+                self.focusToggleButton.isSelected = isAutoFocusEnabled
+                self.lensPositionSlider.isHidden = isAutoFocusEnabled
             }
         }
         else if ( context == &Context.LensPosition ) {
@@ -596,24 +594,14 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     }
 
     @IBAction
-    func changeManualHUD(_ sender: AnyObject?) {
-        let control = sender as! UISegmentedControl
-
-        self.manualHUDFocusView.isHidden = ( control.selectedSegmentIndex != 1 )
-    }
-
-    @IBAction
     func changeFocusMode(_ sender: AnyObject?) {
-        let control = sender as! UISegmentedControl
-        let mode = self.focusModes[control.selectedSegmentIndex]
+        let control = sender as! UIButton
+        let mode = (!control.isSelected) ? AVCaptureFocusMode.continuousAutoFocus : .locked
 
         do {
             try self.videoDevice.lockForConfiguration()
             if self.videoDevice.isFocusModeSupported(mode) {
                 self.videoDevice.focusMode = mode
-            } else {
-                //NSLog("Focus mode %@ is not supported. Focus mode is %@.", [self stringFromFocusMode:mode], [self stringFromFocusMode:self.videoDevice.focusMode] );
-                self.focusModeControl.selectedSegmentIndex = self.focusModes.index(of: self.videoDevice.focusMode)!
             }
             self.videoDevice.unlockForConfiguration()
         }
@@ -649,42 +637,24 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    @IBAction
-    func sliderTouchBegan(_ sender: AnyObject?) {
-        let slider = sender as! UISlider
-        self.setSlider(slider, highlightColor: UIColor(red:0.0, green:122.0/255.0, blue:1.0, alpha:1.0))
-    }
-
-    @IBAction
-    func sliderTouchEnded(_ sender: AnyObject?) {
-        let slider = sender as! UISlider
-        self.setSlider(slider, highlightColor: UIColor.yellow)
-    }
-
     // MARK: UI
 
     func configureManualHUD() {
-        // Manual focus controls
-        self.focusModes = [.continuousAutoFocus, .locked]
-
-        self.focusModeControl.isEnabled = self.videoDevice != nil
-        if let videoDevice = self.videoDevice {
-            self.focusModeControl.selectedSegmentIndex = self.focusModes.index(of: videoDevice.focusMode)!
-            for mode in self.focusModes {
-                self.focusModeControl.setEnabled(videoDevice.isFocusModeSupported(mode), forSegmentAt: self.focusModes.index(of: mode)!)
-            }
-        }
-
         self.lensPositionSlider.minimumValue = 0.0
         self.lensPositionSlider.maximumValue = 1.0
-        self.lensPositionSlider.isEnabled = self.videoDevice?.focusMode == .some(.locked)
+        self.focusToggleButton.isSelected = isAutoFocusEnabled
+        self.lensPositionSlider.isHidden = isAutoFocusEnabled
     }
 
-    func setSlider(_ slider: UISlider, highlightColor color: UIColor) {
-        slider.tintColor = color
-
-        if ( slider == self.lensPositionSlider ) {
-            self.lensPositionNameLabel.textColor = slider.tintColor
+    var isAutoFocusEnabled: Bool {
+        if let videoDevice = videoDevice {
+            if videoDevice.isFocusModeSupported(.continuousAutoFocus) {
+                return videoDevice.focusMode == .continuousAutoFocus
+            } else {
+                return true
+            }
+        } else {
+            return true
         }
     }
 
