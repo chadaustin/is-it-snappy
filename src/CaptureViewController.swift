@@ -216,7 +216,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                     previewLayer.connection.videoOrientation = initialVideoOrientation
                 }
             } else {
-                NSLog( "Could not add video device input to the session" );
+                NSLog("Could not add video device input to the session")
                 self.setupResult = .sessionConfigurationFailed
             }
 
@@ -312,7 +312,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         // Note that the app delegate controls the device orientation notifications required to use the device orientation.
         let deviceOrientation = UIDevice.current.orientation
-        if UIDeviceOrientationIsPortrait( deviceOrientation ) || UIDeviceOrientationIsLandscape( deviceOrientation ) {
+        if UIDeviceOrientationIsPortrait(deviceOrientation) || UIDeviceOrientationIsLandscape(deviceOrientation) {
             let previewLayer = self.previewView.layer
             previewLayer.connection.videoOrientation = AVCaptureVideoOrientation(orientation: deviceOrientation)!
         }
@@ -348,23 +348,23 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         let newValue = change?[.newKey]
 
-        if ( context == &Context.FocusMode ) {
+        if context == &Context.FocusMode {
             if !(newValue is NSNull) {
                 //let newMode = enumFromAny(AVCaptureFocusMode.init, newValue)!
                 self.focusToggleButton.isSelected = isAutoFocusEnabled
                 self.lensPositionSlider.isHidden = isAutoFocusEnabled
             }
         }
-        else if ( context == &Context.LensPosition ) {
+        else if context == &Context.LensPosition {
             if !(newValue is NSNull) {
                 let newLensPosition = newValue as! Float
 
-                if ( self.videoDevice.focusMode != .locked ) {
+                if self.videoDevice.focusMode != .locked {
                     self.lensPositionSlider.value = newLensPosition;
                 }
             }
         }
-        else if ( context == &Context.SessionRunning ) {
+        else if context == &Context.SessionRunning {
             var isRunning = false
             if !(newValue is NSNull) {
                 isRunning = (newValue as! NSNumber).boolValue
@@ -426,8 +426,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let reason = enumFromAny(AVCaptureSessionInterruptionReason.init, notification.userInfo?[AVCaptureSessionInterruptionReasonKey])!
         NSLog("Capture session was interrupted with reason \(reason)")
 
-        if ( reason == .audioDeviceInUseByAnotherClient ||
-            reason == .videoDeviceInUseByAnotherClient ) {
+        if reason == .audioDeviceInUseByAnotherClient ||
+            reason == .videoDeviceInUseByAnotherClient {
             // Simply fade-in a button to enable the user to try to resume the session running.
             self.resumeButton.isHidden = false
             self.resumeButton.alpha = 0.0
