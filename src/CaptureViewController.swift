@@ -562,7 +562,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
                 self.session.addInput(newVideoDeviceInput)
                 self.videoDeviceInput = newVideoDeviceInput
+                self.removeObservers()
                 self.videoDevice = newVideoDevice
+                self.addObservers()
             }
             else {
                 self.session.addInput(self.videoDeviceInput)
