@@ -25,6 +25,8 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var tableView: UITableView!
 
+    static weak var live: CaptureListViewController?
+
     let videoManager = VideoManager.shared
     
     var groups: [VideoManager.VideoGroup] {
@@ -46,6 +48,8 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         _ = videoManager.register {
             self.tableView.reloadData()
         }
+
+        CaptureListViewController.live = self
     }
 
     @objc func handleInfoButtonTap() {
@@ -72,13 +76,16 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         precondition(Thread.isMainThread)
         let model = self.groups[indexPath.section].videos[indexPath.row]
+        presentMarkViewController(for: model) {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+
+    func presentMarkViewController(for model: VideoModel, completion: @escaping () -> Void) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "MarkViewController") as! MarkViewController
         vc.setModel(model)
-        present(vc, animated: true) {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-        //present(ScrubberViewController(model: model), animated: true, completion: nil)
+        present(vc, animated: true, completion: completion)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

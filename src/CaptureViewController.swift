@@ -438,15 +438,14 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         self.recordButton.isEnabled = false
 
         self.sessionQueue.async {
-            if let movieFileOutput = self.movieFileOutput, !movieFileOutput.isRecording {
-                if UIDevice.current.isMultitaskingSupported {
-                    // Setup background task. This is needed because the -[captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:]
-                    // callback is not received until AVCamManual returns to the foreground unless you request background execution time.
-                    // This also ensures that there will be time to write the file to the photo library when AVCamManual is backgrounded.
-                    // To conclude this background execution, -endBackgroundTask is called in
-                    // -[captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:] after the recorded file has been saved.
-                    self.backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
-                }
+            if let movieFileOutput = self.movieFileOutput,
+                !movieFileOutput.isRecording {
+                // Setup background task. This is needed because the -[captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:]
+                // callback is not received until AVCamManual returns to the foreground unless you request background execution time.
+                // This also ensures that there will be time to write the file to the photo library when AVCamManual is backgrounded.
+                // To conclude this background execution, -endBackgroundTask is called in
+                // -[captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:] after the recorded file has been saved.
+                self.backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
 
                 // Update the orientation on the movie file output video connection before starting recording.
                 let movieConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
@@ -654,6 +653,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
 
         if success {
+            var newLocalIdentifier: String?
             VideoManager.getAlbum { assetCollection in
                 // Check authorization status.
                 PHPhotoLibrary.requestAuthorization { status in
@@ -666,14 +666,27 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                             options.shouldMoveFile = true
                             let changeRequest = PHAssetCreationRequest.forAsset()
                             changeRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                            let placeholder = changeRequest.placeholderForCreatedAsset
+                            let placeholder = changeRequest.placeholderForCreatedAsset!
+                            newLocalIdentifier = placeholder.localIdentifier
                             let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
-                            albumChangeRequest!.addAssets([placeholder!] as NSArray)
+                            albumChangeRequest!.addAssets([placeholder] as NSArray)
                         }) { success, error in
                             if !success {
                                 NSLog("Could not save movie to photo library: \(error)")
                             }
                             cleanup()
+
+                            if let localIdentifier = newLocalIdentifier {
+                                let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
+                                if let firstAsset = results.firstObject {
+                                    DispatchQueue.main.async {
+                                        let model = VideoModel(asset: firstAsset)
+                                        self.dismiss(animated: true, completion: nil)
+                                        CaptureListViewController.live?.presentMarkViewController(for: model) {
+                                        }
+                                    }
+                                }
+                            }
                         }
                     } else {
                         cleanup()
