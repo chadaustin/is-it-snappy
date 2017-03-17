@@ -625,7 +625,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     func capture(
         _ captureOutput: AVCaptureFileOutput!,
         didFinishRecordingToOutputFileAt outputFileURL: URL!,
-        fromConnections connections: [Any]!, error: Error!
+        fromConnections connections: [Any]!,
+        error: Error!
     ) {
         // Note that currentBackgroundRecordingID is used to end the background task associated with this recording.
         // This allows a new recording to be started, associated with a new UIBackgroundTaskIdentifier, once the movie file output's isRecording property
@@ -634,7 +635,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let currentBackgroundRecordingID = self.backgroundRecordingID
         self.backgroundRecordingID = UIBackgroundTaskInvalid
 
-        let cleanup = {
+        loadingPanel.isHidden = false
+
+        func cleanup() {
+            loadingPanel.isHidden = true
             try? FileManager.default.removeItem(at: outputFileURL)
             if currentBackgroundRecordingID != UIBackgroundTaskInvalid {
                 UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID!)
