@@ -278,31 +278,6 @@ frame 135</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="oWO-qM-GsN">
-                                <rect key="frame" x="20" y="524" width="80" height="36"/>
-                                <subviews>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mcl-en-N2e">
-                                        <rect key="frame" x="0.0" y="0.0" width="80" height="36"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="80" id="MU3-Pi-3w0"/>
-                                            <constraint firstAttribute="height" constant="36" id="k3x-ex-A07"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <state key="normal" title="Record">
-                                            <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="4"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="toggleMovieRecording:" destination="zFy-Vn-e8f" eventType="touchUpInside" id="kRM-DR-2H2"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Camera Unavailable" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoU-eQ-sum">
                                 <rect key="frame" x="53" y="270" width="214" height="29"/>
                                 <color key="tintColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -324,15 +299,6 @@ frame 135</string>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="resumeInterruptedSession:" destination="zFy-Vn-e8f" eventType="touchUpInside" id="7GG-E1-MyM"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0xp-lf-DuU">
-                                <rect key="frame" x="129" y="524" width="63" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Cancel"/>
-                                <connections>
-                                    <action selector="cancelCameraRecord:" destination="zFy-Vn-e8f" eventType="touchUpInside" id="Ebf-GF-2nG"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YbU-8V-Db1" userLabel="Header View">
@@ -382,18 +348,79 @@ frame 135</string>
                                     <constraint firstItem="cJ0-Rh-Cwz" firstAttribute="leading" secondItem="YbU-8V-Db1" secondAttribute="leading" constant="8" id="xMt-lZ-mud"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mcl-en-N2e">
+                                <rect key="frame" x="220" y="514" width="84" height="44"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" title="Record">
+                                    <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="toggleMovieRecording:" destination="zFy-Vn-e8f" eventType="touchUpInside" id="kRM-DR-2H2"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0xp-lf-DuU">
+                                <rect key="frame" x="16" y="514" width="83" height="44"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="cancelCameraRecord:" destination="zFy-Vn-e8f" eventType="touchUpInside" id="Ebf-GF-2nG"/>
+                                </connections>
+                            </button>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gEm-Ly-6Td">
+                                <rect key="frame" x="120" y="244" width="80" height="80"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="MJV-sY-ZTw">
+                                    <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="fcX-7d-55h">
+                                            <rect key="frame" x="21" y="21" width="37" height="37"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="FYq-Bs-0gU"/>
+                                    <constraint firstAttribute="width" constant="80" id="oO7-Pf-z61"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </visualEffectView>
                         </subviews>
                         <color key="backgroundColor" red="0.0086220854922279822" green="0.0086220854922279822" blue="0.0086220854922279822" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="gwL-zO-1Pw" firstAttribute="centerY" secondItem="9Za-05-zwY" secondAttribute="centerY" id="0ah-9b-xpC"/>
                             <constraint firstItem="OoU-eQ-sum" firstAttribute="centerY" secondItem="9Za-05-zwY" secondAttribute="centerY" id="3Oi-P6-ZBz"/>
-                            <constraint firstItem="i3h-nQ-SAp" firstAttribute="top" secondItem="oWO-qM-GsN" secondAttribute="bottom" constant="8" id="Bqo-Sy-xcM"/>
+                            <constraint firstItem="i3h-nQ-SAp" firstAttribute="top" secondItem="0xp-lf-DuU" secondAttribute="bottom" constant="10" id="5Wi-QC-XqW"/>
+                            <constraint firstItem="gEm-Ly-6Td" firstAttribute="centerY" secondItem="9Za-05-zwY" secondAttribute="centerY" id="Fir-m6-r9D"/>
                             <constraint firstItem="YbU-8V-Db1" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leading" id="GFN-pr-LN8"/>
                             <constraint firstAttribute="trailing" secondItem="YbU-8V-Db1" secondAttribute="trailing" id="JZy-sv-tKo"/>
-                            <constraint firstItem="oWO-qM-GsN" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leadingMargin" constant="4" id="VaF-IK-Gmk"/>
+                            <constraint firstItem="mcl-en-N2e" firstAttribute="trailing" secondItem="9Za-05-zwY" secondAttribute="trailingMargin" id="Wmc-0C-EF7"/>
                             <constraint firstItem="gwL-zO-1Pw" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="Xpm-3m-FZY"/>
                             <constraint firstItem="OoU-eQ-sum" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="cWN-EI-gUI"/>
+                            <constraint firstItem="gEm-Ly-6Td" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="dYV-JZ-cHw"/>
                             <constraint firstItem="YbU-8V-Db1" firstAttribute="top" secondItem="Oj9-a9-JTG" secondAttribute="bottom" id="hH1-yr-rWB"/>
+                            <constraint firstItem="i3h-nQ-SAp" firstAttribute="top" secondItem="mcl-en-N2e" secondAttribute="bottom" constant="10" id="q37-nr-7mW"/>
+                            <constraint firstItem="0xp-lf-DuU" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leadingMargin" id="rCb-WR-OHR"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="CON-0p-q28" appends="YES" id="2Vf-TC-PtK"/>
@@ -404,8 +431,10 @@ frame 135</string>
                     <connections>
                         <outlet property="cameraButton" destination="uZ6-D1-thS" id="g2c-uC-4OO"/>
                         <outlet property="cameraUnavailableLabel" destination="OoU-eQ-sum" id="J1U-jh-nqo"/>
+                        <outlet property="cancelButton" destination="0xp-lf-DuU" id="zso-OH-wMm"/>
                         <outlet property="focusToggleButton" destination="cJ0-Rh-Cwz" id="KWY-kv-q26"/>
                         <outlet property="lensPositionSlider" destination="TV0-Z0-OUU" id="LvC-Bw-06A"/>
+                        <outlet property="loadingPanel" destination="gEm-Ly-6Td" id="R0M-nL-Zyd"/>
                         <outlet property="previewView" destination="9Za-05-zwY" id="llM-aG-xvt"/>
                         <outlet property="recordButton" destination="mcl-en-N2e" id="i4O-yh-h1k"/>
                         <outlet property="resumeButton" destination="gwL-zO-1Pw" id="xvg-vj-GpD"/>

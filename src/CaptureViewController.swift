@@ -101,7 +101,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBOutlet var previewView: CaptureVideoPreviewView!
     @IBOutlet var cameraUnavailableLabel: UILabel!
+    @IBOutlet var loadingPanel: UIVisualEffectView!
+
     @IBOutlet var resumeButton: UIButton!
+    @IBOutlet var cancelButton: UIButton!
     @IBOutlet var recordButton: UIButton!
     @IBOutlet var cameraButton: UIButton!
     @IBOutlet var focusToggleButton: UIButton!
@@ -146,7 +149,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
         case .authorized:
             // The user has previously granted access to the camera.
-            break;
+            break
         case .notDetermined:
             // The user has not yet been presented with the option to grant video access.
             // We suspend the session queue to delay session setup until the access request has completed to avoid
@@ -160,11 +163,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                     self.sessionQueue.resume()
                 }
             }
-            break;
+            break
         default:
             // The user has previously denied access.
             self.setupResult = .cameraNotAuthorized
-            break;
+            break
         }
 
         // Setup the capture session.
@@ -276,7 +279,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                     alertController.addAction(cancelAction)
                     self.present(alertController, animated: true, completion: nil)
                 }
-                break;
+                break
             }
         }
     }
@@ -346,21 +349,30 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        // WARNING: does not run on main thread
+
         let newValue = change?[.newKey]
 
         if context == &Context.FocusMode {
             if !(newValue is NSNull) {
                 //let newMode = enumFromAny(AVCaptureFocusMode.init, newValue)!
-                self.focusToggleButton.isSelected = isAutoFocusEnabled
-                self.lensPositionSlider.isHidden = isAutoFocusEnabled
+                DispatchQueue.main.async { [weak self] in
+                    guard let ss = self else { return }
+                    let enabled = ss.isAutoFocusEnabled
+                    ss.focusToggleButton.isSelected = enabled
+                    ss.lensPositionSlider.isHidden = enabled
+                }
             }
         }
         else if context == &Context.LensPosition {
             if !(newValue is NSNull) {
                 let newLensPosition = newValue as! Float
 
-                if self.videoDevice.focusMode != .locked {
-                    self.lensPositionSlider.value = newLensPosition;
+                DispatchQueue.main.async { [weak self] in
+                    guard let ss = self else { return }
+                    if ss.videoDevice.focusMode != .locked {
+                        ss.lensPositionSlider.value = newLensPosition
+                    }
                 }
             }
         }
@@ -513,7 +525,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 // Update the orientation on the movie file output video connection before starting recording.
                 let movieConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
                 let previewLayer = self.previewView.layer 
-                movieConnection?.videoOrientation = previewLayer.connection.videoOrientation;
+                movieConnection?.videoOrientation = previewLayer.connection.videoOrientation
 
                 // Start recording to a temporary file.
                 let outputFileName = ProcessInfo.processInfo.globallyUniqueString as NSString
@@ -528,7 +540,21 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBAction
     func cancelCameraRecord(_ sender: AnyObject?) {
-        dismiss(animated: true, completion: nil)
+        //dismiss(animated: true, completion: nil)
+        cancelButton.isEnabled = false
+        recordButton.isEnabled = false
+        loadingPanel.isHidden = false
+        
+        self.sessionQueue.async { [weak self] in
+            self?.session.stopRunning()
+            if let tempFile = self?.movieFileOutput?.outputFileURL {
+                try? FileManager.default.removeItem(at: tempFile)
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.loadingPanel.isHidden = true
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
     }
 
     @IBAction
@@ -542,11 +568,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             switch self.videoDevice.position {
             case .unspecified: fallthrough
             case .front:
-                preferredPosition = .back;
-                break;
+                preferredPosition = .back
+                break
             case .back:
-                preferredPosition = .front;
-                break;
+                preferredPosition = .front
+                break
             }
 
             let newVideoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: preferredPosition)
@@ -666,7 +692,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
             self.recordButton.isEnabled = true
-            self.recordButton.setTitle(NSLocalizedString("Stop", comment: "Recording button stop title"), for: .normal)
+            self.recordButton.setTitle(NSLocalizedString("Done", comment: "Done recording video"), for: .normal)
         }
     }
 
