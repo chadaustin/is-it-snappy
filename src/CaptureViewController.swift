@@ -311,13 +311,12 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        // WARNING: does not run on main thread
-
         let newValue = change?[.newKey]
 
         if context == &Context.FocusMode {
-            if !(newValue is NSNull) {
-                //let newMode = enumFromAny(AVCaptureFocusMode.init, newValue)!
+            precondition(Thread.isMainThread)
+            if let newMode = enumFromAny(AVCaptureFocusMode.init, newValue) {
+                _ = newMode
                 DispatchQueue.main.async { [weak self] in
                     guard let ss = self else { return }
                     let enabled = ss.isAutoFocusEnabled
@@ -327,9 +326,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
         }
         else if context == &Context.LensPosition {
-            if !(newValue is NSNull) {
-                let newLensPosition = newValue as! Float
-
+            precondition(Thread.isMainThread)
+            if let newLensPosition = newValue as? Float {
                 DispatchQueue.main.async { [weak self] in
                     guard let ss = self else { return }
                     if ss.videoDevice.focusMode != .locked {
@@ -339,13 +337,17 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
         }
         else if context == &Context.SessionRunning {
-            var isRunning = false
-            if !(newValue is NSNull) {
-                isRunning = (newValue as! NSNumber).boolValue
-            }
+            // WARNING: does not run on main thread
+            dispatchPrecondition(condition: .onQueue(sessionQueue))
+            
+            let isRunning = (newValue as? NSNumber)?.boolValue ?? false
 
             DispatchQueue.main.async {
-                let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)?.devices ?? []
+                let discoverySession = AVCaptureDeviceDiscoverySession(
+                    deviceTypes: [.builtInWideAngleCamera],
+                    mediaType: AVMediaTypeVideo,
+                    position: .unspecified)
+                let devices = discoverySession?.devices ?? []
                 self.cameraButton.isEnabled = isRunning && devices.count > 1
                 self.recordButton.isEnabled = isRunning
             }
@@ -605,20 +607,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         do {
             try videoDevice.lockForConfiguration()
             videoDevice.setFocusModeLockedWithLensPosition(control.value, completionHandler: nil)
-            videoDevice.unlockForConfiguration()
-        }
-        catch let error {
-            NSLog("Could not lock device for configuration: \(error)")
-        }
-    }
-
-    @IBAction
-    func changeISO(_ sender: AnyObject?) {
-        let control = sender as! UISlider
-
-        do {
-            try self.videoDevice.lockForConfiguration()
-            videoDevice.setExposureModeCustomWithDuration(AVCaptureExposureDurationCurrent, iso: control.value, completionHandler: nil)
             videoDevice.unlockForConfiguration()
         }
         catch let error {
