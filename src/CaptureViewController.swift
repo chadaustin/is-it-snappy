@@ -15,15 +15,56 @@ enum AVCamManualSetupResult {
     case sessionConfigurationFailed
 }
 
-func enumFromAny<T>(_ ctor: (Int) -> T?, _ v: Any?) -> T? {
-    if let n = v as? NSNumber {
-        return ctor(n.intValue)
-    } else {
-        return nil
+fileprivate struct UIBits {
+    init(_ bits: UInt8) {
+        focusToggleEnabled = (bits & 8) != 0
+        toggleCameraEnabled = (bits & 4) != 0
+        cancelEnabled = (bits & 2) != 0
+        recordEnabled = (bits & 1) != 0
     }
+
+    var focusToggleEnabled: Bool
+    var toggleCameraEnabled: Bool
+    var cancelEnabled: Bool
+    var recordEnabled: Bool
+
+    static var all = UIBits(0b1111)
+    static var none = UIBits(0)
 }
 
 class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
+
+    enum State {
+        case authorizingCapture
+        case failedAuthorization
+
+        case creatingSession
+        case failedSessionCreation
+
+        case switchingCameras
+
+        case idle
+        case recording
+        case cancelling
+        case finishing
+
+        fileprivate var bits: UIBits {
+            switch self {
+            case .authorizingCapture: return .none
+            case .failedAuthorization: return .none
+
+            case .creatingSession: return .none
+            case .failedSessionCreation: return .none
+
+            case .switchingCameras: return .none
+
+            case .idle: return .all
+            case .recording: return UIBits(0b0011)
+            case .cancelling: return .none
+            case .finishing: return .none
+            }
+        }
+    }
 
     @IBOutlet var previewView: CaptureVideoPreviewView!
     @IBOutlet var cameraUnavailableLabel: UILabel!
@@ -37,9 +78,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBOutlet var lensPositionSlider: UISlider!
 
-    // Session management.
-    var sessionQueue: DispatchQueue!
-    var session: AVCaptureSession!
+    // MARK: Session management.
+
+    // Communicate with the session and other session objects on this queue.
+    var sessionQueue = DispatchQueue(label: "session queue")
+    var session = AVCaptureSession()
     var videoDeviceInput: AVCaptureDeviceInput!
     var videoDevice: AVCaptureDevice!
     var movieFileOutput: AVCaptureMovieFileOutput?
@@ -59,14 +102,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         self.focusToggleButton.isSelected = true
         self.lensPositionSlider.isHidden = true
 
-        // Create the AVCaptureSession.
-        self.session = AVCaptureSession()
-
-        // Setup the preview view.
         self.previewView.session = self.session
-
-        // Communicate with the session and other session objects on this queue.
-        self.sessionQueue = DispatchQueue(label: "session queue")
 
         self.setupResult = .success
 

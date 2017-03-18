@@ -10,6 +10,7 @@
 		0243146A1E776C0100FE87B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 024314691E776C0100FE87B2 /* Assets.xcassets */; };
 		0243146C1E77733F00FE87B2 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0243146B1E77733F00FE87B2 /* AboutViewController.swift */; };
 		026910DA1E7B6815003A3FAA /* AVUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026910D91E7B6815003A3FAA /* AVUtil.swift */; };
+		026910DC1E7C3AAD003A3FAA /* SwiftUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */; };
 		029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029844811E6F9B590054D943 /* MarkDatabase.swift */; };
 		63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD61E61E03D007278A0 /* AppDelegate.swift */; };
 		63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CaptureViewController.swift */; };
@@ -37,6 +38,7 @@
 		024314691E776C0100FE87B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = src/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		0243146B1E77733F00FE87B2 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AboutViewController.swift; path = src/AboutViewController.swift; sourceTree = "<group>"; };
 		026910D91E7B6815003A3FAA /* AVUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVUtil.swift; path = src/AVUtil.swift; sourceTree = "<group>"; };
+		026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtil.swift; path = src/SwiftUtil.swift; sourceTree = "<group>"; };
 		029844811E6F9B590054D943 /* MarkDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MarkDatabase.swift; path = src/MarkDatabase.swift; sourceTree = "<group>"; };
 		63178FD61E61E03D007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = src/AppDelegate.swift; sourceTree = "<group>"; };
 		63178FD71E61E03D007278A0 /* CaptureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureViewController.swift; path = src/CaptureViewController.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				029844811E6F9B590054D943 /* MarkDatabase.swift */,
 				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 				026910D91E7B6815003A3FAA /* AVUtil.swift */,
+				026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
 				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
 				029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */,
+				026910DC1E7C3AAD003A3FAA /* SwiftUtil.swift in Sources */,
 				63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */,
 				026910DA1E7B6815003A3FAA /* AVUtil.swift in Sources */,
 				63178FE11E61E03D007278A0 /* PlayerView.swift in Sources */,
