@@ -9,12 +9,6 @@ fileprivate struct Context {
     static var LensPosition = 5
 }
 
-enum AVCamManualSetupResult {
-    case success
-    case cameraNotAuthorized
-    case sessionConfigurationFailed
-}
-
 fileprivate struct UIBits {
     init(_ bits: UInt8) {
         focusToggleEnabled = (bits & 8) != 0
@@ -64,6 +58,23 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             case .finishing: return .none
             }
         }
+
+        var isFailure: Bool? {
+            switch self {
+            case .authorizingCapture: return .none
+            case .failedAuthorization: return true
+
+            case .creatingSession: return .none
+            case .failedSessionCreation: return true
+
+            case .switchingCameras: return false
+
+            case .idle: return false
+            case .recording: return false
+            case .cancelling: return false
+            case .finishing: return false
+            }
+        }
     }
 
     @IBOutlet var previewView: CaptureVideoPreviewView!
@@ -87,24 +98,29 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     var videoDevice: AVCaptureDevice!
     var movieFileOutput: AVCaptureMovieFileOutput?
 
-    // Utilities.
-    var setupResult: AVCamManualSetupResult!
+    var currentState = State.authorizingCapture {
+        didSet {
+            precondition(Thread.isMainThread)
+            updateUI(bits: currentState.bits)
+        }
+    }
     var isSessionRunning: Bool!
     var backgroundRecordingID: UIBackgroundTaskIdentifier!
 
+    deinit {
+        observing = false
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Disable UI. The UI is enabled if and only if the session starts running.
-        self.cameraButton.isEnabled = false
-        self.recordButton.isEnabled = false
 
         self.focusToggleButton.isSelected = true
         self.lensPositionSlider.isHidden = true
 
         self.previewView.session = self.session
 
-        self.setupResult = .success
+        // This has a side effect of disabling all the initial UI.
+        self.currentState = .authorizingCapture
 
         // Check video authorization status. Video access is required and audio access is optional.
         // If audio access is denied, audio is not recorded during movie recording.
@@ -119,16 +135,18 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             // Note that audio access will be implicitly requested when we create an AVCaptureDeviceInput for audio during session setup.
             self.sessionQueue.suspend()
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
-                if !granted {
-                    self.setupResult = .cameraNotAuthorized
-                } else {
-                    self.sessionQueue.resume()
+                DispatchQueue.main.async {
+                    if !granted {
+                        self.currentState = .failedAuthorization
+                    } else {
+                        self.sessionQueue.resume()
+                    }
                 }
             }
             break
         default:
             // The user has previously denied access.
-            self.setupResult = .cameraNotAuthorized
+            self.currentState = .failedAuthorization
             break
         }
 
@@ -138,87 +156,104 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         // Because -[AVCaptureSession startRunning] is a blocking call which can take a long time. We dispatch session setup to the sessionQueue
         // so that the main queue isn't blocked, which keeps the UI responsive.
         self.sessionQueue.async {
-            if self.setupResult != .success {
+            if self.currentState == .failedAuthorization {
                 return
+            }
+            DispatchQueue.main.async {
+                self.currentState = .creatingSession
             }
 
             self.backgroundRecordingID = UIBackgroundTaskInvalid
 
             let videoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back)!
 
-            var videoDeviceInput: AVCaptureDeviceInput?
-            do {
-                videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
-            }
-            catch let error {
-                NSLog("Could not create video device input: \(error)")
-            }
-
             self.session.beginConfiguration()
-            if let videoDeviceInput = videoDeviceInput, self.session.canAddInput(videoDeviceInput) {
-                self.session.addInput(videoDeviceInput)
-                self.videoDeviceInput = videoDeviceInput
-                self.videoDevice = videoDevice
+            defer {
+                self.session.commitConfiguration()
+            }
 
-                videoDevice.setBestFormat()
-
-                DispatchQueue.main.async {
-                    // Why are we dispatching this to the main queue?
-                    // Because AVCaptureVideoPreviewLayer is the backing layer for AAPLPreviewView and UIView
-                    // can only be manipulated on the main thread.
-                    // Note: As an exception to the above rule, it is not necessary to serialize video orientation changes
-                    // on the AVCaptureVideoPreviewLayer’s connection with other session manipulation.
-
-                    // Use the status bar orientation as the initial video orientation. Subsequent orientation changes are handled by
-                    // -[viewWillTransitionToSize:withTransitionCoordinator:].
-                    let statusBarOrientation = UIApplication.shared.statusBarOrientation
-                    var initialVideoOrientation = AVCaptureVideoOrientation.portrait
-                    if  statusBarOrientation != .unknown {
-                        initialVideoOrientation = AVCaptureVideoOrientation(interfaceOrientation: statusBarOrientation)
-                    }
-
-                    let previewLayer = self.previewView.layer
-                    previewLayer.connection.videoOrientation = initialVideoOrientation
+            guard let videoDeviceInput: AVCaptureDeviceInput = {
+                do {
+                    return try AVCaptureDeviceInput(device: videoDevice)
                 }
-            } else {
+                catch let error {
+                    NSLog("Could not create video device input: \(error)")
+                    return nil
+                }
+            }() else {
+                DispatchQueue.main.async {
+                    self.currentState = .failedSessionCreation
+                }
+                return
+            }
+
+            guard self.session.canAddInput(videoDeviceInput) else {
                 NSLog("Could not add video device input to the session")
-                self.setupResult = .sessionConfigurationFailed
+                DispatchQueue.main.async {
+                    self.currentState = .failedSessionCreation
+                }
+                return
+            }
+
+            self.session.addInput(videoDeviceInput)
+            self.videoDeviceInput = videoDeviceInput
+            self.videoDevice = videoDevice
+
+            videoDevice.setBestFormat()
+
+            DispatchQueue.main.async {
+                // Why are we dispatching this to the main queue?
+                // Because AVCaptureVideoPreviewLayer is the backing layer for CaptureVideoPreviewView and UIView
+                // can only be manipulated on the main thread.
+                // Note: As an exception to the above rule, it is not necessary to serialize video orientation changes
+                // on the AVCaptureVideoPreviewLayer’s connection with other session manipulation.
+
+                // Use the status bar orientation as the initial video orientation. Subsequent orientation changes are handled by
+                // -[viewWillTransitionToSize:withTransitionCoordinator:].
+                let statusBarOrientation = UIApplication.shared.statusBarOrientation
+                var initialVideoOrientation = AVCaptureVideoOrientation.portrait
+                if  statusBarOrientation != .unknown {
+                    initialVideoOrientation = AVCaptureVideoOrientation(interfaceOrientation: statusBarOrientation)
+                }
+
+                let previewLayer = self.previewView.layer
+                previewLayer.connection.videoOrientation = initialVideoOrientation
             }
 
             let movieFileOutput = AVCaptureMovieFileOutput()
-            if self.session.canAddOutput(movieFileOutput) {
-                self.session.addOutput(movieFileOutput)
-                let connection: AVCaptureConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
-                if connection.isVideoStabilizationSupported {
-                    connection.preferredVideoStabilizationMode = .auto
-                }
-                self.movieFileOutput = movieFileOutput
-            }
-            else {
+            guard self.session.canAddOutput(movieFileOutput) else {
                 NSLog("Could not add movie file output to the session")
-                self.setupResult = .sessionConfigurationFailed
+                DispatchQueue.main.async {
+                    self.currentState = .failedSessionCreation
+                }
+                return
             }
 
-            self.session.commitConfiguration()
+            self.session.addOutput(movieFileOutput)
+            let connection: AVCaptureConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
+            connection.preferredVideoStabilizationMode = .off // The less processing for this app, the better.
+            self.movieFileOutput = movieFileOutput
 
             DispatchQueue.main.async {
+                self.currentState = .idle
                 self.configureManualHUD()
             }
         }
+    }
+
+    fileprivate func updateUI(bits: UIBits) {
+        self.cancelButton.isEnabled = bits.cancelEnabled
+        self.focusToggleButton.isEnabled = bits.focusToggleEnabled
+        self.cameraButton.isEnabled = bits.toggleCameraEnabled
+        self.recordButton.isEnabled = bits.recordEnabled
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         self.sessionQueue.async {
-            switch self.setupResult! {
-            case .success:
-				// Only setup observers and start the session running if setup succeeded.
-                self.addObservers()
-                self.session.startRunning()
-				self.isSessionRunning = self.session.isRunning
-				break
-            case .cameraNotAuthorized:
+            switch self.currentState {
+            case .failedAuthorization:
                 DispatchQueue.main.async {
                     let message = NSLocalizedString("AVCamManual doesn't have permission to use the camera, please change privacy settings", comment: "Alert message when the user has denied access to the camera")
                     let alertController = UIAlertController(title: "AVCamManual", message: message, preferredStyle: .alert)
@@ -232,8 +267,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                     alertController.addAction(settingsAction)
                     self.present(alertController, animated: true, completion: nil)
 				}
-				break
-            case .sessionConfigurationFailed:
+            case .failedSessionCreation:
                 DispatchQueue.main.async {
                     let message = NSLocalizedString("Unable to capture media", comment: "Alert message when something goes wrong during capture session configuration")
                     let alertController = UIAlertController(title: "AVCamManual", message: message, preferredStyle: .alert)
@@ -241,16 +275,21 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                     alertController.addAction(cancelAction)
                     self.present(alertController, animated: true, completion: nil)
                 }
-                break
+            default:
+                precondition(self.currentState.isFailure != .some(true))
+                // Only setup observers and start the session running if setup succeeded.
+                self.observing = true
+                self.session.startRunning()
+                self.isSessionRunning = self.session.isRunning
             }
         }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         self.sessionQueue.async {
-            if self.setupResult == .success {
+            if self.currentState.isFailure == .some(false) {
                 self.session.stopRunning()
-                self.removeObservers()
+                self.observing = false
             }
         }
 
@@ -285,14 +324,25 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     // MARK: KVO and Notifications
 
-    func addObservers() {
+    var observing: Bool = false {
+        didSet {
+            guard oldValue != observing else { return }
+            if observing {
+                _addObservers()
+            } else {
+                _removeObservers()
+            }
+        }
+    }
+
+    func _addObservers() {
         self.addObserver(self, forKeyPath: "session.running", options: .new, context: &Context.SessionRunning)
 
         self.addObserver(self, forKeyPath: "videoDevice.focusMode", options: [.old, .new], context: &Context.FocusMode)
         self.addObserver(self, forKeyPath: "videoDevice.lensPosition", options: .new, context: &Context.LensPosition)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object:self.videoDevice)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: NSNotification.Name.AVCaptureSessionRuntimeError, object:self.session)
+        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: self.videoDevice)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: NSNotification.Name.AVCaptureSessionRuntimeError, object: self.session)
         // A session can only run when the app is full screen. It will be interrupted in a multi-app layout, introduced in iOS 9,
         // see also the documentation of AVCaptureSessionInterruptionReason. Add observers to handle these session interruptions
         // and show a preview is paused message. See the documentation of AVCaptureSessionWasInterruptedNotification for other
@@ -301,7 +351,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: NSNotification.Name.AVCaptureSessionInterruptionEnded,  object: self.session)
     }
 
-    func removeObservers() {
+    func _removeObservers() {
         NotificationCenter.default.removeObserver(self)
 
         removeObserver(self, forKeyPath: "session.running", context: &Context.SessionRunning)
@@ -314,7 +364,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let newValue = change?[.newKey]
 
         if context == &Context.FocusMode {
-            precondition(Thread.isMainThread)
+            //precondition(Thread.isMainThread)
             if let newMode = enumFromAny(AVCaptureFocusMode.init, newValue) {
                 _ = newMode
                 DispatchQueue.main.async { [weak self] in
@@ -326,7 +376,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
         }
         else if context == &Context.LensPosition {
-            precondition(Thread.isMainThread)
+            //precondition(Thread.isMainThread)
             if let newLensPosition = newValue as? Float {
                 DispatchQueue.main.async { [weak self] in
                     guard let ss = self else { return }
@@ -551,9 +601,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
                 self.session.addInput(newVideoDeviceInput)
                 self.videoDeviceInput = newVideoDeviceInput
-                self.removeObservers()
+                self.observing = false
                 self.videoDevice = newVideoDevice
-                self.addObservers()
+                self.observing = true
             }
             else {
                 self.session.addInput(self.videoDeviceInput)
@@ -743,6 +793,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 NSLog("Could not lock device for configuration: \(error)")
                 return
             }
+            defer {
+                device.unlockForConfiguration()
+            }
 
             // Setting (focus/exposure)PointOfInterest alone does not initiate a (focus/exposure) operation.
             // Call -set(Focus/Exposure)Mode: to apply the new point of interest.
@@ -757,7 +810,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
             
             device.isSubjectAreaChangeMonitoringEnabled = monitorSubjectAreaChange
-            device.unlockForConfiguration()
         }
     }
 
