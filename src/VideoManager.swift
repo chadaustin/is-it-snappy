@@ -1,10 +1,9 @@
 import Photos
 
 // TODO: switch to a uuid / local identifier
-//let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"]! as! String
-
-// testing for now
-let appName = "Is It Snappy"
+// The problem with that is we'd have to store the local identifier after running, which would get discarded
+// when reinstalling the app.  So displayname is perhaps the best key for the album.  :/
+let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"]! as! String
 
 typealias Token = Int
 
@@ -133,7 +132,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     static func getAlbum(handler: @escaping (PHAssetCollection) -> ()) {
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "title = %@", appName)
-        let collection : PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+        let collection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
         //Check return value - If found, then get the first album out
         if let _: AnyObject = collection.firstObject {
             handler(collection.firstObject!)
@@ -146,8 +145,9 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
             }, completionHandler: { success, error in
                 if success {
                     let collectionFetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [assetCollectionPlaceholder.localIdentifier], options: nil)
-                    print(collectionFetchResult)
-                    handler(collectionFetchResult.firstObject!)
+                    DispatchQueue.main.async {
+                        handler(collectionFetchResult.firstObject!)
+                    }
                 } else {
                     // some kind of error
                 }
