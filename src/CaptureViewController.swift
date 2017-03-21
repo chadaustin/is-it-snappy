@@ -388,7 +388,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
         else if context == &Context.SessionRunning {
             // WARNING: does not run on main thread
-            dispatchPrecondition(condition: .onQueue(sessionQueue))
+            //dispatchPrecondition(condition: .onQueue(sessionQueue))
             
             let isRunning = (newValue as? NSNumber)?.boolValue ?? false
 
