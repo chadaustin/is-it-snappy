@@ -50,10 +50,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         fileprivate var bits: UIBits {
             switch self {
             case .authorizingCapture: return .none
-            case .failedAuthorization: return .none
+            case .failedAuthorization: return UIBits(0b0010)
 
             case .creatingSession: return .none
-            case .failedSessionCreation: return .none
+            case .failedSessionCreation: return UIBits(0b0010)
 
             case .switchingCameras: return .none
 
@@ -658,7 +658,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBAction
     func focusAndExposeTap(_ gestureRecognizer: UIGestureRecognizer) {
-        if self.videoDevice.focusMode != .locked && self.videoDevice.exposureMode != .custom {
+        guard let videoDevice = self.videoDevice else {
+            // Don't crash when camera access is denied.
+            return
+        }
+        if videoDevice.focusMode != .locked && videoDevice.exposureMode != .custom {
             let devicePoint = self.previewView.layer.captureDevicePointOfInterest(for: gestureRecognizer.location(in: gestureRecognizer.view))
             self.focusWithMode(.continuousAutoFocus, exposeWithMode: .continuousAutoExposure, atDevicePoint: devicePoint, monitorSubjectAreaChange: true)
         }

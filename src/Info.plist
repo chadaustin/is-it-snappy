@@ -23,7 +23,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>For capturing high-frame videos.</string>
+	<string>To capture high frame rate videos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Captured videos are stored in the photo library.</string>
 	<key>UILaunchStoryboardName</key>
