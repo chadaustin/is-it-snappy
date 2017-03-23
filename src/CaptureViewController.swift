@@ -10,20 +10,25 @@ fileprivate struct Context {
 }
 
 fileprivate struct UIBits {
-    init(_ bits: UInt8) {
+    init(_ bits: UInt8, loadingText: String? = nil) {
         focusToggleEnabled = (bits & 8) != 0
         toggleCameraEnabled = (bits & 4) != 0
         cancelEnabled = (bits & 2) != 0
         recordEnabled = (bits & 1) != 0
+        self.loadingText = loadingText
     }
 
     var focusToggleEnabled: Bool
     var toggleCameraEnabled: Bool
     var cancelEnabled: Bool
     var recordEnabled: Bool
+    var loadingText: String?
 
     static var all = UIBits(0b1111)
     static var none = UIBits(0)
+    static func noneWith(loadingText: String) -> UIBits {
+        return UIBits(0, loadingText: loadingText)
+    }
 }
 
 class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
@@ -54,8 +59,28 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
             case .idle: return .all
             case .recording: return UIBits(0b0011)
-            case .cancelling: return .none
-            case .finishing: return .none
+            case .cancelling: return .noneWith(loadingText: "Cancelling")
+            case .finishing: return .noneWith(loadingText: "Saving")
+            }
+        }
+        
+        fileprivate var recordButtonText: String {
+            let recordText = NSLocalizedString("Record", comment: "Begin recording video")
+            let doneText = NSLocalizedString("Done", comment: "Done recording video")
+
+            switch self {
+            case .authorizingCapture: return recordText
+            case .failedAuthorization: return recordText
+
+            case .creatingSession: return recordText
+            case .failedSessionCreation: return recordText
+            
+            case .switchingCameras: return recordText
+                
+            case .idle: return recordText
+            case .recording: return doneText
+            case .cancelling: return doneText
+            case .finishing: return doneText
             }
         }
 
@@ -101,9 +126,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     var currentState = State.authorizingCapture {
         didSet {
             precondition(Thread.isMainThread)
-            updateUI(bits: currentState.bits)
+            updateUI(bits: currentState.bits, recordButtonText: currentState.recordButtonText)
         }
     }
+    
     var isSessionRunning: Bool!
     var backgroundRecordingID: UIBackgroundTaskIdentifier!
 
@@ -241,11 +267,19 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    fileprivate func updateUI(bits: UIBits) {
+    fileprivate func updateUI(bits: UIBits, recordButtonText: String) {
         self.cancelButton.isEnabled = bits.cancelEnabled
         self.focusToggleButton.isEnabled = bits.focusToggleEnabled
-        self.cameraButton.isEnabled = bits.toggleCameraEnabled
+        self.cameraButton.isEnabled = bits.toggleCameraEnabled && CaptureViewController.deviceSupportsMultipleCameras
         self.recordButton.isEnabled = bits.recordEnabled
+        self.recordButton.setTitle(recordButtonText, for: .normal)
+        if let loadingText = bits.loadingText {
+            self.loadingPanel.isHidden = false
+            // TODO: update text
+            _ = loadingText
+        } else {
+            self.loadingPanel.isHidden = true
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -393,12 +427,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             let isRunning = (newValue as? NSNumber)?.boolValue ?? false
 
             DispatchQueue.main.async {
-                let discoverySession = AVCaptureDeviceDiscoverySession(
-                    deviceTypes: [.builtInWideAngleCamera],
-                    mediaType: AVMediaTypeVideo,
-                    position: .unspecified)
-                let devices = discoverySession?.devices ?? []
-                self.cameraButton.isEnabled = isRunning && devices.count > 1
+                // TODO: how does this interact with UIBits?
+                self.cameraButton.isEnabled = isRunning && CaptureViewController.deviceSupportsMultipleCameras
                 self.recordButton.isEnabled = isRunning
             }
         }
@@ -406,13 +436,14 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-
-    static var discoverySession: AVCaptureDeviceDiscoverySession {
-        return AVCaptureDeviceDiscoverySession(
+    
+    static var deviceSupportsMultipleCameras: Bool = {
+        let discoverySession = AVCaptureDeviceDiscoverySession(
             deviceTypes: [.builtInWideAngleCamera],
             mediaType: AVMediaTypeVideo,
-            position: .back)
-    }
+            position: .unspecified)
+        return (discoverySession?.devices.count ?? 0) > 1
+    }()
 
     func subjectAreaDidChange(_ notification: NSNotification) {
         let devicePoint = CGPoint(x: 0.5, y: 0.5)
@@ -520,11 +551,15 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBAction
     func toggleMovieRecording(_ sender: AnyObject?) {
-        // Disable the Camera button until recording finishes, and disable the Record button until recording starts or finishes. See the
-        // AVCaptureFileOutputRecordingDelegate methods.
-        self.cameraButton.isEnabled = false
-        self.recordButton.isEnabled = false
-
+        switch currentState {
+        case .idle:
+            currentState = .recording
+        case .recording:
+            currentState = .finishing
+        default:
+            fatalError("Should never be able to toggle recording from another state")
+        }
+        
         self.sessionQueue.async {
             if let movieFileOutput = self.movieFileOutput,
                 !movieFileOutput.isRecording {
@@ -553,27 +588,24 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     @IBAction
     func cancelCameraRecord(_ sender: AnyObject?) {
-        //dismiss(animated: true, completion: nil)
-        cancelButton.isEnabled = false
-        recordButton.isEnabled = false
-        loadingPanel.isHidden = false
-        
-        self.sessionQueue.async { [weak self] in
-            self?.session.stopRunning()
-            if let tempFile = self?.movieFileOutput?.outputFileURL {
-                try? FileManager.default.removeItem(at: tempFile)
+        switch currentState {
+        case .idle:
+            dismiss(animated: true, completion: nil)
+        case .recording:
+            currentState = .cancelling
+            self.sessionQueue.async { [weak self] in
+                self?.session.stopRunning()
             }
-            DispatchQueue.main.async { [weak self] in
-                self?.loadingPanel.isHidden = true
-                self?.dismiss(animated: true, completion: nil)
-            }
+        default:
+            fatalError("Cannot cancel in unexpected state \(currentState)")
         }
     }
 
     @IBAction
     func changeCamera(_ sender: AnyObject?) {
-        self.cameraButton.isEnabled = false
-        self.recordButton.isEnabled = false
+        precondition(Thread.isMainThread)
+        
+        self.currentState = .switchingCameras
 
         self.sessionQueue.async {
             var preferredPosition = AVCaptureDevicePosition.unspecified
@@ -618,9 +650,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             self.session.commitConfiguration()
 
             DispatchQueue.main.async {
-                self.cameraButton.isEnabled = true
-                self.recordButton.isEnabled = true
-
+                self.currentState = .idle
                 self.configureManualHUD()
             }
         }
@@ -690,8 +720,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     func capture(_ captureOutput: AVCaptureFileOutput, didStartRecordingToOutputFileAt fileURL: URL, fromConnections connections: [Any]) {
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
-            self.recordButton.isEnabled = true
-            self.recordButton.setTitle(NSLocalizedString("Done", comment: "Done recording video"), for: .normal)
+            self.currentState = .recording
         }
     }
 
@@ -701,6 +730,18 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         fromConnections connections: [Any]!,
         error: Error!
     ) {
+        // Yikes, this isn't necessarily called on the main thread, but I need access to the current state.
+        let cancelling: Bool
+        switch currentState {
+        case .cancelling:
+            cancelling = true
+        case .finishing:
+            cancelling = false
+        default:
+            NSLog("Movie stopped recording in unexpected state")
+            cancelling = true
+        }
+        
         // Note that currentBackgroundRecordingID is used to end the background task associated with this recording.
         // This allows a new recording to be started, associated with a new UIBackgroundTaskIdentifier, once the movie file output's isRecording property
         // is back to NO — which happens sometime after this method returns.
@@ -708,76 +749,77 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let currentBackgroundRecordingID = self.backgroundRecordingID
         self.backgroundRecordingID = UIBackgroundTaskInvalid
 
-        loadingPanel.isHidden = false
-
         func cleanup() {
-            loadingPanel.isHidden = true
+            DispatchQueue.main.async {
+                self.currentState = .idle
+            }
             try? FileManager.default.removeItem(at: outputFileURL)
             if currentBackgroundRecordingID != UIBackgroundTaskInvalid {
                 UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID!)
             }
         }
 
-        var success = true
-
-        if error != nil {
-            let error = error as NSError
+        let success: Bool
+        if let error = error as NSError? {
             NSLog("Movie file finishing error: \(error)")
             success = (error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as! NSNumber).boolValue
+        } else {
+            success = true
+        }
+        
+        guard success && !cancelling else {
+            cleanup()
+            if cancelling {
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+            return
         }
 
-        if success {
-            var newLocalIdentifier: String?
-            VideoManager.getAlbum { assetCollection in
-                // Check authorization status.
-                PHPhotoLibrary.requestAuthorization { status in
-                    if status == .authorized {
-                        // Save the movie file to the photo library and cleanup.
-                        PHPhotoLibrary.shared().performChanges({
-                            // In iOS 9 and later, it's possible to move the file into the photo library without duplicating the file data.
-                            // This avoids using double the disk space during save, which can make a difference on devices with limited free disk space.
-                            let options = PHAssetResourceCreationOptions()
-                            options.shouldMoveFile = true
-                            let changeRequest = PHAssetCreationRequest.forAsset()
-                            changeRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                            let placeholder = changeRequest.placeholderForCreatedAsset!
-                            newLocalIdentifier = placeholder.localIdentifier
-                            let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
-                            albumChangeRequest!.addAssets([placeholder] as NSArray)
-                        }) { success, error in
-                            if !success {
-                                NSLog("Could not save movie to photo library: \(error)")
-                            }
-                            cleanup()
+        var newLocalIdentifier: String?
+        VideoManager.getAlbum { assetCollection in
+            // Check authorization status.
+            PHPhotoLibrary.requestAuthorization { status in
+                guard status == .authorized else {
+                    cleanup()
+                    return
+                }
+                
+                // Save the movie file to the photo library and cleanup.
+                PHPhotoLibrary.shared().performChanges({
+                    // In iOS 9 and later, it's possible to move the file into the photo library without duplicating the file data.
+                    // This avoids using double the disk space during save, which can make a difference on devices with limited free disk space.
+                    let options = PHAssetResourceCreationOptions()
+                    options.shouldMoveFile = true
+                    let changeRequest = PHAssetCreationRequest.forAsset()
+                    changeRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
+                    let placeholder = changeRequest.placeholderForCreatedAsset!
+                    newLocalIdentifier = placeholder.localIdentifier
+                    let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
+                    albumChangeRequest!.addAssets([placeholder] as NSArray)
+                }) { success, error in
+                    guard success else {
+                        NSLog("Could not save movie to photo library: \(error)")
+                        cleanup()
+                        return
+                    }
 
-                            if let localIdentifier = newLocalIdentifier {
-                                let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
-                                if let firstAsset = results.firstObject {
-                                    DispatchQueue.main.async {
-                                        let model = VideoModel(asset: firstAsset)
-                                        self.dismiss(animated: true, completion: nil)
-                                        CaptureListViewController.live?.presentMarkViewController(for: model) {
-                                        }
-                                    }
+                    // guaranteed to be set in previous callback
+                    let localIdentifier = newLocalIdentifier!
+                    let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
+                    if let firstAsset = results.firstObject {
+                        DispatchQueue.main.async {
+                            let model = VideoModel(asset: firstAsset)
+                            self.dismiss(animated: true) {
+                                self.currentState = .idle
+                                CaptureListViewController.live?.presentMarkViewController(for: model) {
                                 }
                             }
                         }
-                    } else {
-                        cleanup()
                     }
                 }
             }
-        } else {
-            cleanup()
-        }
-
-        // Enable the Camera and Record buttons to let the user switch camera and start another recording.
-        DispatchQueue.main.async {
-            // Only enable the ability to change camera if the device has more than one camera.
-            let devices = CaptureViewController.discoverySession.devices ?? []
-            self.cameraButton.isEnabled = devices.count > 1
-            self.recordButton.isEnabled = true
-            self.recordButton.setTitle(NSLocalizedString("Record", comment: "Recording button record title"), for: .normal)
         }
     }
 
