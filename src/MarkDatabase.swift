@@ -96,6 +96,11 @@ class MarkDatabase {
         return marks[localIdentifier]
     }
 
+    func delete(localIdentifier: String) {
+        marks[localIdentifier] = nil
+        save()
+    }
+
     func save() {
         var marksJSON: [String: Any] = [:]
         for (url, mark) in marks {

@@ -64,11 +64,10 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let action = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
-            let model = self.groups[indexPath.section].videos[indexPath.row]
-            try? PHPhotoLibrary.shared().performChangesAndWait {
-                PHAssetChangeRequest.deleteAssets([model.asset] as NSArray)
-            }
+        let action = UITableViewRowAction(style: .destructive, title: "Delete") { [weak self] action, indexPath in
+            guard let ss = self else { return }
+            let model = ss.groups[indexPath.section].videos[indexPath.row]
+            ss.deleteVideoAndMark(model)
         }
         return [action]
     }
@@ -79,6 +78,14 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         presentMarkViewController(for: model) {
             tableView.deselectRow(at: indexPath, animated: true)
         }
+    }
+
+    func deleteVideoAndMark(_ model: VideoModel) {
+        let localIdentifier = model.asset.localIdentifier
+        try? PHPhotoLibrary.shared().performChangesAndWait {
+            PHAssetChangeRequest.deleteAssets([model.asset] as NSArray)
+        }
+        MarkDatabase.shared.delete(localIdentifier: localIdentifier)
     }
 
     func presentMarkViewController(for model: VideoModel, completion: @escaping () -> Void) {
