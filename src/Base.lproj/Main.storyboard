@@ -62,13 +62,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chad Austin © 2017" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D78-dR-qHL">
-                                <rect key="frame" x="84" y="89" width="153" height="21"/>
+                                <rect key="frame" x="84" y="133" width="153" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ehm-hU-abp">
-                                <rect key="frame" x="16" y="52" width="288" height="29"/>
+                                <rect key="frame" x="16" y="96" width="288" height="29"/>
                                 <string key="text">Is It Snappy?
 </string>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
@@ -89,10 +89,50 @@
                             <constraint firstItem="32U-Cl-85d" firstAttribute="top" secondItem="BWF-hU-DIc" secondAttribute="bottom" constant="20" id="ujg-Li-9LP"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="About" id="66w-Fd-73s">
+                        <barButtonItem key="rightBarButtonItem" title="Help" id="8ze-h5-PQp">
+                            <connections>
+                                <segue destination="aNG-QP-9c7" kind="show" id="fiQ-99-5Am"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wTW-Qg-NEo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2306" y="513"/>
+        </scene>
+        <!--Help-->
+        <scene sceneID="VdI-cd-HXW">
+            <objects>
+                <viewController title="Help" id="aNG-QP-9c7" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0I4-hV-4IR"/>
+                        <viewControllerLayoutGuide type="bottom" id="ytP-7c-RrN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="uVW-OJ-tDz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The database blah blah blah blah blah blah blah" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FoO-gW-aMy">
+                                <rect key="frame" x="16" y="64" width="288" height="504"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ytP-7c-RrN" firstAttribute="top" secondItem="FoO-gW-aMy" secondAttribute="bottom" id="9hU-ry-8da"/>
+                            <constraint firstItem="FoO-gW-aMy" firstAttribute="leading" secondItem="uVW-OJ-tDz" secondAttribute="leadingMargin" id="FRz-kr-9vM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="FoO-gW-aMy" secondAttribute="trailing" id="Fhk-IU-gag"/>
+                            <constraint firstItem="FoO-gW-aMy" firstAttribute="top" secondItem="0I4-hV-4IR" secondAttribute="bottom" id="NAb-tl-vkW"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9Xe-Co-k8a" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1505.625" y="514.43661971830988"/>
         </scene>
         <!--Capture List-->
         <scene sceneID="GvW-vZ-Y6U">
@@ -264,7 +304,7 @@ frame 135</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUU-Tt-FxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1008.75" y="605.28169014084506"/>
+            <point key="canvasLocation" x="-564" y="546"/>
         </scene>
         <!--Capture-->
         <scene sceneID="o5M-B8-Hza">
