@@ -12,6 +12,9 @@
 		026910DA1E7B6815003A3FAA /* AVUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026910D91E7B6815003A3FAA /* AVUtil.swift */; };
 		026910DC1E7C3AAD003A3FAA /* SwiftUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */; };
 		029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029844811E6F9B590054D943 /* MarkDatabase.swift */; };
+		02CCFCB71E856F7E0061F41D /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CCFCB61E856F7E0061F41D /* HelpViewController.swift */; };
+		02CCFCB91E85714E0061F41D /* help.html in Resources */ = {isa = PBXBuildFile; fileRef = 02CCFCB81E85714E0061F41D /* help.html */; };
+		02CCFCBB1E8572F90061F41D /* help.css in Resources */ = {isa = PBXBuildFile; fileRef = 02CCFCBA1E8572F90061F41D /* help.css */; };
 		63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD61E61E03D007278A0 /* AppDelegate.swift */; };
 		63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD71E61E03D007278A0 /* CaptureViewController.swift */; };
 		63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */; };
@@ -40,6 +43,9 @@
 		026910D91E7B6815003A3FAA /* AVUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVUtil.swift; path = src/AVUtil.swift; sourceTree = "<group>"; };
 		026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtil.swift; path = src/SwiftUtil.swift; sourceTree = "<group>"; };
 		029844811E6F9B590054D943 /* MarkDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MarkDatabase.swift; path = src/MarkDatabase.swift; sourceTree = "<group>"; };
+		02CCFCB61E856F7E0061F41D /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HelpViewController.swift; path = src/HelpViewController.swift; sourceTree = "<group>"; };
+		02CCFCB81E85714E0061F41D /* help.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = help.html; path = assets/help.html; sourceTree = SOURCE_ROOT; };
+		02CCFCBA1E8572F90061F41D /* help.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = help.css; path = assets/help.css; sourceTree = SOURCE_ROOT; };
 		63178FD61E61E03D007278A0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = src/AppDelegate.swift; sourceTree = "<group>"; };
 		63178FD71E61E03D007278A0 /* CaptureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureViewController.swift; path = src/CaptureViewController.swift; sourceTree = "<group>"; };
 		63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureVideoPreviewView.swift; path = src/CaptureVideoPreviewView.swift; sourceTree = "<group>"; };
@@ -84,6 +90,7 @@
 				63178FDC1E61E03D007278A0 /* MarkViewController.swift */,
 				63178FD81E61E03D007278A0 /* CaptureVideoPreviewView.swift */,
 				0243146B1E77733F00FE87B2 /* AboutViewController.swift */,
+				02CCFCB61E856F7E0061F41D /* HelpViewController.swift */,
 				63178FDA1E61E03D007278A0 /* PlayerView.swift */,
 				63178FDD1E61E03D007278A0 /* VideoManager.swift */,
 				029844811E6F9B590054D943 /* MarkDatabase.swift */,
@@ -120,6 +127,8 @@
 				63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */,
 				63D4DE241E61E10200716F26 /* Main.storyboard */,
 				63D4DE1E1E61E08600716F26 /* Info.plist */,
+				02CCFCB81E85714E0061F41D /* help.html */,
+				02CCFCBA1E8572F90061F41D /* help.css */,
 			);
 			name = extra;
 			path = IsItSnappy;
@@ -221,8 +230,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */,
+				02CCFCBB1E8572F90061F41D /* help.css in Resources */,
 				0243146A1E776C0100FE87B2 /* Assets.xcassets in Resources */,
 				63D4DE271E61E10200716F26 /* Main.storyboard in Resources */,
+				02CCFCB91E85714E0061F41D /* help.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,6 +258,7 @@
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
 				63178FE01E61E03D007278A0 /* CaptureVideoPreviewView.swift in Sources */,
 				029844821E6F9B590054D943 /* MarkDatabase.swift in Sources */,
+				02CCFCB71E856F7E0061F41D /* HelpViewController.swift in Sources */,
 				026910DC1E7C3AAD003A3FAA /* SwiftUtil.swift in Sources */,
 				63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */,
 				026910DA1E7B6815003A3FAA /* AVUtil.swift in Sources */,
