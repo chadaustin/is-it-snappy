@@ -34,9 +34,6 @@ fileprivate struct UIBits {
 class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
 
     enum State {
-        case authorizingCapture
-        case failedAuthorization
-
         case creatingSession
         case failedSessionCreation
 
@@ -49,9 +46,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         fileprivate var bits: UIBits {
             switch self {
-            case .authorizingCapture: return .none
-            case .failedAuthorization: return UIBits(0b0010)
-
             case .creatingSession: return .none
             case .failedSessionCreation: return UIBits(0b0010)
 
@@ -69,9 +63,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             let doneText = NSLocalizedString("Done", comment: "Done recording video")
 
             switch self {
-            case .authorizingCapture: return recordText
-            case .failedAuthorization: return recordText
-
             case .creatingSession: return recordText
             case .failedSessionCreation: return recordText
             
@@ -86,9 +77,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         var isFailure: Bool? {
             switch self {
-            case .authorizingCapture: return .none
-            case .failedAuthorization: return true
-
             case .creatingSession: return .none
             case .failedSessionCreation: return true
 
@@ -123,7 +111,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     var videoDevice: AVCaptureDevice!
     var movieFileOutput: AVCaptureMovieFileOutput?
 
-    var currentState = State.authorizingCapture {
+    var currentState = State.creatingSession {
         didSet {
             precondition(Thread.isMainThread)
             updateUI(bits: currentState.bits, recordButtonText: currentState.recordButtonText)
@@ -146,35 +134,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         self.previewView.session = self.session
 
         // This has a side effect of disabling all the initial UI.
-        self.currentState = .authorizingCapture
-
-        // Check video authorization status. Video access is required and audio access is optional.
-        // If audio access is denied, audio is not recorded during movie recording.
-        switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
-        case .authorized:
-            // The user has previously granted access to the camera.
-            break
-        case .notDetermined:
-            // The user has not yet been presented with the option to grant video access.
-            // We suspend the session queue to delay session setup until the access request has completed to avoid
-            // asking the user for audio access if video access is denied.
-            // Note that audio access will be implicitly requested when we create an AVCaptureDeviceInput for audio during session setup.
-            self.sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
-                DispatchQueue.main.async {
-                    if !granted {
-                        self.currentState = .failedAuthorization
-                    } else {
-                        self.sessionQueue.resume()
-                    }
-                }
-            }
-            break
-        default:
-            // The user has previously denied access.
-            self.currentState = .failedAuthorization
-            break
-        }
+        self.currentState = .creatingSession
 
         // Setup the capture session.
         // In general it is not safe to mutate an AVCaptureSession or any of its inputs, outputs, or connections from multiple threads at the same time.
@@ -182,9 +142,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         // Because -[AVCaptureSession startRunning] is a blocking call which can take a long time. We dispatch session setup to the sessionQueue
         // so that the main queue isn't blocked, which keeps the UI responsive.
         self.sessionQueue.async {
-            if self.currentState == .failedAuthorization {
-                return
-            }
             DispatchQueue.main.async {
                 self.currentState = .creatingSession
             }
@@ -287,20 +244,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         self.sessionQueue.async {
             switch self.currentState {
-            case .failedAuthorization:
-                DispatchQueue.main.async {
-                    let message = NSLocalizedString("AVCamManual doesn't have permission to use the camera, please change privacy settings", comment: "Alert message when the user has denied access to the camera")
-                    let alertController = UIAlertController(title: "AVCamManual", message: message, preferredStyle: .alert)
-                    let cancelAction = UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler:nil)
-                    alertController.addAction(cancelAction)
-                    // Provide quick access to Settings.
-                    let settingsAction = UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .default) { action in
-                        let url = URL(string: UIApplicationOpenSettingsURLString)!
-                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                    }
-                    alertController.addAction(settingsAction)
-                    self.present(alertController, animated: true, completion: nil)
-				}
             case .failedSessionCreation:
                 DispatchQueue.main.async {
                     let message = NSLocalizedString("Unable to capture media", comment: "Alert message when something goes wrong during capture session configuration")
@@ -589,7 +532,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBAction
     func cancelCameraRecord(_ sender: AnyObject?) {
         switch currentState {
-        case .failedAuthorization, .idle:
+        case .creatingSession, .idle:
             dismiss(animated: true, completion: nil)
         case .recording:
             currentState = .cancelling
