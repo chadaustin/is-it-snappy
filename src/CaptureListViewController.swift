@@ -106,23 +106,37 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @IBAction
     func didClickCapture(_ sender: AnyObject?) {
+        func showSettingsAlert(permission: String) {
+            precondition(Thread.isMainThread)
+            let ac = UIAlertController(title: "Requires \(permission) access", message: "Give \"\(appName)\" access to \(permission) in Settings", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
+                UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+            })
+            self.present(ac, animated: true, completion: nil)
+        }
+
         // Prevent double-taps.
         captureButton.isEnabled = false
         PHPhotoLibrary.requestAuthorization { [weak self] status in
             DispatchQueue.main.async {
-                self?.captureButton.isEnabled = true
                 switch status {
                 case .notDetermined, .restricted, .denied:
-                    let ac = UIAlertController(title: "Requires Photos access", message: "Give \"\(appName)\" access to Photos in Settings", preferredStyle: .alert)
-                    ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                    ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
-                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
-                    })
-                    self?.present(ac, animated: true, completion: nil)
+                    self?.captureButton.isEnabled = true
+                    showSettingsAlert(permission: "Photos")
                 case .authorized:
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let vc = storyboard.instantiateViewController(withIdentifier: "CaptureViewController") as! CaptureViewController
-                    self?.present(vc, animated: true, completion: nil)
+                    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
+                        DispatchQueue.main.async {
+                            self?.captureButton.isEnabled = true
+                            if !granted {
+                                showSettingsAlert(permission: "Camera")
+                            } else {
+                                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                                let vc = storyboard.instantiateViewController(withIdentifier: "CaptureViewController") as! CaptureViewController
+                                self?.present(vc, animated: true, completion: nil)
+                            }
+                        }
+                    }
                 }
             }
         }
