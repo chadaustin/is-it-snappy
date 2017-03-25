@@ -24,6 +24,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var tableView: UITableView!
+    @IBOutlet var captureButton: UIBarButtonItem!
 
     static weak var live: CaptureListViewController?
 
@@ -52,17 +53,17 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         CaptureListViewController.live = self
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+
     @objc func handleInfoButtonTap() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "AboutViewController")
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tableView.reloadData()
-    }
-
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let action = UITableViewRowAction(style: .destructive, title: "Delete") { [weak self] action, indexPath in
             guard let ss = self else { return }
@@ -101,6 +102,30 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
             PHAssetChangeRequest.deleteAssets([model.asset] as NSArray)
         }
         MarkDatabase.shared.delete(localIdentifier: localIdentifier)
+    }
+
+    @IBAction
+    func didClickCapture(_ sender: AnyObject?) {
+        // Prevent double-taps.
+        captureButton.isEnabled = false
+        PHPhotoLibrary.requestAuthorization { [weak self] status in
+            DispatchQueue.main.async {
+                self?.captureButton.isEnabled = true
+                switch status {
+                case .notDetermined, .restricted, .denied:
+                    let ac = UIAlertController(title: "Requires Photos access", message: "Give \"\(appName)\" access to Photos in Settings", preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                    ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
+                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                    })
+                    self?.present(ac, animated: true, completion: nil)
+                case .authorized:
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let vc = storyboard.instantiateViewController(withIdentifier: "CaptureViewController") as! CaptureViewController
+                    self?.present(vc, animated: true, completion: nil)
+                }
+            }
+        }
     }
 
     func presentMarkViewController(for model: VideoModel, completion: @escaping () -> Void) {

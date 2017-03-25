@@ -589,7 +589,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBAction
     func cancelCameraRecord(_ sender: AnyObject?) {
         switch currentState {
-        case .idle:
+        case .failedAuthorization, .idle:
             dismiss(animated: true, completion: nil)
         case .recording:
             currentState = .cancelling
@@ -783,42 +783,40 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         var newLocalIdentifier: String?
         VideoManager.getAlbum { assetCollection in
-            // Check authorization status.
-            PHPhotoLibrary.requestAuthorization { status in
-                guard status == .authorized else {
+            guard PHPhotoLibrary.authorizationStatus() == .authorized else {
+                NSLog("Photo library authorization was rescinded while the app was running")
+                cleanup()
+                return
+            }
+
+            // Save the movie file to the photo library and cleanup.
+            PHPhotoLibrary.shared().performChanges({
+                // In iOS 9 and later, it's possible to move the file into the photo library without duplicating the file data.
+                // This avoids using double the disk space during save, which can make a difference on devices with limited free disk space.
+                let options = PHAssetResourceCreationOptions()
+                options.shouldMoveFile = true
+                let changeRequest = PHAssetCreationRequest.forAsset()
+                changeRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
+                let placeholder = changeRequest.placeholderForCreatedAsset!
+                newLocalIdentifier = placeholder.localIdentifier
+                let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
+                albumChangeRequest!.addAssets([placeholder] as NSArray)
+            }) { success, error in
+                guard success else {
+                    NSLog("Could not save movie to photo library: \(error)")
                     cleanup()
                     return
                 }
-                
-                // Save the movie file to the photo library and cleanup.
-                PHPhotoLibrary.shared().performChanges({
-                    // In iOS 9 and later, it's possible to move the file into the photo library without duplicating the file data.
-                    // This avoids using double the disk space during save, which can make a difference on devices with limited free disk space.
-                    let options = PHAssetResourceCreationOptions()
-                    options.shouldMoveFile = true
-                    let changeRequest = PHAssetCreationRequest.forAsset()
-                    changeRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                    let placeholder = changeRequest.placeholderForCreatedAsset!
-                    newLocalIdentifier = placeholder.localIdentifier
-                    let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
-                    albumChangeRequest!.addAssets([placeholder] as NSArray)
-                }) { success, error in
-                    guard success else {
-                        NSLog("Could not save movie to photo library: \(error)")
-                        cleanup()
-                        return
-                    }
 
-                    // guaranteed to be set in previous callback
-                    let localIdentifier = newLocalIdentifier!
-                    let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
-                    if let firstAsset = results.firstObject {
-                        DispatchQueue.main.async {
-                            let model = VideoModel(asset: firstAsset)
-                            self.dismiss(animated: true) {
-                                self.currentState = .idle
-                                CaptureListViewController.live?.presentMarkViewController(for: model) {
-                                }
+                // guaranteed to be set in previous callback
+                let localIdentifier = newLocalIdentifier!
+                let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
+                if let firstAsset = results.firstObject {
+                    DispatchQueue.main.async {
+                        let model = VideoModel(asset: firstAsset)
+                        self.dismiss(animated: true) {
+                            self.currentState = .idle
+                            CaptureListViewController.live?.presentMarkViewController(for: model) {
                             }
                         }
                     }
