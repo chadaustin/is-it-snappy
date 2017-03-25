@@ -67,7 +67,22 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         let action = UITableViewRowAction(style: .destructive, title: "Delete") { [weak self] action, indexPath in
             guard let ss = self else { return }
             let model = ss.groups[indexPath.section].videos[indexPath.row]
-            ss.deleteVideoAndMark(model)
+            let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            ac.addAction(UIAlertAction(title: "Clear Marks", style: .destructive) { action in
+                MarkDatabase.shared.delete(localIdentifier: model.asset.localIdentifier)
+                tableView.setEditing(false, animated: true)
+                tableView.reloadData()
+            })
+            ac.addAction(UIAlertAction(title: "Delete Video & Marks", style: .destructive) { action in
+                guard let ss = self else { return }
+                ss.deleteVideoAndMark(model)
+                tableView.setEditing(false, animated: true)
+            })
+            ac.addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
+                tableView.setEditing(false, animated: true)
+            })
+
+            ss.present(ac, animated: true, completion: nil)
         }
         return [action]
     }
