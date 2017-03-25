@@ -1,10 +1,14 @@
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: -apple-system-body, "San Francisco", "Helvetica Neue", "Lucida Grande";
-    font-size: 36pt;
+    font-size: 12pt;
     margin: 1em;
 }
 
 h1 {
     font-family: -apple-system-headline, "San Francisco", "Helvetica Neue", "Lucida Grande";
-    font-size: 42pt;
+    font-size: 16pt;
 }
