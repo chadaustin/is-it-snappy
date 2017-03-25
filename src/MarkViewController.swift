@@ -1,4 +1,5 @@
 import UIKit
+import UIKit.UIGestureRecognizerSubclass
 import Photos
 
 class PlayerInfo {
@@ -36,18 +37,6 @@ class PlayerInfo {
                 }
             }
         }
-
-                /*
-                if frameTime.isValid {
-                    //let timeStr = String(format: "%.5f", frameTime.seconds)
-                    //print("frame \(frameNumber) @ \(timeStr)")
-                    /*
-                    print(")
-                    print("frame: \(frameNumber), time: \(String(format:"%.3f", frameTime.seconds)), size: \(CMSampleBufferGetTotalSampleSize(sampleBuffer)), duration: \(                CMSampleBufferGetOutputDuration(sampleBuffer).value)")
-                     */
-                    frameNumber += 1
-                }
-                 */
 
         frameTimes = times
     }
@@ -92,6 +81,16 @@ class PlayerInfo {
         let cmtime = CMTime(seconds: time + offset, preferredTimescale: 24000)
         return frameNumber(for: cmtime)
     }
+    
+    func timeFor(frame: Int) -> CMTime {
+        if frame < 0 {
+            return frameTimes.first ?? kCMTimeZero
+        }
+        if frame >= frameTimes.count {
+            return frameTimes.last ?? kCMTimeZero
+        }
+        return frameTimes[frame]
+    }
 
     static func getInnerAsset(_ sourceAsset: AVAsset) -> AVAsset {
         if let urlAsset = sourceAsset as? AVURLAsset {
@@ -110,12 +109,26 @@ class PlayerInfo {
     }
 }
 
-class MarkViewController: UIViewController, UITextFieldDelegate {
+class TapDownGestureRecognizer: UIGestureRecognizer {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        if self.state == .possible {
+            self.state = .recognized
+        }
+    }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        self.state = .failed
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        self.state = .failed
+    }
+}
+
+class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextFieldDelegate {
     enum State {
         case loading
         case failed
         case idle
-        case seeking(to: CMTime)
+        case seeking
         case seekingWithPendingSeek(to: CMTime)
     }
 
@@ -133,7 +146,8 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var markOutputButton: UIButton!
     @IBOutlet var locationLabel: UILabel!
     
-    let gestureRecognizer = UIPanGestureRecognizer()
+    let tapGestureRecognizer = TapDownGestureRecognizer()
+    let panGestureRecognizer = UIPanGestureRecognizer()
    
     func setModel(_ model: VideoModel) {
         precondition(self.model == nil, "model can only be set once")
@@ -166,11 +180,16 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
 
     override func viewDidLoad() {
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.addGestureRecognizer(gestureRecognizer)
+        view.addGestureRecognizer(tapGestureRecognizer)
+        view.addGestureRecognizer(panGestureRecognizer)
 
         captureNameField.delegate = self
+       
+        tapGestureRecognizer.addTarget(self, action: #selector(handleGesture))
+        tapGestureRecognizer.delegate = self
         
-        gestureRecognizer.addTarget(self, action: #selector(handleGesture))
+        panGestureRecognizer.addTarget(self, action: #selector(handleGesture))
+        panGestureRecognizer.delegate = self
 
         setNeedsStatusBarAppearanceUpdate()
         
@@ -221,51 +240,85 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
     func dismissKeyboard() {
         _ = textFieldShouldReturn(captureNameField)
     }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let edgeWidth: CGFloat = 20
+        let loc = touch.location(in: view)
+        let bounds = view.bounds
+        let onEdge = (loc.x < bounds.minX + edgeWidth) || (loc.x > bounds.maxX - edgeWidth)
+        if gestureRecognizer == tapGestureRecognizer {
+            return onEdge
+        } else if gestureRecognizer == panGestureRecognizer {
+            return !onEdge
+        } else {
+            NSLog("unknown gesture recognizer")
+            return false
+        }
+    }
 
-    func handleGesture() {
+    func handleGesture(_ gestureRecognizer: UIGestureRecognizer) {
         guard let player = playerView.player else {
             return
         }
-
         dismissKeyboard()
-
-        if gestureRecognizer.state == .began {
-            gestureStartTime = player.currentTime()
+        
+        func aimAt(time target: CMTime) {
+            switch state {
+            case .loading, .failed:
+                break
+            case .idle:
+                seek(to: target)
+            case .seeking:
+                state = .seekingWithPendingSeek(to: target)
+            case .seekingWithPendingSeek(to: _):
+                state = .seekingWithPendingSeek(to: target)
+            }
         }
 
-        func applyCurve(_ x: Double) -> Double {
-            // at offset x, scrub velocity f(x) in seconds/point
-            // iPhone = 320 points wide
-            // f(x) = k * x^2
-            // f'(x) = 2 * k * x
-            //
-            // f’(10) = 1/240
-            // 1/240 = 2 * k * 10
-            // k = (1/240)/20
-            // k = 1/4800
+        if gestureRecognizer == tapGestureRecognizer {
+            let currentTime = player.currentTime()
+            let (currentFrame, _) = playerInfo.frameNumber(for: currentTime)
 
-            let k = 1 / 48000.0
-            return (x < 0 ? -1 : 1) * k * pow(abs(x), 2.1)
-        }
+            let newTime: CMTime
+            let loc = tapGestureRecognizer.location(in: view)
+            if loc.x < view.bounds.midX {
+                // one frame left
+                newTime = playerInfo.timeFor(frame: currentFrame - 1)
+            } else {
+                // one frame right
+                newTime = playerInfo.timeFor(frame: currentFrame + 1)
+            }
+            
+            aimAt(time: newTime)
+        } else if gestureRecognizer == panGestureRecognizer {
+            if gestureRecognizer.state == .began {
+                gestureStartTime = player.currentTime()
+            }
 
-        var x = Double(-gestureRecognizer.translation(in: view).x)
-        //Swift.print("before: \(x) after: \(applyCurve(x))")
-        x = applyCurve(x)
+            func applyCurve(_ x: Double) -> Double {
+                // at offset x, scrub velocity f(x) in seconds/point
+                // iPhone = 320 points wide
+                // f(x) = k * x^2
+                // f'(x) = 2 * k * x
+                //
+                // f’(10) = 1/240
+                // 1/240 = 2 * k * 10
+                // k = (1/240)/20
+                // k = 1/4800
 
-        let minimum = kCMTimeZero
-        let maximum = player.currentItem!.duration
+                let k = 1 / 48000.0
+                return (x < 0 ? -1 : 1) * k * pow(abs(x), 2.1)
+            }
 
-        let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, 240*100)))
+            var x = Double(-panGestureRecognizer.translation(in: view).x)
+            //Swift.print("before: \(x) after: \(applyCurve(x))")
+            x = applyCurve(x)
 
-        switch state {
-        case .loading, .failed:
-            break
-        case .idle:
-            seek(to: target)
-        case .seeking(to: let time):
-            state = .seekingWithPendingSeek(to: time)
-        case .seekingWithPendingSeek(to: _):
-            state = .seekingWithPendingSeek(to: target)
+            let minimum = kCMTimeZero
+            let maximum = player.currentItem!.duration
+
+            let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, 240*100)))
+            aimAt(time: target)
         }
     }
 
@@ -274,7 +327,7 @@ class MarkViewController: UIViewController, UITextFieldDelegate {
             return
         }
 
-        state = .seeking(to: target)
+        state = .seeking
         player.seek(
             to: target,
             toleranceBefore: kCMTimeZero,
