@@ -95,10 +95,30 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBOutlet var loadingPanel: UIVisualEffectView!
 
     @IBOutlet var resumeButton: UIButton!
-    @IBOutlet var cancelButton: UIButton!
-    @IBOutlet var recordButton: UIButton!
-    @IBOutlet var cameraButton: UIButton!
-    @IBOutlet var focusToggleButton: UIButton!
+    @IBOutlet var cancelButton: UIHitButton! {
+        didSet {
+            cancelButton.hitInsets.left = 10
+            cancelButton.hitInsets.bottom = 10
+        }
+    }
+    @IBOutlet var recordButton: UIHitButton! {
+        didSet {
+            recordButton.hitInsets.right = 10
+            recordButton.hitInsets.bottom = 10
+        }
+    }
+    @IBOutlet var cameraButton: UIHitButton! {
+        didSet {
+            cameraButton.hitInsets.top = 10
+            cameraButton.hitInsets.right = 10
+        }
+    }
+    @IBOutlet var focusToggleButton: UIHitButton! {
+        didSet {
+            focusToggleButton.hitInsets.top = 10
+            focusToggleButton.hitInsets.left = 10
+        }
+    }
 
     @IBOutlet var lensPositionSlider: UISlider!
 

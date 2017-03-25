@@ -25,6 +25,7 @@
 		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
 		63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */; };
 		63D4DE271E61E10200716F26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE241E61E10200716F26 /* Main.storyboard */; };
+		63E2C8711E8647C500DF048A /* UIHitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E2C8701E8647C500DF048A /* UIHitButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		63D4DE1E1E61E08600716F26 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = src/Info.plist; sourceTree = SOURCE_ROOT; };
 		63D4DE231E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		63D4DE251E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		63E2C8701E8647C500DF048A /* UIHitButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIHitButton.swift; path = src/UIHitButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				63178FD91E61E03D007278A0 /* IsItSnappy-Bridging-Header.h */,
 				026910D91E7B6815003A3FAA /* AVUtil.swift */,
 				026910DB1E7C3AAD003A3FAA /* SwiftUtil.swift */,
+				63E2C8701E8647C500DF048A /* UIHitButton.swift */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 			files = (
 				63178FE21E61E03D007278A0 /* CaptureListViewController.swift in Sources */,
 				63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */,
+				63E2C8711E8647C500DF048A /* UIHitButton.swift in Sources */,
 				63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */,
 				0243146C1E77733F00FE87B2 /* AboutViewController.swift in Sources */,
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,
