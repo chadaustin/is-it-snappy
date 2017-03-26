@@ -261,8 +261,12 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let edgeWidth: CGFloat = 20
         let loc = touch.location(in: view)
+        guard view.hitTest(loc, with: nil) == view else {
+            return false
+        }
+        
+        let edgeWidth: CGFloat = 15
         let bounds = view.bounds
         let onEdge = (loc.x < bounds.minX + edgeWidth) || (loc.x > bounds.maxX - edgeWidth)
         if gestureRecognizer == tapGestureRecognizer {
