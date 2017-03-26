@@ -199,7 +199,7 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 9A8N5FBX5L;
 						LastSwiftMigration = 0820;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					6394591C1E61DBC600C00F0E = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -410,8 +410,10 @@
 				DEVELOPMENT_TEAM = 9A8N5FBX5L;
 				INFOPLIST_FILE = src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.chadaustin.is-it-snappy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d9c7ed57-abc6-46ad-a5e5-169beff07d63";
+				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -427,8 +429,10 @@
 				DEVELOPMENT_TEAM = 9A8N5FBX5L;
 				INFOPLIST_FILE = src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappy;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.chadaustin.is-it-snappy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d9c7ed57-abc6-46ad-a5e5-169beff07d63";
+				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
