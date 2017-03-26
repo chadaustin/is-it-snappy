@@ -119,6 +119,15 @@ class MarkDatabase {
     }
 
     static func load() -> [String: Mark] {
+        if screenshotMode {
+            return [
+                "fvm1": Mark(name: "NES Classic - TV", input: 0, output: 0.1732),
+                "fvm2": Mark(name: "NES - TV", input: 0, output: 0.0964),
+                "fvm3": Mark(name: "MBP Device KB", input: 0, output: 0.0958),
+                "fvm4": Mark(name: "MBP Wireless KB", input: 0, output: 0.0671),
+            ]
+        }
+        
         guard let data = FileManager.default.contents(atPath: MarkDatabase.location) else {
             return [:]
         }

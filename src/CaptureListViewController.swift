@@ -70,7 +70,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
             let model = ss.groups[indexPath.section].videos[indexPath.row]
             let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             ac.addAction(UIAlertAction(title: "Clear Marks", style: .destructive) { action in
-                MarkDatabase.shared.delete(localIdentifier: model.asset.localIdentifier)
+                MarkDatabase.shared.delete(localIdentifier: model.uniqueID)
                 tableView.setEditing(false, animated: true)
                 tableView.reloadData()
             })
@@ -97,9 +97,10 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     func deleteVideoAndMark(_ model: VideoModel) {
-        let localIdentifier = model.asset.localIdentifier
+        let localIdentifier = model.uniqueID
+        let phModel = model as! PHVideoModel
         try? PHPhotoLibrary.shared().performChangesAndWait {
-            PHAssetChangeRequest.deleteAssets([model.asset] as NSArray)
+            PHAssetChangeRequest.deleteAssets([phModel.asset] as NSArray)
         }
         MarkDatabase.shared.delete(localIdentifier: localIdentifier)
     }
@@ -161,10 +162,10 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
 
         let newCell = UITableViewCell(style: .value1, reuseIdentifier: nil)
         
-        let mark = MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier) ?? Mark()
+        let mark = MarkDatabase.shared.get(localIdentifier: model.uniqueID) ?? Mark()
         
         newCell.textLabel?.text = mark.displayLabel()
-        newCell.detailTextLabel?.text = "\(df.string(from: model.asset.creationDate!))"
+        newCell.detailTextLabel?.text = "\(df.string(from: model.creationDate!))"
         return newCell
     }
 

@@ -1,17 +1,44 @@
 import Photos
 
-// TODO: switch to a uuid / local identifier
-// The problem with that is we'd have to store the local identifier after running, which would get discarded
-// when reinstalling the app.  So displayname is perhaps the best key for the album.  :/
-let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"]! as! String
-
 typealias Token = Int
 
-class VideoModel {
+protocol VideoModel {
+    var uniqueID: String { get }
+    var creationDate: Date? { get }
+}
+
+class PHVideoModel: VideoModel {
     let asset: PHAsset
+    
+    var uniqueID: String {
+        return asset.localIdentifier
+    }
+    
+    var creationDate: Date? {
+        return asset.creationDate
+    }
     
     init(asset: PHAsset) {
         self.asset = asset
+    }
+}
+
+class FakeVideoModel: VideoModel {
+    var uniqueID: String
+    var creationDate: Date?
+
+    init(id: String, ctime: Date) {
+        self.uniqueID = id
+        self.creationDate = ctime
+    }
+}
+
+extension Date {
+    static func fromLocalTime(_ str: String) -> Date {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        df.timeZone = TimeZone.current
+        return df.date(from: str)!
     }
 }
 
@@ -23,6 +50,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     
     private(set) var allVideos: [VideoModel] = [] {
         didSet {
+            precondition(Thread.isMainThread)
             recalculateGroups()
             for observer in observers.values {
                 observer()
@@ -40,7 +68,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     private func recalculateGroups() {
         precondition(Thread.isMainThread)
         let allVideos = self.allVideos.sorted { lhs, rhs in
-            switch (lhs.asset.creationDate, rhs.asset.creationDate) {
+            switch (lhs.creationDate, rhs.creationDate) {
             case (.none, .none): return false
             case (.none, .some): return true
             case (.some, .none): return false
@@ -79,7 +107,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
         }
         
         for video in allVideos {
-            guard let creationDate = video.asset.creationDate else {
+            guard let creationDate = video.creationDate else {
                 continue
             }
             if let cg = currentGroup,
@@ -108,6 +136,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     func register(observer: @escaping () -> Void) -> Token {
+        precondition(Thread.isMainThread)
         currentToken += 1
         let token = currentToken
         observers[token] = observer
@@ -115,6 +144,7 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     func unregister(token: Token) {
+        precondition(Thread.isMainThread)
         precondition(observers[token] != nil)
         observers[token] = nil
     }
@@ -156,34 +186,32 @@ final class VideoManager: NSObject, PHPhotoLibraryChangeObserver {
     }
 
     static func getExistingVideos(handler: @escaping ([VideoModel]) -> Void) {
-        getAlbum { assetCollection in
-            let assets = PHAsset.fetchAssets(in: assetCollection, options: nil)
+        if !screenshotMode {
+            getAlbum { assetCollection in
+                let assets = PHAsset.fetchAssets(in: assetCollection, options: nil)
 
-            var output: [VideoModel] = []
-            assets.enumerateObjects({
-                (object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-                
-                if let asset = object as? PHAsset {
-                    let model = VideoModel(asset: asset)
-                    output.append(model)
-                }
-            })
+                var output: [VideoModel] = []
+                assets.enumerateObjects({
+                    (object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+                    
+                    if let asset = object as? PHAsset {
+                        let model = PHVideoModel(asset: asset)
+                        output.append(model)
+                    }
+                })
 
-            handler(output)
+                handler(output)
+            }
+        } else {
+            DispatchQueue.main.async {
+                let fakeModels = [
+                    FakeVideoModel(id: "fvm1", ctime: Date.fromLocalTime("2017-03-22 10:35:22")),
+                    FakeVideoModel(id: "fvm2", ctime: Date.fromLocalTime("2017-03-22 10:38:46")),
+                    FakeVideoModel(id: "fvm3", ctime: Date.fromLocalTime("2017-03-25 18:45:37")),
+                    FakeVideoModel(id: "fvm4", ctime: Date.fromLocalTime("2017-03-25 19:16:43")),
+                ]
+                handler(fakeModels)
+            }
         }
-
-        /*
-        let imageManager = PHCachingImageManager()
-        //Enumerating objects to get a chached image - This is to save loading time
-        let imageSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-
-        let options = PHImageRequestOptions()
-        options.deliveryMode = .fastFormat
-        imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFill, options: options, resultHandler: {(image: UIImage?,
-        info: [AnyHashable: Any]?) in
-        print(info)
-        print(image)
-        })
-        */
     }
 }

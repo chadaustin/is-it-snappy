@@ -141,6 +141,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         return view as! PlayerView
     }
 
+    @IBOutlet var screenshotModeMarkImage: UIImageView!
     @IBOutlet var captureNameField: UITextField!
     @IBOutlet var markInputButton: UIButton!
     @IBOutlet var markOutputButton: UIButton!
@@ -153,27 +154,45 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         precondition(self.model == nil, "model can only be set once")
         self.model = model
         
-        let options: PHVideoRequestOptions? = nil
-        PHImageManager.default().requestAVAsset(
-            forVideo: model.asset,
-            options: options
-        ) { [weak self] sourceAsset, audioMix, info in
+        if screenshotMode {
             DispatchQueue.main.async {
-                guard let ss = self else {
-                    return
+                self.screenshotModeMarkImage.isHidden = false
+                
+                self.captureNameField.text = "MBP Device KB -- 95.8 ms"
+                
+                self.markInputButton.isEnabled = false
+                self.markInputButton.setTitle("Mark Input\nframe 653", for: .normal)
+                self.markInputButton.isEnabled = true
+
+                self.markOutputButton.isEnabled = false
+                self.markOutputButton.setTitle("Mark Output\nframe 676", for: .normal)
+                self.markOutputButton.isEnabled = true
+                
+                self.locationLabel.text = "frame 677(+24)\n2821.2 ms"
+            }
+        } else {
+            let options: PHVideoRequestOptions? = nil
+            PHImageManager.default().requestAVAsset(
+                forVideo: (model as! PHVideoModel).asset,
+                options: options
+            ) { [weak self] sourceAsset, audioMix, info in
+                DispatchQueue.main.async {
+                    guard let ss = self else {
+                        return
+                    }
+
+                    guard let sourceAsset = sourceAsset else {
+                        fatalError("failed to load? show an error?")
+                    }
+
+                    ss.playerInfo = PlayerInfo(sourceAsset: sourceAsset)
+
+                    ss.playerView.player = ss.playerInfo.player
+                    ss.state = .idle
+                    ss.updateLabel()
+                    ss.updateInputButtonLabel()
+                    ss.updateOutputButtonLabel()
                 }
-
-                guard let sourceAsset = sourceAsset else {
-                    fatalError("failed to load? show an error?")
-                }
-
-                ss.playerInfo = PlayerInfo(sourceAsset: sourceAsset)
-
-                ss.playerView.player = ss.playerInfo.player
-                ss.state = .idle
-                ss.updateLabel()
-                ss.updateInputButtonLabel()
-                ss.updateOutputButtonLabel()
             }
         }
     }
@@ -204,7 +223,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.isFirstResponder {
             textField.resignFirstResponder()
-            MarkDatabase.shared.setName(localIdentifier: model.asset.localIdentifier, name: textField.text ?? "")
+            MarkDatabase.shared.setName(localIdentifier: model.uniqueID, name: textField.text ?? "")
         }
         updateCaptureName()
         return false
@@ -215,7 +234,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     }
    
     func getMark() -> Mark {
-        return MarkDatabase.shared.get(localIdentifier: model.asset.localIdentifier) ?? Mark()
+        return MarkDatabase.shared.get(localIdentifier: model.uniqueID) ?? Mark()
     }
 
     @IBAction
@@ -355,7 +374,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     @IBAction
     func handleMarkStartTime(_ sender: AnyObject?) {
         MarkDatabase.shared.setInputTime(
-            localIdentifier: model.asset.localIdentifier,
+            localIdentifier: model.uniqueID,
             input: currentFrameTime)
         updateCaptureName()
         updateLabel()
@@ -365,7 +384,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     @IBAction
     func handleMarkEndTime(_ sender: AnyObject?) {
         MarkDatabase.shared.setOutputTime(
-            localIdentifier: model.asset.localIdentifier,
+            localIdentifier: model.uniqueID,
             output: currentFrameTime)
         updateCaptureName()
         updateLabel()

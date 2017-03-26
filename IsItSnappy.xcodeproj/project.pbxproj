@@ -23,6 +23,7 @@
 		63178FE31E61E03D007278A0 /* MarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDC1E61E03D007278A0 /* MarkViewController.swift */; };
 		63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63178FDD1E61E03D007278A0 /* VideoManager.swift */; };
 		639459221E61DBC600C00F0E /* IsItSnappyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639459211E61DBC600C00F0E /* IsItSnappyTests.swift */; };
+		63A5F4C11E87788E002DFE4E /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5F4C01E87788E002DFE4E /* Config.swift */; };
 		63D4DE261E61E10200716F26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE221E61E10200716F26 /* LaunchScreen.storyboard */; };
 		63D4DE271E61E10200716F26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D4DE241E61E10200716F26 /* Main.storyboard */; };
 		63E2C8711E8647C500DF048A /* UIHitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E2C8701E8647C500DF048A /* UIHitButton.swift */; };
@@ -59,6 +60,7 @@
 		6394591D1E61DBC600C00F0E /* IsItSnappyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IsItSnappyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		639459211E61DBC600C00F0E /* IsItSnappyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsItSnappyTests.swift; sourceTree = "<group>"; };
 		639459231E61DBC600C00F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63A5F4C01E87788E002DFE4E /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Config.swift; path = src/Config.swift; sourceTree = "<group>"; };
 		63D4DE1E1E61E08600716F26 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = src/Info.plist; sourceTree = SOURCE_ROOT; };
 		63D4DE231E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		63D4DE251E61E10200716F26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = src/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
@@ -86,6 +88,7 @@
 		63178FC01E61DD65007278A0 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				63A5F4C01E87788E002DFE4E /* Config.swift */,
 				63178FD61E61E03D007278A0 /* AppDelegate.swift */,
 				63178FDB1E61E03D007278A0 /* CaptureListViewController.swift */,
 				63178FD71E61E03D007278A0 /* CaptureViewController.swift */,
@@ -257,6 +260,7 @@
 				63178FE21E61E03D007278A0 /* CaptureListViewController.swift in Sources */,
 				63178FDE1E61E03D007278A0 /* AppDelegate.swift in Sources */,
 				63E2C8711E8647C500DF048A /* UIHitButton.swift in Sources */,
+				63A5F4C11E87788E002DFE4E /* Config.swift in Sources */,
 				63178FDF1E61E03D007278A0 /* CaptureViewController.swift in Sources */,
 				0243146C1E77733F00FE87B2 /* AboutViewController.swift in Sources */,
 				63178FE41E61E03D007278A0 /* VideoManager.swift in Sources */,

@@ -36,6 +36,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     enum State {
         case creatingSession
         case failedSessionCreation
+        case screenshotMode // for taking screenshots in the simulator
 
         case switchingCameras
 
@@ -48,6 +49,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             switch self {
             case .creatingSession: return .none
             case .failedSessionCreation: return UIBits(0b0010)
+            case .screenshotMode: return .all
 
             case .switchingCameras: return .none
 
@@ -65,6 +67,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             switch self {
             case .creatingSession: return recordText
             case .failedSessionCreation: return recordText
+            case .screenshotMode: return recordText
             
             case .switchingCameras: return recordText
                 
@@ -79,6 +82,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             switch self {
             case .creatingSession: return .none
             case .failedSessionCreation: return true
+            case .screenshotMode: return false
 
             case .switchingCameras: return false
 
@@ -91,6 +95,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     }
 
     @IBOutlet var previewView: CaptureVideoPreviewView!
+    @IBOutlet var screenshotModeCaptureImage: UIImageView!
     @IBOutlet var cameraUnavailableLabel: UILabel!
     @IBOutlet var loadingPanel: UIVisualEffectView!
 
@@ -168,7 +173,17 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
             self.backgroundRecordingID = UIBackgroundTaskInvalid
 
-            let videoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back)!
+            guard let videoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back) else {
+                DispatchQueue.main.async {
+                    if screenshotMode {
+                        self.screenshotModeCaptureImage.isHidden = false
+                        self.currentState = .screenshotMode
+                    } else {
+                        self.currentState = .failedSessionCreation
+                    }
+                }
+                return
+            }
 
             self.session.beginConfiguration()
             defer {
@@ -552,7 +567,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBAction
     func cancelCameraRecord(_ sender: AnyObject?) {
         switch currentState {
-        case .creatingSession, .idle:
+        case .creatingSession, .failedSessionCreation, .screenshotMode, .idle:
             dismiss(animated: true, completion: nil)
         case .recording:
             currentState = .cancelling
@@ -776,11 +791,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 let results = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
                 if let firstAsset = results.firstObject {
                     DispatchQueue.main.async {
-                        let model = VideoModel(asset: firstAsset)
+                        let model = PHVideoModel(asset: firstAsset)
                         self.dismiss(animated: true) {
                             self.currentState = .idle
-                            CaptureListViewController.live?.presentMarkViewController(for: model) {
-                            }
+                            CaptureListViewController.live?.presentMarkViewController(for: model) {}
                         }
                     }
                 }

@@ -169,6 +169,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Screenshot-Mark" translatesAutoresizingMaskIntoConstraints="NO" id="tkC-3s-xvq">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            </imageView>
                             <view opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iBv-KJ-L9P" userLabel="Header Background">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -237,7 +240,7 @@ frame 135</string>
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="frame 182" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQT-b6-BeM" userLabel="Scrub Offset Label">
-                                                <rect key="frame" x="126" y="11.5" width="69" height="18"/>
+                                                <rect key="frame" x="126" y="11" width="69" height="18"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
@@ -266,17 +269,21 @@ frame 135</string>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="tkC-3s-xvq" secondAttribute="bottom" id="2VJ-br-A62"/>
                             <constraint firstItem="L1n-93-Zlq" firstAttribute="top" secondItem="4EW-fs-z55" secondAttribute="bottom" id="Agg-ck-aLy"/>
+                            <constraint firstItem="tkC-3s-xvq" firstAttribute="top" secondItem="LHg-oD-jLr" secondAttribute="top" id="BiX-WZ-7Xd"/>
                             <constraint firstItem="Lua-D7-yqa" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leading" id="EEf-iX-V1o"/>
                             <constraint firstItem="iBv-KJ-L9P" firstAttribute="bottom" secondItem="4EW-fs-z55" secondAttribute="bottom" constant="40" id="Mmz-u6-nyk"/>
                             <constraint firstItem="L1n-93-Zlq" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leading" id="Oaj-cH-DMK"/>
                             <constraint firstItem="iBv-KJ-L9P" firstAttribute="top" secondItem="LHg-oD-jLr" secondAttribute="top" id="POu-2g-jc3"/>
+                            <constraint firstAttribute="trailing" secondItem="tkC-3s-xvq" secondAttribute="trailing" id="QBw-L7-t5b"/>
                             <constraint firstItem="Lua-D7-yqa" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leading" id="dSO-el-w5e"/>
                             <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="Lua-D7-yqa" secondAttribute="bottom" id="eAw-Ex-0de"/>
                             <constraint firstAttribute="trailing" secondItem="Lua-D7-yqa" secondAttribute="trailing" id="gf8-9e-Q2S"/>
                             <constraint firstAttribute="trailing" secondItem="iBv-KJ-L9P" secondAttribute="trailing" id="kza-BU-j0z"/>
                             <constraint firstItem="MyX-rU-pNt" firstAttribute="top" secondItem="Lua-D7-yqa" secondAttribute="bottom" id="o0M-qt-pvi"/>
                             <constraint firstAttribute="trailing" secondItem="Lua-D7-yqa" secondAttribute="trailing" id="qpG-8a-Orm"/>
+                            <constraint firstItem="tkC-3s-xvq" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leading" id="vk0-re-PR1"/>
                             <constraint firstAttribute="trailing" secondItem="L1n-93-Zlq" secondAttribute="trailing" id="xGi-XJ-xwQ"/>
                             <constraint firstItem="iBv-KJ-L9P" firstAttribute="leading" secondItem="LHg-oD-jLr" secondAttribute="leading" id="z3P-KT-yUo"/>
                         </constraints>
@@ -287,11 +294,12 @@ frame 135</string>
                         <outlet property="locationLabel" destination="ZQT-b6-BeM" id="Npi-P2-ohw"/>
                         <outlet property="markInputButton" destination="MBK-fD-YKs" id="xJZ-EI-spl"/>
                         <outlet property="markOutputButton" destination="Y8u-ro-h45" id="ygL-Z4-CIi"/>
+                        <outlet property="screenshotModeMarkImage" destination="tkC-3s-xvq" id="MDo-TZ-lrq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUU-Tt-FxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-564" y="546"/>
+            <point key="canvasLocation" x="-564.375" y="545.07042253521126"/>
         </scene>
         <!--Capture-->
         <scene sceneID="o5M-B8-Hza">
@@ -305,6 +313,9 @@ frame 135</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Screenshot-Capture" translatesAutoresizingMaskIntoConstraints="NO" id="wyT-Ko-72m">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            </imageView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Camera Unavailable" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoU-eQ-sum">
                                 <rect key="frame" x="53" y="270" width="214" height="29"/>
                                 <color key="tintColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -441,13 +452,17 @@ frame 135</string>
                             <constraint firstItem="gEm-Ly-6Td" firstAttribute="centerY" secondItem="9Za-05-zwY" secondAttribute="centerY" id="Fir-m6-r9D"/>
                             <constraint firstItem="YbU-8V-Db1" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leading" id="GFN-pr-LN8"/>
                             <constraint firstAttribute="trailing" secondItem="YbU-8V-Db1" secondAttribute="trailing" id="JZy-sv-tKo"/>
+                            <constraint firstItem="wyT-Ko-72m" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leading" id="TaA-yC-mpd"/>
+                            <constraint firstAttribute="trailing" secondItem="wyT-Ko-72m" secondAttribute="trailing" id="W1V-mt-Vcl"/>
                             <constraint firstItem="gwL-zO-1Pw" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="Xpm-3m-FZY"/>
+                            <constraint firstItem="i3h-nQ-SAp" firstAttribute="top" secondItem="wyT-Ko-72m" secondAttribute="bottom" id="YVd-ZR-PAC"/>
                             <constraint firstItem="OoU-eQ-sum" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="cWN-EI-gUI"/>
                             <constraint firstAttribute="trailing" secondItem="mcl-en-N2e" secondAttribute="trailing" constant="10" id="ccn-gB-1Lo"/>
                             <constraint firstItem="gEm-Ly-6Td" firstAttribute="centerX" secondItem="9Za-05-zwY" secondAttribute="centerX" id="dYV-JZ-cHw"/>
                             <constraint firstItem="YbU-8V-Db1" firstAttribute="top" secondItem="Oj9-a9-JTG" secondAttribute="bottom" id="hH1-yr-rWB"/>
                             <constraint firstItem="i3h-nQ-SAp" firstAttribute="top" secondItem="mcl-en-N2e" secondAttribute="bottom" constant="10" id="q37-nr-7mW"/>
                             <constraint firstItem="0xp-lf-DuU" firstAttribute="leading" secondItem="9Za-05-zwY" secondAttribute="leading" constant="10" id="v0f-gJ-Pab"/>
+                            <constraint firstItem="wyT-Ko-72m" firstAttribute="top" secondItem="Oj9-a9-JTG" secondAttribute="bottom" id="x0n-7k-DMf"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="CON-0p-q28" appends="YES" id="2Vf-TC-PtK"/>
@@ -465,6 +480,7 @@ frame 135</string>
                         <outlet property="previewView" destination="9Za-05-zwY" id="llM-aG-xvt"/>
                         <outlet property="recordButton" destination="mcl-en-N2e" id="i4O-yh-h1k"/>
                         <outlet property="resumeButton" destination="gwL-zO-1Pw" id="xvg-vj-GpD"/>
+                        <outlet property="screenshotModeCaptureImage" destination="wyT-Ko-72m" id="Fo8-l6-em5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4sS-pb-l0E" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -480,6 +496,8 @@ frame 135</string>
     <resources>
         <image name="FlipCamera" width="28" height="21"/>
         <image name="GitHub" width="32" height="32"/>
+        <image name="Screenshot-Capture" width="640" height="1136"/>
+        <image name="Screenshot-Mark" width="640" height="1136"/>
         <image name="Twitter" width="200" height="200"/>
     </resources>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
