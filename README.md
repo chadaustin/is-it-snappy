@@ -1,3 +1,3 @@
 # Is It Snappy?
 
-See [isitsnappy.com](isitsnappy.com).
+See [isitsnappy.com](http://isitsnappy.com).
