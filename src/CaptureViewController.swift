@@ -781,7 +781,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 albumChangeRequest!.addAssets([placeholder] as NSArray)
             }) { success, error in
                 guard success else {
-                    NSLog("Could not save movie to photo library: \(error)")
+                    if let error = error {
+                        NSLog("Could not save movie to photo library: \(error)")
+                    } else {
+                        NSLog("Could not save movie to photo library: unknown error")
+                    }
                     cleanup()
                     return
                 }

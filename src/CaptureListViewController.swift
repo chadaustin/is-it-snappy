@@ -83,6 +83,10 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
                 tableView.setEditing(false, animated: true)
             })
 
+            let sourceView = tableView.cellForRow(at: indexPath) ?? tableView
+            ac.popoverPresentationController?.permittedArrowDirections = .right
+            ac.popoverPresentationController?.sourceView = sourceView
+            ac.popoverPresentationController?.sourceRect = CGRect(x: sourceView.bounds.width, y: 0, width: 0, height: sourceView.bounds.height)
             ss.present(ac, animated: true, completion: nil)
         }
         return [action]
