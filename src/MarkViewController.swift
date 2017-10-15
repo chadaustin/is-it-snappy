@@ -2,6 +2,8 @@ import UIKit
 import UIKit.UIGestureRecognizerSubclass
 import Photos
 
+let tapEdgeWidth: CGFloat = 30
+
 class PlayerInfo {
     init(sourceAsset: AVAsset) {
         videoAsset = PlayerInfo.getInnerAsset(sourceAsset)
@@ -266,9 +268,8 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
             return false
         }
         
-        let edgeWidth: CGFloat = 15
         let bounds = view.bounds
-        let onEdge = (loc.x < bounds.minX + edgeWidth) || (loc.x > bounds.maxX - edgeWidth)
+        let onEdge = (loc.x < bounds.minX + tapEdgeWidth) || (loc.x > bounds.maxX - tapEdgeWidth)
         if gestureRecognizer == tapGestureRecognizer {
             return onEdge
         } else if gestureRecognizer == panGestureRecognizer {
