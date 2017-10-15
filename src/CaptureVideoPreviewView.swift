@@ -12,7 +12,7 @@ class CaptureVideoPreviewView: UIView {
 
     var session: AVCaptureSession {
         get {
-            return layer.session
+            return layer.session!
         }
         set {
             layer.session = newValue

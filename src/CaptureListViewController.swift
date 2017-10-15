@@ -130,7 +130,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
                     self?.captureButton.isEnabled = true
                     showSettingsAlert(permission: "Photos")
                 case .authorized:
-                    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
+                    AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
                         DispatchQueue.main.async {
                             self?.captureButton.isEnabled = true
                             if !granted {

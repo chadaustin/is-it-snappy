@@ -131,8 +131,10 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     // Communicate with the session and other session objects on this queue.
     var sessionQueue = DispatchQueue(label: "session queue")
+    @objc dynamic
     var session = AVCaptureSession()
     var videoDeviceInput: AVCaptureDeviceInput!
+    @objc dynamic
     var videoDevice: AVCaptureDevice!
     var movieFileOutput: AVCaptureMovieFileOutput?
 
@@ -173,7 +175,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
             self.backgroundRecordingID = UIBackgroundTaskInvalid
 
-            guard let videoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: .back) else {
+            guard let videoDevice = CaptureViewController.device(withMediaType: AVMediaType.video.rawValue, preferringPosition: .back) else {
                 DispatchQueue.main.async {
                     if screenshotMode {
                         self.screenshotModeCaptureImage.isHidden = false
@@ -235,7 +237,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 }
 
                 let previewLayer = self.previewView.layer
-                previewLayer.connection.videoOrientation = initialVideoOrientation
+                previewLayer.connection?.videoOrientation = initialVideoOrientation
             }
 
             let movieFileOutput = AVCaptureMovieFileOutput()
@@ -248,7 +250,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             }
 
             self.session.addOutput(movieFileOutput)
-            let connection: AVCaptureConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
+            let connection: AVCaptureConnection = movieFileOutput.connection(with: AVMediaType.video)!
             connection.preferredVideoStabilizationMode = .off // The less processing for this app, the better.
             self.movieFileOutput = movieFileOutput
 
@@ -330,7 +332,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let deviceOrientation = UIDevice.current.orientation
         if UIDeviceOrientationIsPortrait(deviceOrientation) || UIDeviceOrientationIsLandscape(deviceOrientation) {
             let previewLayer = self.previewView.layer
-            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation)!
+            previewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation)!
         }
     }
 
@@ -377,7 +379,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         if context == &Context.FocusMode {
             //precondition(Thread.isMainThread)
-            if let newMode = enumFromAny(AVCaptureFocusMode.init, newValue) {
+            if let newMode = enumFromAny(AVCaptureDevice.FocusMode.init, newValue) {
                 _ = newMode
                 DispatchQueue.main.async { [weak self] in
                     guard let ss = self else { return }
@@ -416,19 +418,19 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     }
     
     static var deviceSupportsMultipleCameras: Bool = {
-        let discoverySession = AVCaptureDeviceDiscoverySession(
-            deviceTypes: [.builtInWideAngleCamera],
-            mediaType: AVMediaTypeVideo,
+        let discoverySession = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
+            mediaType: AVMediaType.video,
             position: .unspecified)
-        return (discoverySession?.devices.count ?? 0) > 1
+        return discoverySession.devices.count > 1
     }()
 
-    func subjectAreaDidChange(_ notification: NSNotification) {
+    @objc func subjectAreaDidChange(_ notification: NSNotification) {
         let devicePoint = CGPoint(x: 0.5, y: 0.5)
         self.focusWithMode(.continuousAutoFocus, exposeWithMode: .continuousAutoExposure, atDevicePoint: devicePoint, monitorSubjectAreaChange: false)
     }
 
-    func sessionRuntimeError(_ notification: NSNotification) {
+    @objc func sessionRuntimeError(_ notification: NSNotification) {
         let error = notification.userInfo![AVCaptureSessionErrorKey] as! NSError
         NSLog("Capture session runtime error: \(error)")
 
@@ -450,7 +452,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    func sessionWasInterrupted(_ notification: NSNotification) {
+    @objc func sessionWasInterrupted(_ notification: NSNotification) {
         // In some scenarios we want to enable the user to resume the session running.
         // For example, if music playback is initiated via control center while using AVCamManual,
         // then the user can let AVCamManual resume the session running, which will stop music playback.
@@ -458,7 +460,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         // Also note that it is not always possible to resume, see -[resumeInterruptedSession:].
 
         // In iOS 9 and later, the userInfo dictionary contains information on why the session was interrupted.
-        let reason = enumFromAny(AVCaptureSessionInterruptionReason.init, notification.userInfo?[AVCaptureSessionInterruptionReasonKey])!
+        let reason = enumFromAny(AVCaptureSession.InterruptionReason.init, notification.userInfo?[AVCaptureSessionInterruptionReasonKey])!
         NSLog("Capture session was interrupted with reason \(reason)")
 
         if reason == .audioDeviceInUseByAnotherClient ||
@@ -480,7 +482,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    func sessionInterruptionEnded(_ notification: NSNotification) {
+    @objc func sessionInterruptionEnded(_ notification: NSNotification) {
         NSLog("Capture session interruption ended")
 
         if !self.resumeButton.isHidden {
@@ -549,14 +551,14 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 self.backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
 
                 // Update the orientation on the movie file output video connection before starting recording.
-                let movieConnection = movieFileOutput.connection(withMediaType: AVMediaTypeVideo)
+                let movieConnection = movieFileOutput.connection(with: AVMediaType.video)
                 let previewLayer = self.previewView.layer 
-                movieConnection?.videoOrientation = previewLayer.connection.videoOrientation
+                movieConnection?.videoOrientation = (previewLayer.connection?.videoOrientation)!
 
                 // Start recording to a temporary file.
                 let outputFileName = ProcessInfo.processInfo.globallyUniqueString as NSString
                 let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent(outputFileName.appendingPathExtension("mov")!)
-                movieFileOutput.startRecording(toOutputFileURL: NSURL.fileURL(withPath: outputFilePath), recordingDelegate: self)
+                movieFileOutput.startRecording(to: NSURL.fileURL(withPath: outputFilePath), recordingDelegate: self)
             }
             else {
                 self.movieFileOutput?.stopRecording()
@@ -586,7 +588,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         self.currentState = .switchingCameras
 
         self.sessionQueue.async {
-            var preferredPosition = AVCaptureDevicePosition.unspecified
+            var preferredPosition = AVCaptureDevice.Position.unspecified
 
             switch self.videoDevice.position {
             case .unspecified: fallthrough
@@ -598,18 +600,18 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 break
             }
 
-            let newVideoDevice = CaptureViewController.device(withMediaType: AVMediaTypeVideo, preferringPosition: preferredPosition)
-            let newVideoDeviceInput = try? AVCaptureDeviceInput(device: newVideoDevice)
+            let newVideoDevice = CaptureViewController.device(withMediaType: AVMediaType.video.rawValue, preferringPosition: preferredPosition)
+            let newVideoDeviceInput = try? AVCaptureDeviceInput(device: newVideoDevice!)
 
             self.session.beginConfiguration()
 
             // Remove the existing device input first, since using the front and back camera simultaneously is not supported.
             self.session.removeInput(self.videoDeviceInput)
-            if self.session.canAddInput(newVideoDeviceInput) {
+            if self.session.canAddInput(newVideoDeviceInput!) {
                 NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: self.videoDevice)
                 NotificationCenter.default.addObserver(self, selector: #selector(self.subjectAreaDidChange), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: newVideoDevice)
 
-                self.session.addInput(newVideoDeviceInput)
+                self.session.addInput(newVideoDeviceInput!)
                 self.videoDeviceInput = newVideoDeviceInput
                 self.observing = false
                 self.videoDevice = newVideoDevice
@@ -619,7 +621,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 self.session.addInput(self.videoDeviceInput)
             }
 
-            if let connection = self.movieFileOutput?.connection(withMediaType: AVMediaTypeVideo) {
+            if let connection = self.movieFileOutput?.connection(with: AVMediaType.video) {
                 if connection.isVideoStabilizationSupported {
                     connection.preferredVideoStabilizationMode = .auto
                 }
@@ -641,7 +643,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             return
         }
         if videoDevice.focusMode != .locked && videoDevice.exposureMode != .custom {
-            let devicePoint = self.previewView.layer.captureDevicePointOfInterest(for: gestureRecognizer.location(in: gestureRecognizer.view))
+            let devicePoint = self.previewView.layer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
             self.focusWithMode(.continuousAutoFocus, exposeWithMode: .continuousAutoExposure, atDevicePoint: devicePoint, monitorSubjectAreaChange: true)
         }
     }
@@ -649,7 +651,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
     @IBAction
     func changeFocusMode(_ sender: AnyObject?) {
         let control = sender as! UIButton
-        let mode = (!control.isSelected) ? AVCaptureFocusMode.continuousAutoFocus : .locked
+        let mode = (!control.isSelected) ? AVCaptureDevice.FocusMode.continuousAutoFocus : .locked
 
         do {
             try self.videoDevice.lockForConfiguration()
@@ -668,7 +670,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let control = sender as! UISlider
         do {
             try videoDevice.lockForConfiguration()
-            videoDevice.setFocusModeLockedWithLensPosition(control.value, completionHandler: nil)
+            videoDevice.setFocusModeLocked(lensPosition: control.value, completionHandler: nil)
             videoDevice.unlockForConfiguration()
         }
         catch let error {
@@ -699,18 +701,18 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     // MARK: File Output Recording Delegate
 
-    func capture(_ captureOutput: AVCaptureFileOutput, didStartRecordingToOutputFileAt fileURL: URL, fromConnections connections: [Any]) {
+    func fileOutput(_ captureOutput: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
             self.currentState = .recording
         }
     }
 
-    func capture(
-        _ captureOutput: AVCaptureFileOutput!,
-        didFinishRecordingToOutputFileAt outputFileURL: URL!,
-        fromConnections connections: [Any]!,
-        error: Error!
+    func fileOutput(
+        _ captureOutput: AVCaptureFileOutput,
+        didFinishRecordingTo outputFileURL: URL,
+        from connections: [AVCaptureConnection],
+        error: Error?
     ) {
         // Yikes, this isn't necessarily called on the main thread, but I need access to the current state.
         let cancelling: Bool
@@ -808,7 +810,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     // MARK: Device Configuration
 
-    func focusWithMode(_ focusMode: AVCaptureFocusMode, exposeWithMode exposureMode: AVCaptureExposureMode, atDevicePoint point: CGPoint,  monitorSubjectAreaChange: Bool) {
+    func focusWithMode(_ focusMode: AVCaptureDevice.FocusMode, exposeWithMode exposureMode: AVCaptureDevice.ExposureMode, atDevicePoint point: CGPoint,  monitorSubjectAreaChange: Bool) {
         self.sessionQueue.async {
             let device = self.videoDevice!
             do {
@@ -840,12 +842,15 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
     // MARK: Utilities
 
-    static func device(withMediaType mediaType: String, preferringPosition position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)?.devices ?? []
+    static func device(withMediaType mediaType: String, preferringPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let devices = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
+            mediaType: AVMediaType.video,
+            position: .unspecified).devices
         return devices.first(where: { $0.position == position }) ?? devices.first
     }
 
-    func stringFromFocusMode(focusMode: AVCaptureFocusMode) -> String {
+    func stringFromFocusMode(focusMode: AVCaptureDevice.FocusMode) -> String {
         switch focusMode {
         case .locked:
             return "Locked"
@@ -856,7 +861,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    func stringFromExposureMode(_ exposureMode: AVCaptureExposureMode) -> String {
+    func stringFromExposureMode(_ exposureMode: AVCaptureDevice.ExposureMode) -> String {
         switch exposureMode {
         case .locked:
             return "Locked"
@@ -869,7 +874,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    func stringFromWhiteBalanceMode(_ whiteBalanceMode: AVCaptureWhiteBalanceMode) -> String {
+    func stringFromWhiteBalanceMode(_ whiteBalanceMode: AVCaptureDevice.WhiteBalanceMode) -> String {
         switch whiteBalanceMode {
         case .locked:
             return "Locked"
@@ -880,7 +885,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         }
     }
 
-    func normalizedGains(_ gains: AVCaptureWhiteBalanceGains) -> AVCaptureWhiteBalanceGains {
+    func normalizedGains(_ gains: AVCaptureDevice.WhiteBalanceGains) -> AVCaptureDevice.WhiteBalanceGains {
         var g = gains
 
         g.redGain = max(1.0, g.redGain)

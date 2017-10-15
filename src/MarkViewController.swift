@@ -100,7 +100,7 @@ class PlayerInfo {
         } else if let composition = sourceAsset as? AVComposition {
             // Bypass the composition's frame rate ramp.
             // TODO: check for video track and segment and source URL
-            let track = composition.tracks.first(where: { $0.mediaType == AVMediaTypeVideo })!
+            let track = composition.tracks.first(where: { $0.mediaType == AVMediaType.video })!
             return AVURLAsset(
                 url: track.segments[0].sourceURL!,
                 options: [AVURLAssetPreferPreciseDurationAndTimingKey: "true"])
@@ -280,7 +280,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         }
     }
 
-    func handleGesture(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func handleGesture(_ gestureRecognizer: UIGestureRecognizer) {
         guard let player = playerView.player else {
             return
         }

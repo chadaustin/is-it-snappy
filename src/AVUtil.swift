@@ -35,11 +35,10 @@ extension AVCaptureVideoOrientation {
     }
 }
 
-extension AVCaptureDeviceFormat {
+extension AVCaptureDevice.Format {
     var maxSupportedFrameRate: Double {
         var m: Double = 0
         for range in self.videoSupportedFrameRateRanges {
-            let range = range as! AVFrameRateRange
             if range.maxFrameRate > m {
                 m = range.maxFrameRate
             }
@@ -51,8 +50,8 @@ extension AVCaptureDeviceFormat {
 extension AVCaptureDevice {
     func setBestFormat() {
         let videoDevice = self
-        var formats = videoDevice.formats as! [AVCaptureDeviceFormat]
-        func formatPriority(_ format: AVCaptureDeviceFormat) -> Int {
+        var formats = videoDevice.formats 
+        func formatPriority(_ format: AVCaptureDevice.Format) -> Int {
             // frame rate is the most important factor
             // full vs. video dynamic range is the second
             let isFull = CMFormatDescriptionGetMediaSubType(format.formatDescription) & 0xFF == 102 // f
