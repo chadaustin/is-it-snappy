@@ -40,6 +40,9 @@ class PlayerInfo {
             }
         }
 
+        // H.264 and later can store video frames out-of-order for better compression.
+        // --> It's necessary to sort the frame times.
+        times.sort(by: <)
         frameTimes = times
     }
 
