@@ -540,6 +540,11 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             fatalError("Should never be able to toggle recording from another state")
         }
         
+        // .layer may only be called from the main thread.
+        // --> Get the .videoOrientation before jumping into the background thread.
+        let previewLayer = self.previewView.layer
+        let orientation = previewLayer.connection?.videoOrientation ?? .portrait
+
         self.sessionQueue.async {
             if let movieFileOutput = self.movieFileOutput,
                 !movieFileOutput.isRecording {
@@ -552,8 +557,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
                 // Update the orientation on the movie file output video connection before starting recording.
                 let movieConnection = movieFileOutput.connection(with: AVMediaType.video)
-                let previewLayer = self.previewView.layer 
-                movieConnection?.videoOrientation = (previewLayer.connection?.videoOrientation)!
+                movieConnection?.videoOrientation = orientation
 
                 // Start recording to a temporary file.
                 let outputFileName = ProcessInfo.processInfo.globallyUniqueString as NSString
