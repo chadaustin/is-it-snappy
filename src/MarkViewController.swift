@@ -11,9 +11,11 @@ class PlayerInfo {
         // TODO: check that the videoAsset has a video track
         let track = videoAsset.tracks[0]
         
+        #if DEBUG
         Swift.print("nominalFrameRate: \(track.nominalFrameRate)")
         Swift.print("minFrameDuration: \(track.minFrameDuration.seconds)")
         Swift.print("maxFrameRate: \(1.0 / track.minFrameDuration.seconds)")
+        #endif
 
         playerItem = AVPlayerItem(asset: videoAsset)
         player = AVPlayer(playerItem: playerItem)
@@ -41,7 +43,7 @@ class PlayerInfo {
         }
 
         // H.264 and later can store video frames out-of-order for better compression.
-        // --> It's necessary to sort the frame times.
+        // The frameNumber search requires frameTimes be sorted.
         times.sort(by: <)
         frameTimes = times
     }
