@@ -215,7 +215,7 @@
 			};
 			buildConfigurationList = 639459041E61DBC500C00F0E /* Build configuration list for PBXProject "IsItSnappy" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
