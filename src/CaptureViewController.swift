@@ -545,11 +545,6 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         let previewLayer = self.previewView.layer
         let orientation = previewLayer.connection?.videoOrientation ?? .portrait
         
-        // .layer may only be called from the main thread.
-        // --> Get the .videoOrientation before jumping into the background thread.
-        let previewLayer = self.previewView.layer
-        let orientation = previewLayer.connection?.videoOrientation ?? .portrait
-
         self.sessionQueue.async {
             if let movieFileOutput = self.movieFileOutput,
                 !movieFileOutput.isRecording {
