@@ -52,7 +52,7 @@ class PlayerInfo {
 
     func frameNumber(for time: CMTime) -> (Int, CMTime) {
         var previousFrameNumber = 0
-        var previousFrameTime = kCMTimeZero
+        var previousFrameTime = CMTime.zero
         for (frameNumber, frameTime) in frameTimes.enumerated() {
             if time < frameTime {
                 break
@@ -86,10 +86,10 @@ class PlayerInfo {
     
     func timeFor(frame: Int) -> CMTime {
         if frame < 0 {
-            return frameTimes.first ?? kCMTimeZero
+            return frameTimes.first ?? CMTime.zero
         }
         if frame >= frameTimes.count {
-            return frameTimes.last ?? kCMTimeZero
+            return frameTimes.last ?? CMTime.zero
         }
         return frameTimes[frame]
     }
@@ -252,7 +252,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         return .default
     }
     
-    var gestureStartTime: CMTime = kCMTimeZero
+    var gestureStartTime: CMTime = CMTime.zero
 
     static func formatTime(_ time: CMTime) -> String {
         return String(format: "%.1f", time.seconds * 1000.0)
@@ -338,10 +338,10 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
             //Swift.print("before: \(x) after: \(applyCurve(x))")
             x = applyCurve(x)
 
-            let minimum = kCMTimeZero
+            let minimum = CMTime.zero
             let maximum = player.currentItem!.duration
 
-            let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, 240*100)))
+            let target = min(maximum, max(minimum, gestureStartTime + CMTimeMakeWithSeconds(x, preferredTimescale: 240*100)))
             aimAt(time: target)
         }
     }
@@ -354,8 +354,8 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         state = .seeking
         player.seek(
             to: target,
-            toleranceBefore: kCMTimeZero,
-            toleranceAfter: kCMTimeZero
+            toleranceBefore: CMTime.zero,
+            toleranceAfter: CMTime.zero
         ) { [weak self] finished in
             guard let ss = self else {
                 return

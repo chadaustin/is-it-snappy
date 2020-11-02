@@ -4,7 +4,7 @@ import Photos
 class MyTableViewCell: UITableViewCell {
     var label = UILabel()
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(label)
 
@@ -116,7 +116,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
             let ac = UIAlertController(title: "Requires \(permission) access", message: "Give \"\(appName)\" access to \(permission) in Settings", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
-                UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
             })
             self.present(ac, animated: true, completion: nil)
         }

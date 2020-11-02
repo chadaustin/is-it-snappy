@@ -201,13 +201,13 @@
 					639459081E61DBC500C00F0E = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 9A8N5FBX5L;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1030;
 						ProvisioningStyle = Manual;
 					};
 					6394591C1E61DBC600C00F0E = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 9A8N5FBX5L;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1030;
 						ProvisioningStyle = Manual;
 						TestTargetID = 639459081E61DBC500C00F0E;
 					};
@@ -439,7 +439,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -458,7 +458,7 @@
 				PROVISIONING_PROFILE = "f2cb1b99-6b6a-4369-aaaf-725302c71db3";
 				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -474,7 +474,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IsItSnappy.app/IsItSnappy";
 			};
 			name = Debug;
@@ -492,7 +492,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.chadaustin.IsItSnappyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IsItSnappy.app/IsItSnappy";
 			};
 			name = Release;

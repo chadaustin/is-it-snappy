@@ -173,7 +173,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 self.currentState = .creatingSession
             }
 
-            self.backgroundRecordingID = UIBackgroundTaskInvalid
+            self.backgroundRecordingID = UIBackgroundTaskIdentifier(rawValue: convertFromUIBackgroundTaskIdentifier(UIBackgroundTaskIdentifier.invalid))
 
             guard let videoDevice = CaptureViewController.device(withMediaType: AVMediaType.video.rawValue, preferringPosition: .back) else {
                 DispatchQueue.main.async {
@@ -330,7 +330,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         // Note that the app delegate controls the device orientation notifications required to use the device orientation.
         let deviceOrientation = UIDevice.current.orientation
-        if UIDeviceOrientationIsPortrait(deviceOrientation) || UIDeviceOrientationIsLandscape(deviceOrientation) {
+        if deviceOrientation.isPortrait || deviceOrientation.isLandscape {
             let previewLayer = self.previewView.layer
             previewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation)!
         }
@@ -731,14 +731,14 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         // is back to NO — which happens sometime after this method returns.
         // Note: Since we use a unique file path for each recording, a new recording will not overwrite a recording currently being saved.
         let currentBackgroundRecordingID = self.backgroundRecordingID
-        self.backgroundRecordingID = UIBackgroundTaskInvalid
+        self.backgroundRecordingID = UIBackgroundTaskIdentifier(rawValue: convertFromUIBackgroundTaskIdentifier(UIBackgroundTaskIdentifier.invalid))
 
         func cleanup() {
             DispatchQueue.main.async {
                 self.currentState = .idle
             }
             try? FileManager.default.removeItem(at: outputFileURL)
-            if currentBackgroundRecordingID != UIBackgroundTaskInvalid {
+            if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
                 UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID!)
             }
         }
@@ -902,4 +902,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
         return g
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIBackgroundTaskIdentifier(_ input: UIBackgroundTaskIdentifier) -> Int {
+	return input.rawValue
 }
