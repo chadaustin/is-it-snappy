@@ -42,7 +42,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.delegate = self
 
         let infoButton = UIButton(type: .infoLight)
-        infoButton.tintColor = .black
+        infoButton.tintColor = .label
         infoButton.addTarget(self, action: #selector(handleInfoButtonTap), for: .primaryActionTriggered)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: infoButton)
         
@@ -140,6 +140,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
                             } else {
                                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                                 let vc = storyboard.instantiateViewController(withIdentifier: "CaptureViewController") as! CaptureViewController
+                                vc.modalPresentationStyle = .overCurrentContext
                                 self?.present(vc, animated: true, completion: nil)
                             }
                         }
@@ -153,6 +154,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "MarkViewController") as! MarkViewController
         vc.setModel(model)
+        vc.modalPresentationStyle = .overCurrentContext
         present(vc, animated: true, completion: completion)
     }
 

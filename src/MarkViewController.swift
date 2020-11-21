@@ -254,7 +254,7 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
+        return .darkContent
     }
     
     var gestureStartTime: CMTime = CMTime.zero
