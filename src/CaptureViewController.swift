@@ -602,6 +602,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             case .back:
                 preferredPosition = .front
                 break
+            @unknown default:
+                preferredPosition = .back
+                break
             }
 
             let newVideoDevice = CaptureViewController.device(withMediaType: AVMediaType.video.rawValue, preferringPosition: preferredPosition)
@@ -862,6 +865,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             return "Auto"
         case .continuousAutoFocus:
             return "ContinuousAuto"
+        @unknown default:
+            return "Unknown"
         }
     }
 
@@ -875,6 +880,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             return "ContinuousAuto"
         case .custom:
             return "Custom"
+        @unknown default:
+            return "Unknown"
         }
     }
 
@@ -886,6 +893,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
             return "Auto"
         case .continuousAutoWhiteBalance:
             return "ContinuousAuto"
+        @unknown default:
+            return "Unknown"
         }
     }
 
