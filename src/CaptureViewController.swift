@@ -537,7 +537,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         case .recording:
             currentState = .finishing
         default:
-            fatalError("Should never be able to toggle recording from another state")
+            fatalError("Should never be able to toggle recording from state \(currentState)")
         }
 
         // .layer may only be called from the main thread.
