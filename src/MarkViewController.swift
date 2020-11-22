@@ -144,6 +144,8 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
     var model: VideoModel!
     var playerInfo: PlayerInfo!
 
+    var didDismiss: (() -> Void)?
+
     var playerView: PlayerView {
         return view as! PlayerView
     }
@@ -249,7 +251,9 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         if captureNameField.isFirstResponder {
             dismissKeyboard()
         } else {
-            dismiss(animated: true)
+            dismiss(animated: true) { [weak self] in
+                self?.didDismiss?()
+            }
         }
     }
 

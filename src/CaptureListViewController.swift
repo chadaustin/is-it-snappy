@@ -129,7 +129,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
                 case .notDetermined, .restricted, .denied:
                     self?.captureButton.isEnabled = true
                     showSettingsAlert(permission: "Photos")
-                case .authorized:
+                case .authorized, .limited:
                     fallthrough
                 @unknown default:
                     AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
@@ -155,6 +155,9 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         let vc = storyboard.instantiateViewController(withIdentifier: "MarkViewController") as! MarkViewController
         vc.setModel(model)
         vc.modalPresentationStyle = .overCurrentContext
+        vc.didDismiss = { [weak self] in
+            self?.tableView.reloadData()
+        }
         present(vc, animated: true, completion: completion)
     }
 
