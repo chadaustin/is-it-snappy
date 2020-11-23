@@ -140,7 +140,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
                             } else {
                                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                                 let vc = storyboard.instantiateViewController(withIdentifier: "CaptureViewController") as! CaptureViewController
-                                vc.modalPresentationStyle = .overCurrentContext
+                                vc.modalPresentationStyle = .fullScreen
                                 self?.present(vc, animated: true, completion: nil)
                             }
                         }
@@ -154,7 +154,7 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "MarkViewController") as! MarkViewController
         vc.setModel(model)
-        vc.modalPresentationStyle = .overCurrentContext
+        vc.modalPresentationStyle = .fullScreen
         vc.didDismiss = { [weak self] in
             self?.tableView.reloadData()
         }

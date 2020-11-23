@@ -437,7 +437,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "me.chadaustin.is-it-snappy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d9c7ed57-abc6-46ad-a5e5-169beff07d63";
-				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Development Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Development 2";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -458,7 +458,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "me.chadaustin.is-it-snappy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "f2cb1b99-6b6a-4369-aaaf-725302c71db3";
-				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Is It Snappy Distribution 2";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/IsItSnappy-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
