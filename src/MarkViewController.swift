@@ -181,7 +181,9 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
                 self.locationLabel.text = "frame 677(+24)\n2821.2 ms"
             }
         } else {
-            let options: PHVideoRequestOptions? = nil
+            let options = PHVideoRequestOptions()
+            // Request the original to get the non-slowed version
+            options.version = .original
             PHImageManager.default().requestAVAsset(
                 forVideo: (model as! PHVideoModel).asset,
                 options: options
