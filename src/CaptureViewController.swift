@@ -231,6 +231,8 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
                 // Use the status bar orientation as the initial video orientation. Subsequent orientation changes are handled by
                 // -[viewWillTransitionToSize:withTransitionCoordinator:].
+                // let statusBarOrientation = self.view.window?.windowScene?.interfaceOrientation
+
                 let statusBarOrientation = UIApplication.shared.statusBarOrientation
                 var initialVideoOrientation = AVCaptureVideoOrientation.portrait
                 if  statusBarOrientation != .unknown {
