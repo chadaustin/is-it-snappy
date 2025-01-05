@@ -231,12 +231,12 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
 
                 // Use the status bar orientation as the initial video orientation. Subsequent orientation changes are handled by
                 // -[viewWillTransitionToSize:withTransitionCoordinator:].
-                // let statusBarOrientation = self.view.window?.windowScene?.interfaceOrientation
 
-                let statusBarOrientation = UIApplication.shared.statusBarOrientation
+                // TODO: Should we consider using UIDevice.current.orientation instead? When are they different?
+                let interfaceOrientation = self.view.window?.windowScene?.interfaceOrientation
                 var initialVideoOrientation = AVCaptureVideoOrientation.portrait
-                if  statusBarOrientation != .unknown {
-                    initialVideoOrientation = AVCaptureVideoOrientation(interfaceOrientation: statusBarOrientation)
+                if let orientation = interfaceOrientation, orientation != .unknown {
+                    initialVideoOrientation = AVCaptureVideoOrientation(interfaceOrientation: orientation)
                 }
 
                 let previewLayer = self.previewView.layer
@@ -537,7 +537,7 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
         switch currentState {
         case .idle:
             currentState = .recording
-        case .recording:
+        case .recording, .screenshotMode:
             currentState = .finishing
         default:
             fatalError("Should never be able to toggle recording from state \(currentState)")
