@@ -129,8 +129,26 @@
                     <view key="view" contentMode="scaleToFill" id="uVW-OJ-tDz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vrd-2r-tzW">
+                                <rect key="frame" x="16" y="64" width="288" height="504"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vrd-2r-tzW" firstAttribute="leading" secondItem="uVW-OJ-tDz" secondAttribute="leadingMargin" id="73p-R9-tnK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Vrd-2r-tzW" secondAttribute="trailing" id="PWp-0j-Y4y"/>
+                            <constraint firstItem="ytP-7c-RrN" firstAttribute="top" secondItem="Vrd-2r-tzW" secondAttribute="bottom" id="sL5-fH-OP8"/>
+                            <constraint firstItem="Vrd-2r-tzW" firstAttribute="top" secondItem="0I4-hV-4IR" secondAttribute="bottom" id="zLa-z3-DAX"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="webView" destination="Vrd-2r-tzW" id="OC4-KZ-RUH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Xe-Co-k8a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
