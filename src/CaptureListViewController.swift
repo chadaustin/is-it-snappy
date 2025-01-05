@@ -64,33 +64,42 @@ class CaptureListViewController: UIViewController, UITableViewDataSource, UITabl
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let action = UITableViewRowAction(style: .destructive, title: "Delete") { [weak self] action, indexPath in
-            guard let ss = self else { return }
-            let model = ss.groups[indexPath.section].videos[indexPath.row]
-            let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            ac.addAction(UIAlertAction(title: "Clear Marks", style: .destructive) { action in
-                MarkDatabase.shared.delete(localIdentifier: model.uniqueID)
-                tableView.setEditing(false, animated: true)
-                tableView.reloadData()
-            })
-            ac.addAction(UIAlertAction(title: "Delete Video & Marks", style: .destructive) { action in
-                guard let ss = self else { return }
-                ss.deleteVideoAndMark(model)
-                tableView.setEditing(false, animated: true)
-            })
-            ac.addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
-                tableView.setEditing(false, animated: true)
-            })
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+        -> UISwipeActionsConfiguration?
+    {
+        return UISwipeActionsConfiguration(actions: [
+            UIContextualAction(
+                style: .destructive, title: "Delete",
+                handler: { [weak self] action, sourceView, completionHandler in
+                    guard let ss = self else { return }
+                    let model = ss.groups[indexPath.section].videos[indexPath.row]
+                    let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                    ac.addAction(
+                        UIAlertAction(title: "Clear Marks", style: .destructive) { action in
+                            MarkDatabase.shared.delete(localIdentifier: model.uniqueID)
+                            // TODO: It's not clear to me whether tableView.reloadData() must be called or whether the completion handler will do that automatically.
+                            tableView.reloadData()
+                            completionHandler(true)
+                        })
+                    ac.addAction(
+                        UIAlertAction(title: "Delete Video & Marks", style: .destructive) { action in
+                            guard let ss = self else { return }
+                            ss.deleteVideoAndMark(model)
+                            completionHandler(true)
+                        })
+                    ac.addAction(
+                        UIAlertAction(title: "Cancel", style: .cancel) { action in
+                            completionHandler(false)
+                        })
 
-            let sourceView = tableView.cellForRow(at: indexPath) ?? tableView
-            ac.popoverPresentationController?.permittedArrowDirections = .right
-            ac.popoverPresentationController?.sourceView = sourceView
-            ac.popoverPresentationController?.sourceRect = CGRect(x: sourceView.bounds.width, y: 0, width: 0, height: sourceView.bounds.height)
-            ss.present(ac, animated: true, completion: nil)
-        }
-        return [action]
-    }
+                    ac.popoverPresentationController?.permittedArrowDirections = .right
+                    ac.popoverPresentationController?.sourceView = sourceView
+                    ac.popoverPresentationController?.sourceRect = CGRect(
+                        x: sourceView.bounds.width, y: 0, width: 0, height: sourceView.bounds.height)
+                    ss.present(ac, animated: true, completion: nil)
+                })
+        ])
+     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         precondition(Thread.isMainThread)
