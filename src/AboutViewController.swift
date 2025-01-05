@@ -2,7 +2,7 @@ import UIKit
 
 let homepageURL: URL = URL(string: "https://isitsnappy.com")!
 let githubURL: URL = URL(string: "https://github.com/chadaustin/is-it-snappy")!
-let twitterURL: URL = URL(string: "https://twitter.com/chadaustin")!
+let twitterURL: URL = URL(string: "https://mastodon.gamedev.place/@chadaustin")!
 
 class AboutViewController: UIViewController {
     @IBAction func handleBack() {

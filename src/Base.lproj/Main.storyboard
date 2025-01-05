@@ -42,7 +42,8 @@
                                     <constraint firstAttribute="height" constant="70" id="fnw-jX-4cI"/>
                                     <constraint firstAttribute="width" constant="70" id="xZf-HI-iGB"/>
                                 </constraints>
-                                <state key="normal" image="Twitter"/>
+                                <inset key="contentEdgeInsets" minX="18" minY="18" maxX="18" maxY="18"/>
+                                <state key="normal" image="Mastodon"/>
                                 <connections>
                                     <action selector="handleTapTwitter" destination="0FD-h4-AHR" eventType="primaryActionTriggered" id="ye6-Dc-wOt"/>
                                 </connections>
@@ -144,16 +145,16 @@
                         <viewControllerLayoutGuide type="bottom" id="8fy-v2-gUb"/>
                     </layoutGuides>
                     <stackView key="view" opaque="NO" contentMode="scaleToFill" axis="vertical" id="vTr-k7-IMB">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cR6-6m-IZC">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
                     </stackView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" title="All Captures" id="t0F-HL-52K">
                         <barButtonItem key="rightBarButtonItem" systemItem="camera" id="jh6-5o-T7D">
                             <color key="tintColor" systemColor="labelColor"/>
@@ -514,9 +515,9 @@ frame 135</string>
     <resources>
         <image name="FlipCamera" width="28" height="21"/>
         <image name="GitHub" width="32" height="32"/>
+        <image name="Mastodon" width="75" height="79"/>
         <image name="Screenshot-Capture" width="640" height="1136"/>
         <image name="Screenshot-Mark" width="640" height="1136"/>
-        <image name="Twitter" width="200" height="200"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
