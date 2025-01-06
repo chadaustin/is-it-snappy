@@ -179,7 +179,9 @@ class CaptureViewController: UIViewController, AVCaptureFileOutputRecordingDeleg
                 DispatchQueue.main.async {
                     if screenshotMode {
                         self.screenshotModeCaptureImage.isHidden = false
-                        //self.screenshotModeCaptureImage.contentMode = .scaleAspectFill
+                        if screenshotScaleAspectFill {
+                            self.screenshotModeCaptureImage.contentMode = .scaleAspectFill
+                        }
                         self.currentState = .screenshotMode
                     } else {
                         self.currentState = .failedSessionCreation

@@ -166,7 +166,9 @@ class MarkViewController: UIViewController, UIGestureRecognizerDelegate, UITextF
         if screenshotMode {
             DispatchQueue.main.async {
                 self.screenshotModeMarkImage.isHidden = false
-                //self.screenshotModeMarkImage.contentMode = .scaleAspectFill
+                if screenshotScaleAspectFill {
+                    self.screenshotModeMarkImage.contentMode = .scaleAspectFill
+                }
                 
                 self.captureNameField.text = "MBP Device KB -- 95.8 ms"
                 
