@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="capture_cancel">Cancel</string>
+    <string name="capture_record">Record</string>
+    <string name="capture_done">Done</string>
+    <string name="capture_af">AF</string>
+    <string name="capture_mf">MF</string>
+    <string name="capture_flip_camera_desc">Flip camera</string>
+    <string name="capture_focus_slider_desc">Manual focus</string>
+    <string name="capture_unable_to_capture">Unable to capture media</string>
+    <string name="capture_unable_hint">You can still open and mark existing captures.</string>
+    <!-- %1$d is the achieved capture frame rate, e.g. "240 fps". -->
+    <string name="capture_fps_format">%1$d fps</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mark_done">Done</string>
+    <string name="mark_default_name">[name]</string>
+    <string name="mark_failed_message">Unable to load capture</string>
+    <string name="mark_no_mark">--</string>
+    <string name="mark_frame">frame %1$d</string>
+    <string name="mark_input_button">Mark Input\n%1$s</string>
+    <string name="mark_output_button">Mark Output\n%1$s</string>
+    <string name="mark_location">%1$s\n%2$s ms</string>
+    <string name="mark_name_hint">[name]</string>
+</resources>

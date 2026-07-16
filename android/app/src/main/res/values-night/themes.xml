@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.IsItSnappy" parent="Theme.Material3.DayNight" />
+
+    <style name="Theme.IsItSnappy.Fullscreen" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <style name="Theme.IsItSnappy.Mark" parent="Theme.Material3.DayNight.NoActionBar" />
+</resources>
