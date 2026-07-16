@@ -3,20 +3,20 @@ package com.chadaustin.isitsnappy.mark
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -29,6 +29,7 @@ import androidx.media3.ui.PlayerView
 import com.chadaustin.isitsnappy.R
 import com.chadaustin.isitsnappy.app
 import com.chadaustin.isitsnappy.core.Mark
+import com.chadaustin.isitsnappy.core.SafeArea
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -187,20 +188,26 @@ class MarkActivity : AppCompatActivity() {
         topBar.visibility = View.VISIBLE
     }
 
-    // --- Window insets (edge-to-edge, targetSdk 35) -------------------------------------
+    // --- Window insets (edge-to-edge on all API levels) ----------------------------------
 
     /**
-     * targetSdk 35 forces edge-to-edge, so the system bars draw over the content. Pad the top bar
-     * clear of the status bar and the bottom bar clear of the gesture/navigation bar so neither
-     * gets drawn under a system-inset region (Finding 4).
+     * The video is full-bleed; the bars pad themselves clear of the status bar, the
+     * navigation bar (gesture or 3-button), any display cutout (which lands on a horizontal
+     * edge in landscape), and — for the bottom bar — the soft keyboard, so the mark buttons
+     * stay reachable while renaming. Icon appearance is set in code because the top bar is
+     * light and the bottom bar dark regardless of the system ui mode.
      */
     private fun setupWindowInsets() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            topBar.updatePadding(top = bars.top)
-            bottomBar.updatePadding(bottom = bars.bottom)
-            insets
+        enableEdgeToEdge()
+        SafeArea.padTop(topBar)
+        SafeArea.padBottom(bottomBar, includeIme = true)
+        WindowInsetsControllerCompat(window, rootView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
     }
 

@@ -4,18 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.SeekBar
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsControllerCompat
 import com.chadaustin.isitsnappy.R
+import com.chadaustin.isitsnappy.core.SafeArea
 import com.chadaustin.isitsnappy.app
 import com.chadaustin.isitsnappy.core.Capture
 import com.chadaustin.isitsnappy.databinding.ActivityCaptureBinding
@@ -37,15 +39,7 @@ class CaptureActivity : AppCompatActivity() {
         binding = ActivityCaptureBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Enforced edge-to-edge (targetSdk 35): keep Cancel/Record clear of the gesture nav bar
-        // and the fps badge / focus toggle clear of the status bar.
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.bottomBar.updatePadding(bottom = bars.bottom)
-            binding.fpsBadge.updatePadding(top = bars.top)
-            insets
-        }
+        setupWindowInsets()
 
         binding.cancelButton.setOnClickListener { onCancelClicked() }
         binding.recordButton.setOnClickListener { onRecordClicked() }
@@ -121,6 +115,32 @@ class CaptureActivity : AppCompatActivity() {
                     (position * MANUAL_FOCUS_STEPS).toInt().coerceIn(0, MANUAL_FOCUS_STEPS)
             }
         }
+    }
+
+    /**
+     * Full-bleed camera screen. The status bar is hidden the modern way (the theme's
+     * deprecated windowFullscreen flag is gone — it is ignored under enforced edge-to-edge);
+     * a swipe from the top shows it transiently. Floating controls clear the display cutout
+     * and navigation bar on every device shape via safe-area margins/padding.
+     */
+    private fun setupWindowInsets() {
+        enableEdgeToEdge()
+        WindowInsetsControllerCompat(window, binding.root).apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
+        // With the status bar hidden its inset is 0, but the display-cutout inset survives,
+        // keeping these out of the camera punch-hole / notch.
+        SafeArea.offsetMargins(binding.fpsBadge, top = true)
+        SafeArea.offsetMargins(binding.focusToggle, top = true, left = true)
+        SafeArea.offsetMargins(binding.flipButton, top = true, right = true)
+        SafeArea.padBottom(binding.bottomBar)
     }
 
     private fun onCancelClicked() {

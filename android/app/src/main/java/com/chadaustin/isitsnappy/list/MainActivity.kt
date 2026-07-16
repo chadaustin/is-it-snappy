@@ -6,15 +6,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +19,7 @@ import com.chadaustin.isitsnappy.about.AboutActivity
 import com.chadaustin.isitsnappy.app
 import com.chadaustin.isitsnappy.capture.CaptureActivity
 import com.chadaustin.isitsnappy.core.Capture
+import com.chadaustin.isitsnappy.core.SafeArea
 import com.chadaustin.isitsnappy.databinding.ActivityMainBinding
 import com.chadaustin.isitsnappy.mark.MarkActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -54,20 +50,12 @@ class MainActivity : AppCompatActivity() {
         // as a plain view with its own menu, per §11.
         supportActionBar?.hide()
 
-        // Enforced edge-to-edge (targetSdk 35): without inset handling the toolbar renders under
+        // Edge-to-edge on all API levels: without inset handling the toolbar renders under
         // the status bar, whose window also swallows taps on the buttons' upper half.
-        val tv = TypedValue()
-        theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, tv, true)
-        val toolbarBaseHeight = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.toolbar.updatePadding(top = bars.top)
-            binding.toolbar.updateLayoutParams { height = toolbarBaseHeight + bars.top }
-            binding.captureList.clipToPadding = false
-            binding.captureList.updatePadding(bottom = bars.bottom)
-            insets
-        }
+        enableEdgeToEdge()
+        SafeArea.padTop(binding.toolbar)
+        binding.captureList.clipToPadding = false
+        SafeArea.padBottom(binding.captureList)
 
         requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             onCameraPermissionResult(granted)
