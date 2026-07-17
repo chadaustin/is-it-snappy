@@ -4,19 +4,35 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.chadaustin.isitsnappy.R
+import com.chadaustin.isitsnappy.core.SafeArea
+import com.google.android.material.appbar.MaterialToolbar
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.about_title_toolbar)
+        // Owned toolbar, not the decor action bar: some devices with enforced edge-to-edge
+        // stop offsetting decor content below the bar, so the bar covered the content's title.
+        supportActionBar?.hide()
+        enableEdgeToEdge()
+        val toolbar: MaterialToolbar = findViewById(R.id.about_toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.action_help) {
+                startActivity(HelpActivity.newIntent(this))
+                true
+            } else {
+                false
+            }
+        }
+        SafeArea.padTop(toolbar)
+        SafeArea.padBottom(findViewById<ScrollView>(R.id.about_scroll))
 
         val websiteButton: Button = findViewById(R.id.about_website_button)
         val githubButton: Button = findViewById(R.id.about_github_button)
@@ -30,25 +46,6 @@ class AboutActivity : AppCompatActivity() {
         }
         mastodonButton.setOnClickListener {
             openUrl("https://mastodon.gamedev.place/@chadaustin")
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_about, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            R.id.action_help -> {
-                startActivity(HelpActivity.newIntent(this))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

@@ -3,26 +3,24 @@ package com.chadaustin.isitsnappy.about
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
+import android.widget.ScrollView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.chadaustin.isitsnappy.R
+import com.chadaustin.isitsnappy.core.SafeArea
+import com.google.android.material.appbar.MaterialToolbar
 
 class HelpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_help)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.help_title_toolbar)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+        // Owned toolbar, not the decor action bar; see AboutActivity.
+        supportActionBar?.hide()
+        enableEdgeToEdge()
+        val toolbar: MaterialToolbar = findViewById(R.id.help_toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+        SafeArea.padTop(toolbar)
+        SafeArea.padBottom(findViewById<ScrollView>(R.id.help_scroll))
     }
 
     companion object {
