@@ -256,8 +256,8 @@ class CaptureEngine(
             // Nothing bound yet, or already clear.
         }
         val bound = tryHighSpeed(provider, selector, cameraInfo) ||
-            try60Fps(provider, selector, cameraInfo) ||
-            try30Fps(provider, selector, cameraInfo)
+            tryNormalSession(provider, selector, cameraInfo, fps = 60) ||
+            tryNormalSession(provider, selector, cameraInfo, fps = null)
         if (!bound) {
             fail()
         }
@@ -314,7 +314,7 @@ class CaptureEngine(
 
         // The presence of capabilities is enough to build the config; a default Recorder lets
         // CameraX choose a resolution compatible with the requested high frame rate.
-        val preview = buildHighSpeedPreview()
+        val preview = buildPreview(highSpeed = true)
         val recorder = Recorder.Builder().build()
         val videoCapture = VideoCapture.withOutput(recorder)
 
@@ -366,50 +366,36 @@ class CaptureEngine(
             .thenByDescending { it.upper }
 
     /**
-     * 60 fps via a NORMAL session (never the high-speed API): a plain SessionConfig with a fixed
-     * frame-rate range. Only binds if the device actually reports a supported range topping out at
-     * 60, so the deterministic frame-rate contract is satisfied.
+     * Normal-session rungs (never the high-speed API). With [fps] set, binds with a fixed
+     * frame-rate range and only if the device actually reports a supported range topping out
+     * at [fps], so the deterministic frame-rate contract is satisfied. With null, binds
+     * unconstrained — the terminal rung that always works.
      */
-    private fun try60Fps(
+    private fun tryNormalSession(
         provider: ProcessCameraProvider,
         selector: CameraSelector,
         cameraInfo: CameraInfo,
+        fps: Int?,
     ): Boolean {
-        val preview = buildNormalPreview()
+        val preview = buildPreview(highSpeed = false)
         val videoCapture = buildNormalVideoCapture()
-        val ranges: Collection<Range<Int>> = try {
-            cameraInfo.getSupportedFrameRateRanges(SessionConfig(useCases = listOf(preview, videoCapture)))
-        } catch (e: Throwable) {
-            emptyList()
+        val useCases = listOf(preview, videoCapture)
+        val config = if (fps != null) {
+            val ranges: Collection<Range<Int>> = try {
+                cameraInfo.getSupportedFrameRateRanges(SessionConfig(useCases = useCases))
+            } catch (e: Throwable) {
+                emptyList()
+            }
+            // Prefer a fixed [fps,fps] range; otherwise any supported range topping out at fps.
+            val target = ranges.filter { it.upper == fps }.maxByOrNull { it.lower } ?: return false
+            SessionConfig(useCases = useCases, frameRateRange = target)
+        } else {
+            SessionConfig(useCases = useCases)
         }
-        // Prefer a fixed [60,60] range; otherwise any supported range topping out at 60.
-        val target = ranges.filter { it.upper == 60 }.maxByOrNull { it.lower } ?: return false
         return try {
             provider.unbindAll()
-            val cam = provider.bindToLifecycle(
-                activity,
-                selector,
-                SessionConfig(useCases = listOf(preview, videoCapture), frameRateRange = target),
-            )
-            onBound(cam, cameraInfo, videoCapture, fpsLabel(60))
-            true
-        } catch (e: Throwable) {
-            false
-        }
-    }
-
-    /** Terminal rung: plain preview + video capture, no frame-rate constraint. Always works. */
-    private fun try30Fps(
-        provider: ProcessCameraProvider,
-        selector: CameraSelector,
-        cameraInfo: CameraInfo,
-    ): Boolean {
-        val preview = buildNormalPreview()
-        val videoCapture = buildNormalVideoCapture()
-        return try {
-            provider.unbindAll()
-            val cam = provider.bindToLifecycle(activity, selector, preview, videoCapture)
-            onBound(cam, cameraInfo, videoCapture, fpsLabel(30))
+            val cam = provider.bindToLifecycle(activity, selector, config)
+            onBound(cam, cameraInfo, videoCapture, fpsLabel(fps ?: 30))
             true
         } catch (e: Throwable) {
             false
@@ -443,21 +429,13 @@ class CaptureEngine(
 
     // region Use-case construction ------------------------------------------------------------
 
-    private fun buildHighSpeedPreview(): Preview {
-        // No capture-request *options* here: constrained high-speed sessions restrict capture-request
-        // keys, and stabilization is inherently disabled in high-speed mode, so injecting a request
-        // option risks the OEM request-list crash class for no behavioral gain. The focus observer
-        // below is a read-only capture callback (no request keys), so it does not touch that class.
+    private fun buildPreview(highSpeed: Boolean): Preview {
         val builder = Preview.Builder()
-        attachFocusObserver(builder)
-        val preview = builder.build()
-        preview.surfaceProvider = previewView.surfaceProvider
-        return preview
-    }
-
-    private fun buildNormalPreview(): Preview {
-        val builder = Preview.Builder()
-        applyStabilizationOff(builder)
+        // No capture-request *options* in high-speed mode: constrained high-speed sessions restrict
+        // capture-request keys, and stabilization is inherently disabled there anyway, so injecting
+        // a request option risks the OEM request-list crash class for no behavioral gain. The focus
+        // observer is a read-only capture callback (no request keys), safe in both modes.
+        if (!highSpeed) applyStabilizationOff(builder)
         attachFocusObserver(builder)
         val preview = builder.build()
         preview.surfaceProvider = previewView.surfaceProvider

@@ -26,24 +26,15 @@ class MarkStore(private val file: File) {
         persist()
     }
 
-    /** Creates Mark(name=name) if absent; otherwise updates only the name field. */
-    fun setName(id: String, name: String) {
-        val existing = marks[id] ?: Mark()
-        marks[id] = existing.copy(name = name)
-        persist()
-    }
+    /** Each setter creates the Mark if absent, otherwise updates only its own field. */
+    fun setName(id: String, name: String) = update(id) { it.copy(name = name) }
 
-    /** Creates Mark(input=input) if absent; otherwise updates only the input field. */
-    fun setInputTime(id: String, input: Double) {
-        val existing = marks[id] ?: Mark()
-        marks[id] = existing.copy(input = input)
-        persist()
-    }
+    fun setInputTime(id: String, input: Double) = update(id) { it.copy(input = input) }
 
-    /** Creates Mark(output=output) if absent; otherwise updates only the output field. */
-    fun setOutputTime(id: String, output: Double) {
-        val existing = marks[id] ?: Mark()
-        marks[id] = existing.copy(output = output)
+    fun setOutputTime(id: String, output: Double) = update(id) { it.copy(output = output) }
+
+    private fun update(id: String, transform: (Mark) -> Mark) {
+        marks[id] = transform(marks[id] ?: Mark())
         persist()
     }
 
@@ -67,13 +58,11 @@ class MarkStore(private val file: File) {
             while (keys.hasNext()) {
                 val id = keys.next()
                 val entry = marksObj.optJSONObject(id) ?: continue
-                val name = if (entry.isNull("name") || !entry.has("name")) null else entry.optString("name")
-                val input = if (entry.isNull("input") || !entry.has("input")) null else entry.optDouble("input")
-                val output = if (entry.isNull("output") || !entry.has("output")) null else entry.optDouble("output")
+                // JSONObject.isNull() is also true for a missing key.
                 result[id] = Mark(
-                    name = name,
-                    input = if (input?.isNaN() == true) null else input,
-                    output = if (output?.isNaN() == true) null else output,
+                    name = if (entry.isNull("name")) null else entry.optString("name"),
+                    input = entry.doubleOrNull("input"),
+                    output = entry.doubleOrNull("output"),
                 )
             }
         } catch (e: Exception) {
@@ -82,6 +71,9 @@ class MarkStore(private val file: File) {
         }
         return result
     }
+
+    private fun JSONObject.doubleOrNull(key: String): Double? =
+        if (isNull(key)) null else optDouble(key).takeUnless { it.isNaN() }
 
     private fun persist() {
         try {

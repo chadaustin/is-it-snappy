@@ -102,8 +102,8 @@ class MarkActivity : AppCompatActivity() {
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
         doneButton.setOnClickListener { onDonePressed() }
-        markInputButton.setOnClickListener { onMarkInput() }
-        markOutputButton.setOnClickListener { onMarkOutput() }
+        markInputButton.setOnClickListener { onMark(app.markStore::setInputTime) }
+        markOutputButton.setOnClickListener { onMark(app.markStore::setOutputTime) }
         setupNameField()
         setupGestures()
         setupWindowInsets()
@@ -233,19 +233,10 @@ class MarkActivity : AppCompatActivity() {
 
     // --- Marking ------------------------------------------------------------------------
 
-    private fun onMarkInput() {
+    private fun onMark(setTime: (String, Double) -> Unit) {
         val id = captureId ?: return
         val controller = scrubController ?: return
-        app.markStore.setInputTime(id, controller.currentFrameTimeSeconds())
-        updateNameField()
-        updateLocationLabel()
-        updateButtonLabels()
-    }
-
-    private fun onMarkOutput() {
-        val id = captureId ?: return
-        val controller = scrubController ?: return
-        app.markStore.setOutputTime(id, controller.currentFrameTimeSeconds())
+        setTime(id, controller.currentFrameTimeSeconds())
         updateNameField()
         updateLocationLabel()
         updateButtonLabels()
@@ -330,12 +321,11 @@ class MarkActivity : AppCompatActivity() {
         val id = captureId ?: return
         val index = frameIndex ?: return
         val mark = app.markStore.get(id)
-        val inputLabel = mark?.input?.let { getString(R.string.mark_frame, index.frameNumberFor(it)) }
+        fun frameLabel(seconds: Double?): String = seconds
+            ?.let { getString(R.string.mark_frame, index.frameNumberFor(it)) }
             ?: getString(R.string.mark_no_mark)
-        val outputLabel = mark?.output?.let { getString(R.string.mark_frame, index.frameNumberFor(it)) }
-            ?: getString(R.string.mark_no_mark)
-        markInputButton.text = getString(R.string.mark_input_button, inputLabel)
-        markOutputButton.text = getString(R.string.mark_output_button, outputLabel)
+        markInputButton.text = getString(R.string.mark_input_button, frameLabel(mark?.input))
+        markOutputButton.text = getString(R.string.mark_output_button, frameLabel(mark?.output))
     }
 
     companion object {
