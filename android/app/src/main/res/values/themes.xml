@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.IsItSnappy" parent="Theme.Material3.DayNight">
+        <!-- Edge-to-edge: content draws behind transparent bars, so icon contrast must be
+             declared explicitly. Light theme -> dark status icons. -->
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- windowFullscreen removed: deprecated and ignored under enforced edge-to-edge (API 35);
+         CaptureActivity hides the status bar via WindowInsetsControllerCompat instead. -->
+    <style name="Theme.IsItSnappy.Fullscreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/capture_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.IsItSnappy.Mark" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <!-- The mark screen's translucent-white top bar sits behind the status bar in every
+             ui mode -> dark status icons always. -->
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

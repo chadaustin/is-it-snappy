@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="list_title">All Captures</string>
+
+    <string name="list_action_info">Info</string>
+    <string name="list_action_capture">New Recording</string>
+
+    <string name="list_delete_clear_marks">Clear Marks</string>
+    <string name="list_delete_video_and_marks">Delete Video &amp; Marks</string>
+    <string name="list_delete_cancel">Cancel</string>
+
+    <string name="list_permission_camera_title">Requires Camera access</string>
+    <string name="list_permission_camera_message">Give \"%1$s\" access to Camera in Settings</string>
+    <string name="list_permission_cancel">Cancel</string>
+    <string name="list_permission_settings">Settings</string>
+</resources>

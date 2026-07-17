@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About Activity -->
+    <string name="about_title_toolbar">About</string>
+    <string name="about_title">Is It Snappy?</string>
+    <string name="about_copyright">Chad Austin © 2017-2025</string>
+    <string name="about_website">https://isitsnappy.com</string>
+    <string name="about_github">https://github.com/chadaustin/is-it-snappy</string>
+    <string name="about_mastodon">https://mastodon.gamedev.place/@chadaustin</string>
+    <string name="about_no_browser">No browser application available</string>
+    <string name="about_help_menu">Help</string>
+
+    <!-- Help Activity -->
+    <string name="help_title_toolbar">Help</string>
+    <string name="help_header_capture">Record Capture Screen</string>
+    <string name="help_body_capture">Tap anywhere on the screen to focus on that point. Tap AF/MF to toggle manual focus.</string>
+
+    <string name="help_header_mark">Mark Screen</string>
+    <string name="help_body_mark">Tap and drag to scrub through the video\'s frames. Scrubbing is quadratic - the farther you drag the faster it flips through frames. Tap the edges of the screen to manually flip to the next frame.</string>
+
+    <string name="help_header_list">Capture List</string>
+    <string name="help_body_list">If a capture is deleted, its associated mark metadata is deleted too. Captures and the mark database are stored privately on this device.</string>
+</resources>

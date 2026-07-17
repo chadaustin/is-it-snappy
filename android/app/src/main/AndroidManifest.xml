@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- required=false: the app must install and run (list + playback) on devices and
+         emulators with no camera at all. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.IsItSnappy">
+
+        <activity
+            android:name=".list.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".capture.CaptureActivity"
+            android:exported="false"
+            android:theme="@style/Theme.IsItSnappy.Fullscreen" />
+
+        <activity
+            android:name=".mark.MarkActivity"
+            android:exported="false"
+            android:theme="@style/Theme.IsItSnappy.Mark"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".about.AboutActivity"
+            android:exported="false"
+            android:parentActivityName=".list.MainActivity" />
+
+        <activity
+            android:name=".about.HelpActivity"
+            android:exported="false"
+            android:parentActivityName=".about.AboutActivity" />
+    </application>
+</manifest>

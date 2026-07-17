@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#FF1A1A2E</color>
+    <color name="capture_background">#FF555555</color>
+    <color name="overlay_scrim">#4D000000</color>
+    <color name="camera_unavailable_yellow">#FFFFFF00</color>
+</resources>

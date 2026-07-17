@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Stopwatch crown -->
+    <path
+        android:pathData="M48,12 L60,12 L60,20 L48,20 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Stopwatch ring (two half-circle arcs forming the full circle outline) -->
+    <path
+        android:pathData="M24,54 A30,30 0 1 1 84,54 A30,30 0 1 1 24,54 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6" />
+
+    <!-- Lightning bolt -->
+    <path
+        android:pathData="M60,28 L38,58 L50,58 L44,82 L76,48 L58,48 Z"
+        android:fillColor="#FFFFFF00" />
+</vector>
